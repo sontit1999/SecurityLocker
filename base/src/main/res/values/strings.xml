@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">BaseMVVMProject</string>
+    <string name="share_msg">Share message</string>
+    <string name="choose_one">Choose one</string>
+</resources>

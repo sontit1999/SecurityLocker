@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "922257497655",
+    "project_id": "securitylocker-7dfa4",
+    "storage_bucket": "securitylocker-7dfa4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:922257497655:android:427c5804184b958789e9b2",
+        "android_client_info": {
+          "package_name": "com.ls.entertainment.securitylocker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "922257497655-4d8hops0cra035akll3pijn9oeo6ma1a.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBn8yPFF_863T1hZislM_MxCM_3_nbHgu8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "922257497655-4d8hops0cra035akll3pijn9oeo6ma1a.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

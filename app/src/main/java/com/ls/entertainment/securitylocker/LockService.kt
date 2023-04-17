@@ -1,35 +1,44 @@
 package com.ls.entertainment.securitylocker
 
 import android.app.*
-import android.app.usage.UsageEvents
+import android.app.usage.UsageStats
 import android.app.usage.UsageStatsManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.IBinder
+import android.os.PowerManager
+import android.os.SystemClock
 import android.util.Log
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.content.res.ResourcesCompat
-import com.ls.entertainment.securitylocker.App.Companion.isShowLock
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.util.Locale
+import java.util.SortedMap
+import java.util.TreeMap
 
 class LockService : Service() {
-
+	private var wakeLock: PowerManager.WakeLock? = null
 	private var iconNotification: Bitmap? = null
 	private var notification: Notification? = null
 	var mNotificationManager: NotificationManager? = null
 	private val mNotificationId = 123
 	lateinit var usageStageManager: UsageStatsManager
 	private var currentPackage = ""
+	lateinit var editor : SharedPreferences.Editor
 	val packageLock = "com.bluesky.best_ringtone.free2017"
+	private var currentApp : String? = null
+	lateinit var sharedPreference : SharedPreferences
 
 	private val receiver = object : BroadcastReceiver() {
 		override fun onReceive(p0: Context?, p1: Intent?) {
@@ -50,41 +59,75 @@ class LockService : Service() {
 		registerReceiver(receiver, intentFilter)
 	}
 
+	@RequiresApi(Build.VERSION_CODES.LOLLIPOP_MR1)
 	override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+		wakeUp()
 		generateForegroundNotification()
 		scheduleCheck()
 		return START_STICKY
 	}
 
+	private fun wakeUp() {
+		wakeLock =
+			(getSystemService(Context.POWER_SERVICE) as PowerManager).run {
+				newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Lock::lock").apply {
+					acquire()
+				}
+			}
+	}
+
+
+	@RequiresApi(Build.VERSION_CODES.LOLLIPOP_MR1)
 	private fun scheduleCheck() {
 		CoroutineScope(Dispatchers.Default).launch {
 			while (true) {
 				delay(1000)
-				val endTime = System.currentTimeMillis()
-				val startTime = endTime - 10000
-				var result = ""
-				val event = UsageEvents.Event()
-				val usageEvents = usageStageManager.queryEvents(startTime, endTime)
-				while (usageEvents.hasNextEvent()) {
-					usageEvents.getNextEvent(event)
-					if (event.eventType == UsageEvents.Event.MOVE_TO_FOREGROUND) {
-						result = event.packageName
-						if (result != currentPackage) {
-							currentPackage = result
-							if (currentPackage == packageLock) {
-								startActivity(
-									Intent(
-										this@LockService,
-										UnlockActivity::class.java
-									).apply {
-										addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
-									})
-							}
-						}
+				currentApp = null
+				val usm = getSystemService(USAGE_STATS_SERVICE) as UsageStatsManager
+				val time = System.currentTimeMillis()
+				val applist =
+					usm.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, time - 1000 * 1000, time)
+				if (applist != null && applist.size > 0) {
+					val mySortedMap: SortedMap<Long, UsageStats> = TreeMap()
+					for (usageStats in applist) {
+						mySortedMap[usageStats.lastTimeUsed] = usageStats
+					}
+					if (!mySortedMap.isEmpty()) {
+						currentApp = mySortedMap[mySortedMap.lastKey()]!!.packageName
 					}
 				}
-				Log.d("Sontv", "Package: $currentPackage")
+				Log.d("Sontv", "Current App in foreground is: $currentApp")
+				if (currentApp != null ) {
+					checkMyApp(currentApp!!)
+				}
+
 			}
+		}
+	}
+
+	//  && appLocked!!.contains("com.nvd.applocker") com.sec.android.app.launcher
+	private fun checkMyApp(currentApp : String) : Unit{
+		sharedPreference =  getSharedPreferences("AppLock", Context.MODE_PRIVATE)
+		editor = sharedPreference.edit()
+
+		//val appLocked = sharedPreference.getString(currentApp, null)
+		val appLocked = "com.ls.entertainment.documentviewer"
+		if (appLocked != null)
+			Log.d("ccc", appLocked!!)
+
+		val getLastApp = sharedPreference.getString("mLastApp", null)
+		if (currentApp.lowercase(Locale.getDefault()).contains("launcher") && getLastApp != null){
+			editor.putString("mLastApp", null).apply()
+		}
+		//com.android.launcher3
+		if ((getLastApp != appLocked && appLocked != null)){
+			if (appLocked != "com.ls.entertainment.securitylocker")
+				editor.putString("mLastApp", appLocked).apply()
+
+			// mở màn hình khóa
+			val intent = Intent(this, UnlockActivity::class.java)
+			intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+			startActivity(intent)
 		}
 	}
 
@@ -139,5 +182,15 @@ class LockService : Service() {
 	override fun onDestroy() {
 		super.onDestroy()
 		unregisterReceiver(receiver)
+	}
+
+	override fun onTaskRemoved(rootIntent: Intent?) {
+		super.onTaskRemoved(rootIntent)
+		val restartServiceIntent = Intent(applicationContext, LockService::class.java).also {
+			it.setPackage(packageName)
+		};
+		val restartServicePendingIntent: PendingIntent = PendingIntent.getService(this, 1, restartServiceIntent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_ONE_SHOT)
+		val alarmService: AlarmManager = applicationContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+		alarmService.set(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + 1000, restartServicePendingIntent)
 	}
 }

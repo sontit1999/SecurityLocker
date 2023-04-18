@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_app"
+        android:enabled="true"
+        android:icon="@drawable/baseline_format_list_bulleted_24"
+        android:title="@string/menu_app_lock" />
+
+    <item
+        android:id="@+id/menu_tool"
+        android:enabled="true"
+        android:icon="@drawable/baseline_dashboard_24"
+        android:title="@string/menu_tool" />
+    <item
+        android:id="@+id/menu_theme"
+        android:enabled="true"
+        android:icon="@drawable/baseline_color_lens_24"
+        android:title="@string/menu_theme" />
+
+    <item
+        android:id="@+id/menu_setting"
+        android:enabled="true"
+        android:icon="@drawable/baseline_settings_24"
+        android:title="@string/menu_setting" />
+</menu>

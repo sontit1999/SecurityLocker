@@ -12,12 +12,11 @@ import android.os.PowerManager
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
-import androidx.core.content.res.ResourcesCompat
 import com.ls.entertainment.securitylocker.MainActivity
 import com.ls.entertainment.securitylocker.R
-import com.ls.entertainment.securitylocker.utils.SharePreferenceUtils
 import com.ls.entertainment.securitylocker.UnlockActivity
 import com.ls.entertainment.securitylocker.utils.AlarmUtils
+import com.ls.entertainment.securitylocker.utils.SharePreferenceUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -103,8 +102,8 @@ class LockService : Service() {
 
 	private fun checkNeedLockApp(currentApp: String) {
 		//val appLocked = sharedPreference.getString(currentApp, null)
-		val listAppNeedLock =
-			mutableListOf(packageAppLockTest, "com.bluesky.best_ringtone.free2017")
+		val listAppNeedLock = SharePreferenceUtils.getInstance().getListPackageLock()
+		Log.d("Sontv", "Size list lock = " + listAppNeedLock.size)
 		val appLocked = if (listAppNeedLock.contains(currentApp)) currentApp else null
 		val lastPackageLock = SharePreferenceUtils.getInstance().lastPackageLock
 		if (currentApp.lowercase(Locale.getDefault())
@@ -156,19 +155,15 @@ class LockService : Service() {
 			val builder = NotificationCompat.Builder(this, "service_channel")
 
 			builder.setContentTitle(
-				StringBuilder(resources.getString(R.string.app_name)).append(" service is running")
+				StringBuilder(resources.getString(R.string.app_name)).append(" secure by Security Locker")
 					.toString()
-			).setTicker(
-				StringBuilder(resources.getString(R.string.app_name)).append("service is running")
-					.toString()
-			).setContentText("Touch to open") //                    , swipe down for more options.
-				.setSmallIcon(R.drawable.ic_launcher_foreground)
+			)
+				.setSmallIcon(R.drawable.baseline_lock_24)
 				.setPriority(NotificationCompat.PRIORITY_HIGH).setWhen(0).setOnlyAlertOnce(true)
 				.setContentIntent(pendingIntent).setOngoing(true)
 			if (iconNotification != null) {
 				builder.setLargeIcon(Bitmap.createScaledBitmap(iconNotification!!, 128, 128, false))
 			}
-			builder.color = ResourcesCompat.getColor(resources, R.color.purple_200, null)
 			notification = builder.build()
 			startForeground(mNotificationId, notification)
 		}

@@ -2,6 +2,8 @@ package com.ls.entertainment.securitylocker.utils
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.ls.entertainment.securitylocker.App
 
 
@@ -58,6 +60,23 @@ class SharePreferenceUtils constructor(context: Context) {
             editor.putString("lastPackageLock", i)
             editor.commit()
         }
+
+    fun setListPackageLock(list: ArrayList<String>) {
+        val gson = Gson()
+        val json = gson.toJson(list)//converting list to Json
+        editor.putString("listPackageLock", json)
+        editor.commit()
+    }
+
+    //getting the list from shared preference
+    fun getListPackageLock(): ArrayList<String> {
+        val gson = Gson()
+        val json = pre.getString("listPackageLock", null)
+        val type = object : TypeToken<ArrayList<String>>() {}.type//converting the json to list
+        return if (json != null) {
+            gson.fromJson(json, type)
+        } else arrayListOf()
+    }
 
 
     init {

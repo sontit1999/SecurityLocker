@@ -8,8 +8,10 @@ import android.os.Process
 import android.provider.Settings
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.core.content.ContextCompat
 import com.example.demoandroidrikkei.base.ui.BaseActivityNotRequireViewModel
 import com.ls.entertainment.securitylocker.databinding.ActivityMainBinding
+import com.ls.entertainment.securitylocker.service.LockService
 
 class MainActivity : BaseActivityNotRequireViewModel<ActivityMainBinding>() {
 
@@ -17,15 +19,19 @@ class MainActivity : BaseActivityNotRequireViewModel<ActivityMainBinding>() {
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
+		startLockService()
 		if(!checkUsageStatsPermission()){
 			requestPermissionUsage()
 		}
 		checkCanOverlayPermission()
+	}
 
-		binding.btnStart.setOnClickListener {
-			val intent = Intent(this,LockService::class.java) // Build the intent for the service
-			startService(intent)
-		}
+	private fun startLockService(){
+		ContextCompat.startForegroundService(
+			this, Intent(
+				this, LockService::class.java
+			)
+		)
 	}
 
 	private fun checkCanOverlayPermission() {

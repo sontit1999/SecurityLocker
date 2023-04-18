@@ -6,6 +6,7 @@ import android.net.Uri
 import android.provider.Settings
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.ls.entertainment.securitylocker.utils.PermissionUtil
 
 fun Context.canDrawOverlay(): Boolean {
     return PermissionUtil.isApi23orHigher() && Settings.canDrawOverlays(this)

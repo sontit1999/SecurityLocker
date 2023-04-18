@@ -1,4 +1,4 @@
-package com.ls.entertainment.securitylocker
+package com.ls.entertainment.securitylocker.utils
 
 import android.content.pm.PackageManager
 import android.os.Build

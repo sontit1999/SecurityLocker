@@ -67,7 +67,7 @@ class LockService : Service() {
 	private fun scheduleCheck() {
 		CoroutineScope(Dispatchers.Default).launch {
 			while (true) {
-				delay(1000)
+				delay(500)
 				currentPackageName = null
 				val usm = getSystemService(USAGE_STATS_SERVICE) as UsageStatsManager
 				val time = System.currentTimeMillis()
@@ -144,7 +144,7 @@ class LockService : Service() {
 			builder.setContentTitle(
 				StringBuilder(resources.getString(R.string.app_name)).append(" ")
 					.append(resources.getString(R.string.msg_ntf_secure)).toString()
-			).setSmallIcon(R.drawable.baseline_lock_24)
+			).setSmallIcon(R.mipmap.ic_launcher_round)
 				.setPriority(NotificationCompat.PRIORITY_HIGH).setWhen(0).setOnlyAlertOnce(true)
 				.setContentIntent(pendingIntent).setOngoing(true)
 			if (iconNotification != null) {

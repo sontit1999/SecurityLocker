@@ -11,22 +11,22 @@ import com.ls.entertainment.securitylocker.utils.LogUtils
 import com.ls.entertainment.securitylocker.utils.SharePreferenceUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.util.Locale
+import java.util.*
 
 class AppViewModel : BaseViewModel() {
-	
+
 	var listAppLiveData = MutableLiveData<MutableList<AppModel>>()
-	
+
 	var listPackageLock = mutableListOf<String>()
-	
+
 	var listResultSearch = MutableLiveData<MutableList<AppModel>>()
-	
+
 	var needLoading = SingleLiveEvent<Boolean>()
-	
+
 	init {
 		getAllApp()
 	}
-	
+
 	fun searchApp(keyword: String) {
 		viewModelScope.launch(Dispatchers.IO) {
 			val resultSearch = mutableListOf<AppModel>()
@@ -39,11 +39,11 @@ class AppViewModel : BaseViewModel() {
 			listResultSearch.postValue(resultSearch)
 		}
 	}
-	
+
 	private suspend fun getListPackageLock() {
 		listPackageLock = SharePreferenceUtils.getInstance().getListPackageLock()
 	}
-	
+
 	fun updateListPackageLock(packageName: String, isLock: Boolean) {
 		viewModelScope.launch(Dispatchers.IO) {
 			if (isLock) {
@@ -59,7 +59,7 @@ class AppViewModel : BaseViewModel() {
 				.setListPackageLock(listPackageLock as ArrayList<String>)
 		}
 	}
-	
+
 	private fun getAllApp() {
 		viewModelScope.launch(Dispatchers.IO) {
 			try {
@@ -92,7 +92,7 @@ class AppViewModel : BaseViewModel() {
 							appName.toString(),
 							drawableRes,
 							it.packageName,
-							listPackageLock.contains(it.packageName)
+							if (listPackageLock.isEmpty()) false else listPackageLock.contains(it.packageName)
 						)
 					)
 				}
@@ -104,5 +104,5 @@ class AppViewModel : BaseViewModel() {
 			}
 		}
 	}
-	
+
 }

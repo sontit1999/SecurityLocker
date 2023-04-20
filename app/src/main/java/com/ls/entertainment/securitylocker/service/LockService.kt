@@ -9,8 +9,11 @@ import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.IBinder
 import android.os.PowerManager
+import android.provider.Settings
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
+import com.github.kittinunf.fuel.Fuel
+import com.github.kittinunf.fuel.core.extensions.jsonBody
 import com.ls.entertainment.securitylocker.MainActivity
 import com.ls.entertainment.securitylocker.R
 import com.ls.entertainment.securitylocker.UnlockActivity
@@ -19,11 +22,10 @@ import com.ls.entertainment.securitylocker.utils.AppConstant.CHANEL_GROUP_ID
 import com.ls.entertainment.securitylocker.utils.AppConstant.CHANEL_GROUP_NAME
 import com.ls.entertainment.securitylocker.utils.AppConstant.CHANEL_ID
 import com.ls.entertainment.securitylocker.utils.AppConstant.CHANEL_NAME
+import com.ls.entertainment.securitylocker.utils.LogUtils
 import com.ls.entertainment.securitylocker.utils.SharePreferenceUtils
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import java.text.SimpleDateFormat
 import java.util.*
 
 class LockService : Service() {
@@ -35,6 +37,8 @@ class LockService : Service() {
 	private var currentPackageName: String? = null
 	lateinit var usageStageManager: UsageStatsManager
 	var mNotificationManager: NotificationManager? = null
+	private var isServiceStarted = false
+
 
 	override fun onBind(p0: Intent?): IBinder? {
 		return null
@@ -44,28 +48,81 @@ class LockService : Service() {
 	override fun onCreate() {
 		super.onCreate()
 		usageStageManager = getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
+		generateForegroundNotification()
 	}
 
 	@RequiresApi(Build.VERSION_CODES.LOLLIPOP_MR1)
 	override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
 		wakeUp()
-		generateForegroundNotification()
 		scheduleCheck()
 		return START_STICKY
 	}
 
+	@OptIn(DelicateCoroutinesApi::class)
 	private fun wakeUp() {
+
+		if (isServiceStarted) return
+		isServiceStarted = true
+
 		wakeLock = (getSystemService(Context.POWER_SERVICE) as PowerManager).run {
 			newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Lock::lock").apply {
 				acquire(10 * 60 * 1000L /*10 minutes*/)
 			}
 		}
+
+		// we need this lock so our service gets not affected by Doze Mode
+		wakeLock = (getSystemService(Context.POWER_SERVICE) as PowerManager).run {
+			newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Lock::lock").apply {
+				acquire()
+			}
+		}
+
+		// we're starting a loop in a coroutine
+		GlobalScope.launch(Dispatchers.IO) {
+			while (isServiceStarted) {
+				launch(Dispatchers.IO) {
+					pingFakeServer()
+				}
+				delay(30000)
+			}
+		}
+	}
+
+	private fun pingFakeServer() {
+		val df = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.mmmZ")
+		val gmtTime = df.format(Date())
+
+		val deviceId = Settings.Secure.getString(
+			applicationContext.contentResolver,
+			Settings.Secure.ANDROID_ID
+		)
+
+		val json = """
+                {
+                    "deviceId": "$deviceId",
+                    "createdAt": "$gmtTime"
+                }
+            """
+		try {
+			Fuel.post("https://jsonplaceholder.typicode.com/posts").jsonBody(json)
+				.response { _, _, result ->
+					val (bytes, error) = result
+					if (bytes != null) {
+						LogUtils.logCustomMessage("[response bytes] ${String(bytes)}")
+					} else {
+						LogUtils.logCustomMessage("[response error] ${error?.message}")
+					}
+				}
+		} catch (e: Exception) {
+			LogUtils.logCustomMessage("Error making the request: ${e.message}")
+		}
 	}
 
 
+	@OptIn(DelicateCoroutinesApi::class)
 	@RequiresApi(Build.VERSION_CODES.LOLLIPOP_MR1)
 	private fun scheduleCheck() {
-		CoroutineScope(Dispatchers.Default).launch {
+		GlobalScope.launch(Dispatchers.IO) {
 			while (true) {
 				delay(500)
 				currentPackageName = null
@@ -159,12 +216,14 @@ class LockService : Service() {
 	@RequiresApi(Build.VERSION_CODES.M)
 	override fun onDestroy() {
 		super.onDestroy()
+		isServiceStarted = false
 		AlarmUtils.setAlarm(this, AlarmUtils.ACTION_REPEAT_SERVICE, 1000)
 	}
 
 	@RequiresApi(Build.VERSION_CODES.M)
 	override fun onTaskRemoved(rootIntent: Intent?) {
 		super.onTaskRemoved(rootIntent)
+		isServiceStarted = false
 		AlarmUtils.setAlarm(this, AlarmUtils.ACTION_REPEAT_SERVICE, 1000)
 	}
 }

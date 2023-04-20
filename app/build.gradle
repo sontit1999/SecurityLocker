@@ -132,4 +132,7 @@ dependencies {
     implementation("androidx.room:room-ktx:2.4.3")
 
     implementation 'com.andrognito.patternlockview:patternlockview:1.0.0'
+
+    implementation 'com.github.kittinunf.fuel:fuel:2.1.0'
+    implementation 'com.github.kittinunf.fuel:fuel-android:2.1.0'
 }

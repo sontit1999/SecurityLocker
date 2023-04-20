@@ -3,6 +3,8 @@ package com.ls.entertainment.securitylocker
 import android.annotation.SuppressLint
 import android.app.Application
 import com.google.android.gms.ads.MobileAds
+import com.ls.entertainment.securitylocker.utils.AppConfig
+import com.ls.entertainment.securitylocker.utils.NotificationCenter
 import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
@@ -10,6 +12,8 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
         instance = this
+        AppConfig.setup(this)
+        NotificationCenter.createChannelNotification()
         initAdmobAd()
     }
 

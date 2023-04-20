@@ -7,4 +7,18 @@
     <string name="msg_search_hint">Search</string>
     <string name="msg_ntf_secure"> protecting you</string>
     <string name="draw_patter">Draw a pattern to unlock</string>
+    <string name="msg_dayOneNotificationTitle01"><![CDATA[We miss you so much 💝]]></string>
+    <string name="dayOneNotificationTitle01"><![CDATA[We miss you so much 💝]]></string>
+    <string name="dayOneNotificationMessage01"><![CDATA[It\'s been a day you haven\'t returned to the file opening app!]]></string>
+    <string name="dayTwoNotificationTitle01"><![CDATA[We miss you so much 💝]]></string>
+    <string name="dayTwoNotificationMessage01"><![CDATA[It\'s been two days and you haven\'t returned to the application to open interesting files!]]></string>
+    <string name="dayFourNotificationTitle03"><![CDATA[We miss you so much 💝]]></string>
+    <string name="dayFourNotificationMessage03"><![CDATA[  🎨 It\'s been four days and you haven\'t returned to the app to open interesting files!]]></string>
+    <string name="daySevenNotificationTitle02"><![CDATA[We miss you so much 💝]]></string>
+    <string name="daySevenNotificationMessage02"><![CDATA[🌪 It\'s been seven days and you haven\'t returned to the app to open interesting files!]]></string>
+    <string name="weeklyNotificationTitle04"><![CDATA[How\'s your weekend?]]></string>
+    <string name="weeklyNotificationMessage04"><![CDATA[💌 Take a walk around to find your new inspiration right away!]]></string>
+    <string name="NotificationTitle10m"><![CDATA[Check it out now!]]></string>
+    <string name="NotificationMessage10m"><![CDATA[💌 Forgot to open a file??!]]></string>
+    <string name="msg_action_ads"><![CDATA[This action may contain ads]]></string>
 </resources>

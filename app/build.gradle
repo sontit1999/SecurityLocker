@@ -135,4 +135,6 @@ dependencies {
 
     implementation 'com.github.kittinunf.fuel:fuel:2.1.0'
     implementation 'com.github.kittinunf.fuel:fuel-android:2.1.0'
+
+    implementation 'com.andrognito.pinlockview:pinlockview:2.1.0'
 }

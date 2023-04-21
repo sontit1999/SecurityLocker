@@ -1,11 +1,11 @@
 <resources>
-    <string name="app_name">SecurityLocker</string>
+    <string name="app_name">Security Locker</string>
     <string name="menu_app_lock">App</string>
     <string name="menu_tool">Tool</string>
     <string name="menu_theme">Theme</string>
     <string name="menu_setting">Setting</string>
     <string name="msg_search_hint">Search</string>
-    <string name="msg_ntf_secure"> protecting you</string>
+    <string name="msg_ntf_secure">Protecting you</string>
     <string name="draw_patter">Draw a pattern to unlock</string>
     <string name="msg_dayOneNotificationTitle01"><![CDATA[We miss you so much 💝]]></string>
     <string name="dayOneNotificationTitle01"><![CDATA[We miss you so much 💝]]></string>
@@ -21,4 +21,5 @@
     <string name="NotificationTitle10m"><![CDATA[Check it out now!]]></string>
     <string name="NotificationMessage10m"><![CDATA[💌 Forgot to open a file??!]]></string>
     <string name="msg_action_ads"><![CDATA[This action may contain ads]]></string>
+    <string name="by_app_name">by Security Locker</string>
 </resources>

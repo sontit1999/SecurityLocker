@@ -8,6 +8,7 @@ import com.entertainment.basemvvmproject.base.BaseActivity
 import com.ls.entertainment.securitylocker.MainActivity
 import com.ls.entertainment.securitylocker.R
 import com.ls.entertainment.securitylocker.databinding.ActivitySplashBinding
+import com.ls.entertainment.securitylocker.service.LockService
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -19,6 +20,7 @@ class SplashActivity : BaseActivity<ActivitySplashBinding, SplashViewModel>() {
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
+		LockService.startLockService(this)
 		viewModel.viewModelScope.launch {
 			delay(2000)
 			startActivity(Intent(this@SplashActivity, MainActivity::class.java))

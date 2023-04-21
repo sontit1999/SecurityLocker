@@ -10,8 +10,11 @@ import android.os.Build
 import android.os.IBinder
 import android.os.PowerManager
 import android.provider.Settings
+import android.text.format.DateUtils
+import android.widget.RemoteViews
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.core.extensions.jsonBody
 import com.ls.entertainment.securitylocker.MainActivity
@@ -39,6 +42,26 @@ class LockService : Service() {
 	var mNotificationManager: NotificationManager? = null
 	private var isServiceStarted = false
 
+
+	companion object {
+		fun startLockService(ctx: Context) {
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+				ContextCompat.startForegroundService(
+					ctx, Intent(
+						ctx, LockService::class.java
+					)
+				)
+
+			} else {
+				ctx.startService(
+					Intent(
+						ctx, LockService::class.java
+					)
+				)
+			}
+
+		}
+	}
 
 	override fun onBind(p0: Intent?): IBinder? {
 		return null
@@ -196,12 +219,15 @@ class LockService : Service() {
 				notificationChannel.lockscreenVisibility = Notification.VISIBILITY_SECRET
 				mNotificationManager?.createNotificationChannel(notificationChannel)
 			}
-			val builder = NotificationCompat.Builder(this, CHANEL_ID)
 
-			builder.setContentTitle(
-				StringBuilder(resources.getString(R.string.app_name)).append(" ")
-					.append(resources.getString(R.string.msg_ntf_secure)).toString()
-			).setSmallIcon(R.mipmap.ic_launcher_round)
+			val notificationLayout = RemoteViews(packageName, R.layout.layout_custom_notify)
+			notificationLayout.setTextViewText(
+				R.id.tvTime, DateUtils.formatDateTime(
+					this, System.currentTimeMillis(), DateUtils.FORMAT_SHOW_TIME
+				)
+			)
+			val builder = NotificationCompat.Builder(this, CHANEL_ID)
+			builder.setSmallIcon(R.drawable.icon_lock).setCustomContentView(notificationLayout)
 				.setPriority(NotificationCompat.PRIORITY_HIGH).setWhen(0).setOnlyAlertOnce(true)
 				.setContentIntent(pendingIntent).setOngoing(true)
 			if (iconNotification != null) {

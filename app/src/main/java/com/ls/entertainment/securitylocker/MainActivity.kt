@@ -6,11 +6,10 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Process
 import android.provider.Settings
-import androidx.core.content.ContextCompat
 import com.example.demoandroidrikkei.base.ui.BaseActivityNotRequireViewModel
 import com.ls.entertainment.securitylocker.adapter.MainViewPagerAdapter
 import com.ls.entertainment.securitylocker.databinding.ActivityMainBinding
-import com.ls.entertainment.securitylocker.service.LockService
+import com.ls.entertainment.securitylocker.service.LockService.Companion.startLockService
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -20,7 +19,7 @@ class MainActivity : BaseActivityNotRequireViewModel<ActivityMainBinding>() {
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		startLockService()
+		startLockService(this)
 		initViewPager()
 		bindingAction()
 		checkPermissionApp()
@@ -65,24 +64,6 @@ class MainActivity : BaseActivityNotRequireViewModel<ActivityMainBinding>() {
 		binding.viewPager.adapter = MainViewPagerAdapter(this)
 		binding.viewPager.isUserInputEnabled = false
 		binding.viewPager.offscreenPageLimit = 3
-	}
-
-	private fun startLockService() {
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-			ContextCompat.startForegroundService(
-				this, Intent(
-					this, LockService::class.java
-				)
-			)
-
-		} else {
-			startService(
-				Intent(
-					this, LockService::class.java
-				)
-			)
-		}
-
 	}
 
 	private fun checkCanOverlayPermission() {

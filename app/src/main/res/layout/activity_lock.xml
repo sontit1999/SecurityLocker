@@ -38,6 +38,28 @@
         <com.andrognito.patternlockview.PatternLockView
             android:id="@+id/patternLockView"
             android:layout_width="0dp"
+            android:visibility="gone"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintWidth_percent="0.8" />
+
+        <com.andrognito.pinlockview.IndicatorDots
+            android:id="@+id/indicator_dots"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="15dp"
+            android:visibility="visible"
+            app:layout_constraintBottom_toTopOf="@+id/patternPinLockView"
+            app:layout_constraintEnd_toEndOf="@+id/patternPinLockView"
+            app:layout_constraintStart_toStartOf="@+id/patternPinLockView" />
+
+        <com.andrognito.pinlockview.PinLockView
+            android:id="@+id/patternPinLockView"
+            android:layout_width="0dp"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="1:1"

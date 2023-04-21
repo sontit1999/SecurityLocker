@@ -5,26 +5,54 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.KeyEvent
 import androidx.appcompat.widget.PopupMenu
+import androidx.core.content.ContextCompat
 import com.andrognito.patternlockview.PatternLockView
 import com.andrognito.patternlockview.listener.PatternLockViewListener
 import com.andrognito.patternlockview.utils.PatternLockUtils
+import com.andrognito.pinlockview.IndicatorDots
+import com.andrognito.pinlockview.PinLockListener
 import com.example.demoandroidrikkei.base.ui.BaseActivityNotRequireViewModel
 import com.ls.entertainment.securitylocker.databinding.ActivityLockBinding
+import com.ls.entertainment.securitylocker.utils.LogUtils
 
 
 class UnlockActivity : BaseActivityNotRequireViewModel<ActivityLockBinding>() {
-    
+
     override val layoutId = R.layout.activity_lock
-    
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initLockView()
         bindingAction()
     }
-    
+
+    private val mPinLockListener: PinLockListener = object : PinLockListener {
+        override fun onComplete(pin: String) {
+            LogUtils.logCustomMessage("Pin complete: $pin")
+        }
+
+        override fun onEmpty() {
+            LogUtils.logCustomMessage("Pin empty")
+        }
+
+        override fun onPinChange(pinLength: Int, intermediatePin: String) {
+            LogUtils.logCustomMessage("Pin changed, new length $pinLength with intermediate pin $intermediatePin")
+        }
+    }
+
     private fun initLockView() {
         binding.patternLockView.setViewMode(PatternLockView.PatternViewMode.CORRECT) // Set the current viee more
-        
+
+        //pin lock
+        binding.patternPinLockView.attachIndicatorDots(binding.indicatorDots)
+        binding.patternPinLockView.setPinLockListener(mPinLockListener)
+        //mPinLockView.setCustomKeySet(new int[]{2, 3, 1, 5, 9, 6, 7, 0, 8, 4});
+        binding.patternPinLockView.enableLayoutShuffling()
+
+        binding.patternPinLockView.pinLength = 4
+        binding.patternPinLockView.textColor = ContextCompat.getColor(this, R.color.white)
+
+        binding.indicatorDots.indicatorType = IndicatorDots.IndicatorType.FILL
     }
     
     private fun bindingAction() {

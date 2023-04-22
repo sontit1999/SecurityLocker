@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="dimen_2x">16dp</dimen>
+    <dimen name="text_size_18">18sp</dimen>
+    <dimen name="zero">0dp</dimen>
+    <dimen name="text_size_16">16sp</dimen>
+    <dimen name="dimen_10">10dp</dimen>
+    <dimen name="dimen_1x">10dp</dimen>
+    <dimen name="text_size_14">14sp</dimen>
+    <dimen name="dimen_x1x">12dp</dimen>
+    <dimen name="dimen_6x">20dp</dimen>
+    <dimen name="dimen_4x">12dp</dimen>
+    <dimen name="dimen_340">340dp</dimen>
+    <dimen name="dimen_96">96dp</dimen>
+    <dimen name="text_size_15">15sp</dimen>
+    <dimen name="dimen_05x">3dp</dimen>
+    <dimen name="divider">1dp</dimen>
+    <dimen name="text_size_13">13sp</dimen>
+    <dimen name="dimen_6">6dp</dimen>
+    <dimen name="dimen_3x">24dp</dimen>
+    <dimen name="dimen_50">50dp</dimen>
+</resources>

@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.content.ContextCompat
 import com.ls.entertainment.securitylocker.service.LockService
+import com.ls.entertainment.securitylocker.utils.LogUtils
 
 class AutoRebootReceiver : BroadcastReceiver() {
 	override fun onReceive(context: Context, intent: Intent) {
@@ -21,7 +22,15 @@ class AutoRebootReceiver : BroadcastReceiver() {
 				"android.net.conn.CONNECTIVITY_CHANGE", ignoreCase = true
 			) || action.equals("android.net.wifi.STATE_CHANGE", ignoreCase = true)
 		) {
-			ContextCompat.startForegroundService(context, Intent(context, LockService::class.java))
+			try {
+				LogUtils.logCustomMessage("AutoRebootReceiver")
+				ContextCompat.startForegroundService(
+					context,
+					Intent(context, LockService::class.java)
+				)
+			} catch (e: Exception) {
+				LogUtils.logCustomMessage(e.message.toString())
+			}
 		}
 	}
 }

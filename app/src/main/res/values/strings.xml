@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Security Locker</string>
     <string name="menu_app_lock">App</string>
     <string name="menu_tool">Tool</string>
@@ -22,4 +22,40 @@
     <string name="NotificationMessage10m"><![CDATA[💌 Forgot to open a file??!]]></string>
     <string name="msg_action_ads"><![CDATA[This action may contain ads]]></string>
     <string name="by_app_name">by Security Locker</string>
+    <string name="label_charge_health">Charge Health</string>
+    <string name="label_charge_capacity">Capacity</string>
+    <string name="label_charge_tempurature">Tempurature</string>
+    <string name="label_charge_type">Battery technology</string>
+    <string name="miliampe" translatable="false" tools:ignore="ExtraTranslation">mAh</string>
+    <string name="battery_health_good">GOOD</string>
+    <string name="battery_health_dead">DEAD</string>
+    <string name="battery_health_cold">COLD</string>
+    <string name="battery_health_overheat">OVER HEAT</string>
+    <string name="battery_health_unspecified_failure">UNSPECIFIED_FAILURE</string>
+    <string name="battery_health_unkown">UNKNOW</string>
+    <string name="msg_ok">Ok</string>
+    <string name="internet_lose">Please connect to the internet to continue using this feature!</string>
+    <string name="grant_permission_now">Allow permission</string>
+    <string name="cancel">Cancel</string>
+    <string name="you_must_allow_permission">You must grant data access permission to use this function.</string>
+    <string name="desc_permission_access_data_usage">Let app to be able to statistics the usage time of the applications. We need permission to access data usage</string>
+    <string name="guide_access_permission_v5">On the next screen, find Battery Health app, then tap to ENABLE or ALLOW.</string>
+    <string name="grant_permission">Allow</string>
+    <string name="last_24_hour">24 hour ago</string>
+    <string name="last_10_day">Last 10 day</string>
+    <string name="hour">hour</string>
+    <string name="minutes">minute</string>
+    <string name="time_on_screen">time on screen</string>
+    <string name="unsinstall">Uninstall</string>
+    <string name="update">Update</string>
+    <string name="feedback">Feedback</string>
+    <string name="share">Share</string>
+    <string name="rate">Rate</string>
+    <string name="policy">Policy</string>
+    <string name="version">Version </string>
+    <string name="cannot_find_app">Cannot found my app</string>
+    <string name="availble">available</string>
+    <string name="subject_mail_fb">Feedback app</string>
+    <string name="temp_message_fb">Content ...</string>
+    <string name="choose_email">Choose an Email</string>
 </resources>

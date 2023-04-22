@@ -6,6 +6,7 @@ import android.app.usage.UsageStatsManager
 import android.content.*
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.os.BatteryManager
 import android.os.Build
 import android.os.IBinder
 import android.os.PowerManager
@@ -20,14 +21,17 @@ import com.github.kittinunf.fuel.core.extensions.jsonBody
 import com.ls.entertainment.securitylocker.MainActivity
 import com.ls.entertainment.securitylocker.R
 import com.ls.entertainment.securitylocker.UnlockActivity
+import com.ls.entertainment.securitylocker.model.BatteryModel
 import com.ls.entertainment.securitylocker.utils.AlarmUtils
 import com.ls.entertainment.securitylocker.utils.AppConstant.CHANEL_GROUP_ID
 import com.ls.entertainment.securitylocker.utils.AppConstant.CHANEL_GROUP_NAME
 import com.ls.entertainment.securitylocker.utils.AppConstant.CHANEL_ID
 import com.ls.entertainment.securitylocker.utils.AppConstant.CHANEL_NAME
 import com.ls.entertainment.securitylocker.utils.LogUtils
+import com.ls.entertainment.securitylocker.utils.PermissionUtil
 import com.ls.entertainment.securitylocker.utils.SharePreferenceUtils
 import kotlinx.coroutines.*
+import org.greenrobot.eventbus.EventBus
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -44,7 +48,9 @@ class LockService : Service() {
 
 
 	companion object {
+		const val TAG = "LockService"
 		fun startLockService(ctx: Context) {
+			LogUtils.logCustomMessage(TAG, "LockService startLockService")
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 				ContextCompat.startForegroundService(
 					ctx, Intent(
@@ -70,12 +76,99 @@ class LockService : Service() {
 	@RequiresApi(Build.VERSION_CODES.LOLLIPOP_MR1)
 	override fun onCreate() {
 		super.onCreate()
+		LogUtils.logCustomMessage(TAG, "LockService onCreate")
+		registerBroadCast()
 		usageStageManager = getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
 		generateForegroundNotification()
 	}
 
+	private val receiver = object : BroadcastReceiver() {
+		override fun onReceive(p0: Context?, p1: Intent?) {
+			LogUtils.logCustomMessage(TAG, "receiver ${p1?.action} in lock service")
+			when (p1?.action) {
+				Intent.ACTION_BATTERY_CHANGED -> handleBatteryChange(p1)
+			}
+		}
+
+	}
+
+	private fun handleBatteryChange(intent: Intent) {
+		val level: Int = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
+		val scale: Int = intent.getIntExtra(BatteryManager.EXTRA_SCALE, -1)
+		val batteryPct: Float = if (scale != 0) {
+			level * 100 / scale.toFloat()
+		} else {
+			0f
+		}
+
+		// Battery status - charging/not charging
+		val status = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1)
+
+		// Battery temperature
+		val temperature = intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, -1).toFloat().div(10)
+
+		// Battery charger
+		val chargePlugged = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1)
+
+		// Battery health
+		val health = intent.getIntExtra(BatteryManager.EXTRA_HEALTH, -1)
+
+		// Battery technology
+		val technology = intent.getStringExtra(BatteryManager.EXTRA_TECHNOLOGY)
+
+		// Battery capacity
+		val batteryManager = if (PermissionUtil.isApi21orHigher()) {
+			this.getSystemService(Context.BATTERY_SERVICE) as? BatteryManager
+		} else {
+			null
+		}
+		val chargeCounter = if (PermissionUtil.isApi21orHigher()) {
+			batteryManager?.getIntProperty(BatteryManager.BATTERY_PROPERTY_CHARGE_COUNTER)
+		} else {
+			null
+		}
+		val capacity = if (PermissionUtil.isApi21orHigher()) {
+			batteryManager?.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)?.let {
+				if (it != 0) {
+					(chargeCounter?.div(it) ?: 0) / 10
+				} else {
+					0
+				}
+			}
+		} else {
+			null
+		}
+		EventBus.getDefault().post(
+			BatteryModel(
+				health,
+				capacity = capacity ?: 3000,
+				temperature = temperature,
+				technology = technology ?: "Li-On"
+			)
+		)
+		LogUtils.logCustomMessage(
+			TAG,
+			"LockService handleBatteryChange status = $status, temparature = $temperature, chargePlugged = $chargePlugged, health =  $health, technology = $technology , capacity= $capacity , percent = $batteryPct  "
+		)
+	}
+
+	private fun registerBroadCast() {
+		val intentFilter = IntentFilter(Intent.ACTION_SCREEN_ON)
+		intentFilter.addAction(Intent.ACTION_BATTERY_CHANGED)
+		intentFilter.addAction(Intent.ACTION_BATTERY_LOW)
+		intentFilter.addAction(Intent.ACTION_BATTERY_OKAY)
+		intentFilter.addAction(Intent.ACTION_POWER_DISCONNECTED)
+		intentFilter.addAction(Intent.ACTION_POWER_CONNECTED)
+		registerReceiver(receiver, intentFilter)
+	}
+
+	private fun unRegisterBroadCast() {
+		unregisterReceiver(receiver)
+	}
+
 	@RequiresApi(Build.VERSION_CODES.LOLLIPOP_MR1)
 	override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+		LogUtils.logCustomMessage(TAG, "onStartCommand in lock service")
 		wakeUp()
 		scheduleCheck()
 		return START_STICKY
@@ -116,8 +209,7 @@ class LockService : Service() {
 		val gmtTime = df.format(Date())
 
 		val deviceId = Settings.Secure.getString(
-			applicationContext.contentResolver,
-			Settings.Secure.ANDROID_ID
+			applicationContext.contentResolver, Settings.Secure.ANDROID_ID
 		)
 
 		val json = """
@@ -131,13 +223,13 @@ class LockService : Service() {
 				.response { _, _, result ->
 					val (bytes, error) = result
 					if (bytes != null) {
-						LogUtils.logCustomMessage("[response bytes] ${String(bytes)}")
+						LogUtils.logCustomMessage(TAG, "[response bytes] ${String(bytes)}")
 					} else {
-						LogUtils.logCustomMessage("[response error] ${error?.message}")
+						LogUtils.logCustomMessage(TAG, "[response error] ${error?.message}")
 					}
 				}
 		} catch (e: Exception) {
-			LogUtils.logCustomMessage("Error making the request: ${e.message}")
+			LogUtils.logCustomMessage(TAG, "Error making the request: ${e.message}")
 		}
 	}
 
@@ -148,6 +240,7 @@ class LockService : Service() {
 		GlobalScope.launch(Dispatchers.IO) {
 			while (true) {
 				delay(500)
+				LogUtils.logCustomMessage(TAG, "LockService scheduleCheck")
 				currentPackageName = null
 				val usm = getSystemService(USAGE_STATS_SERVICE) as UsageStatsManager
 				val time = System.currentTimeMillis()
@@ -242,6 +335,8 @@ class LockService : Service() {
 	@RequiresApi(Build.VERSION_CODES.M)
 	override fun onDestroy() {
 		super.onDestroy()
+		LogUtils.logCustomMessage(TAG, "LockService onDestroy")
+		unRegisterBroadCast()
 		isServiceStarted = false
 		AlarmUtils.setAlarm(this, AlarmUtils.ACTION_REPEAT_SERVICE, 1000)
 	}
@@ -249,6 +344,7 @@ class LockService : Service() {
 	@RequiresApi(Build.VERSION_CODES.M)
 	override fun onTaskRemoved(rootIntent: Intent?) {
 		super.onTaskRemoved(rootIntent)
+		LogUtils.logCustomMessage(TAG, "LockService onTaskRemoved")
 		isServiceStarted = false
 		AlarmUtils.setAlarm(this, AlarmUtils.ACTION_REPEAT_SERVICE, 1000)
 	}

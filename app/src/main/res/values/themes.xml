@@ -11,6 +11,7 @@
         <item name="colorOnSecondary">#2196F3</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor">#2196F3</item>
+        <item name="android:windowBackground">@color/white</item>
         <!-- Customize your theme here. -->
     </style>
 
@@ -22,5 +23,17 @@
 
     <style name="radius_image_add_memory">
         <item name="cornerSize">15dp</item>
+    </style>
+
+    <style name="Button" parent="@android:style/Widget.Button">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:paddingBottom">@dimen/dimen_x1x</item>
+        <item name="android:paddingTop">@dimen/dimen_x1x</item>
+        <item name="android:paddingLeft">@dimen/dimen_2x</item>
+        <item name="android:paddingRight">@dimen/dimen_2x</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:gravity">center</item>
+        <item name="android:fontFamily">@font/opensan</item>
     </style>
 </resources>

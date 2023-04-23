@@ -1,8 +1,10 @@
 package com.entertainment.basemvvmproject.base
 
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.widget.Toast
 import androidx.annotation.LayoutRes
+import androidx.core.content.ContextCompat
 import androidx.databinding.ViewDataBinding
 import com.entertainment.basemvvmproject.utils.toast
 import com.entertainment.demoandroidrikkei.base.ui.BaseFragmentNotRequireViewModel
@@ -24,16 +26,22 @@ abstract class BaseFragment<BD : ViewDataBinding, VM : BaseViewModel>(@LayoutRes
             isLoading.observe(viewLifecycleOwner) {
                 showLoading(it)
             }
-
-            toastMessage.observe(viewLifecycleOwner){
-                if(it.isNotEmpty() && activity!=null){
-                    it.toString().toast(requireActivity(),Toast.LENGTH_LONG)
-                }
-
-            }
-        }
-
-
-    }
-
+	
+			toastMessage.observe(viewLifecycleOwner) {
+				if (it.isNotEmpty() && activity != null) {
+					it.toString().toast(requireActivity(), Toast.LENGTH_LONG)
+				}
+		
+			}
+		}
+	
+	
+	}
+	
+	fun checkPermission(permission: String) =
+		ContextCompat.checkSelfPermission(
+			requireContext(),
+			permission
+		) == PackageManager.PERMISSION_GRANTED
+	
 }

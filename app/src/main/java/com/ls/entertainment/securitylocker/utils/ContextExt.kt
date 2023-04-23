@@ -1,11 +1,14 @@
 package com.ls.entertainment.securitylocker.utils
 
+import android.app.AppOpsManager
 import android.bluetooth.BluetoothAdapter
 import android.content.ContentResolver
 import android.content.Context
 import android.net.wifi.WifiManager
 import android.os.Build
+import android.os.Process
 import android.provider.Settings
+import androidx.appcompat.app.AppCompatActivity
 import com.ls.entertainment.securitylocker.R
 
 inline val Context.ctx: Context
@@ -244,7 +247,7 @@ fun Context.showAdsRemovingDialog(okListener: () -> Unit) {
         }
     )
 }
-
+*/
 fun Context.showDrawOverlayPermissionDescDialog(
     onOkListener: () -> Unit,
     onCancelListener: () -> Unit
@@ -270,15 +273,15 @@ fun Context.showRequireUpdateDialog(
     val message =
         getString(R.string.desc_require_update_app) + "\n" + "\n" + getString(R.string.guide_update_app)
     DialogUtil.showConfirmationDialog(
-        ctx, R.string.title_update_app, message,
-        R.string.ok,if(canCancel) R.string.cancel else "",
-        okListener = {
-            onOkListener.invoke()
-        }, cancelListener = {
-            onCancelListener.invoke()
-        },cancelable = canCancel
-    )
-}*/
+		ctx, R.string.title_update_app, message,
+		R.string.msg_ok, if (canCancel) R.string.cancel else "",
+		okListener = {
+			onOkListener.invoke()
+		}, cancelListener = {
+			onCancelListener.invoke()
+		}, cancelable = canCancel
+	)
+}
 
 fun Context.showAccessDataUsagePermissionDialog(
 	onOkListener: () -> Unit, onCancelListener: () -> Unit
@@ -289,7 +292,7 @@ fun Context.showAccessDataUsagePermissionDialog(
 		R.string.grant_permission,
 		message,
 		R.string.grant_permission_now,
-		getString(R.string.cancel),
+		"",
 		okListener = {
 			onOkListener.invoke()
 		},
@@ -298,3 +301,17 @@ fun Context.showAccessDataUsagePermissionDialog(
 		})
 }
 
+fun Context.checkUsageStatsPermission(): Boolean {
+	val appOpsManager = getSystemService(AppCompatActivity.APP_OPS_SERVICE) as AppOpsManager
+	// `AppOpsManager.checkOpNoThrow` is deprecated from Android Q
+	val mode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+		appOpsManager.unsafeCheckOpNoThrow(
+			"android:get_usage_stats", Process.myUid(), packageName
+		)
+	} else {
+		appOpsManager.checkOpNoThrow(
+			"android:get_usage_stats", Process.myUid(), packageName
+		)
+	}
+	return mode == AppOpsManager.MODE_ALLOWED
+}

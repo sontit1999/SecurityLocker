@@ -12,6 +12,9 @@ import com.entertainment.basemvvmproject.utils.visible
 import com.ls.entertainment.securitylocker.R
 import com.ls.entertainment.securitylocker.adapter.AppAdapter
 import com.ls.entertainment.securitylocker.databinding.FragAppBinding
+import com.ls.entertainment.securitylocker.extension.isAllowAllPermission
+import com.ls.entertainment.securitylocker.model.CheckPermissionEvent
+import org.greenrobot.eventbus.EventBus
 
 class AppFragment : BaseFragment<FragAppBinding, AppViewModel>(R.layout.frag_app) {
 	
@@ -20,6 +23,9 @@ class AppFragment : BaseFragment<FragAppBinding, AppViewModel>(R.layout.frag_app
 	private var handleSearch = Handler(Looper.getMainLooper())
 	private var keyword = ""
 	private var runnableSearch = Runnable {
+		if (!requireContext().isAllowAllPermission()) {
+			EventBus.getDefault().post(CheckPermissionEvent())
+		}
 		viewModel.searchApp(keyword)
 	}
 	

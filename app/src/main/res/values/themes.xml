@@ -36,4 +36,31 @@
         <item name="android:gravity">center</item>
         <item name="android:fontFamily">@font/opensan</item>
     </style>
+
+    <style name="rounded_corner">
+        <item name="cornerSize">20dp</item>
+    </style>
+
+    <style name="RatingBar" parent="Theme.SecurityLocker">
+        <item name="colorControlActivated">#FFCD3E</item>
+    </style>
+
+    <style name="PositiveButton" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="rippleColor">?android:colorControlHighlight</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="android:layout_width">180dp</item>
+        <item name="cornerRadius">24dp</item>
+        <item name="elevation">0dp</item>
+        <item name="iconTint">@null</item>
+        <item name="cornerFamily">rounded</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:paddingTop">0dp</item>
+        <item name="android:paddingBottom">0dp</item>
+        <item name="android:gravity">center</item>
+        <item name="backgroundTint">#03A9F4</item>
+    </style>
+
 </resources>

@@ -7,6 +7,8 @@ import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
+import androidx.annotation.RequiresApi
 import com.ls.entertainment.securitylocker.App
 import com.ls.entertainment.securitylocker.BuildConfig
 import com.ls.entertainment.securitylocker.model.UsageTimeAppModel
@@ -45,10 +47,11 @@ object PackageUtil {
 				)
 			}
 		}
-
+		listApp.sortByDescending { it.timeUseInForeground }
 		return listApp
 	}
-
+	
+	@RequiresApi(Build.VERSION_CODES.LOLLIPOP_MR1)
 	fun getTimeUserAppInstalledLast10Day(): MutableList<UsageTimeAppModel> {
 		val listApp = mutableListOf<UsageTimeAppModel>()
 		val mUsageStatsManager =
@@ -75,7 +78,7 @@ object PackageUtil {
 				)
 			}
 		}
-
+		listApp.sortByDescending { it.timeUseInForeground }
 		return listApp
 	}
 

@@ -15,16 +15,17 @@ object AppConfig {
 	lateinit var displayMetrics: DisplayMetrics
 	lateinit var appName: String
 	var statusBarSize by Delegates.notNull<Int>()
-
+	
 	val widthScreen: Int
 		get() = displayMetrics.widthPixels
-
+	
 	val heightScreen: Int
 		get() = displayMetrics.heightPixels
-
-	var aspectRatio: Float = 1.78f
-
-
+	
+	val aspectRatio
+		get() = (widthScreen / heightScreen).toFloat()
+	
+	
 	fun setup(context: Context) {
 		appName = context.getString(R.string.app_name)
 		connectivityManager =

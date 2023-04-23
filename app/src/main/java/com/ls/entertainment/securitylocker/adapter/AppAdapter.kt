@@ -10,6 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ls.entertainment.securitylocker.R
 import com.ls.entertainment.securitylocker.databinding.ItemAppBinding
 import com.ls.entertainment.securitylocker.model.AppModel
+import com.ls.entertainment.securitylocker.model.CheckPermissionEvent
+import org.greenrobot.eventbus.EventBus
 
 
 const val DURATION_ANIMATION: Long = 150
@@ -112,6 +114,7 @@ class AppAdapter : RecyclerView.Adapter<AppAdapter.AppHolder>() {
         
         init {
             binding.ivLock.setOnClickListener {
+                EventBus.getDefault().post(CheckPermissionEvent())
                 listApp[adapterPosition].isLock = !listApp[adapterPosition].isLock
                 if (listApp[adapterPosition].isLock) {
                     binding.ivLock.setImageResource(R.drawable.baseline_lock_24)

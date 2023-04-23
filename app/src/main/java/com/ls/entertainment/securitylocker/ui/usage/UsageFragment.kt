@@ -60,17 +60,22 @@ class UsageFragment : BaseFragment<FragUsageBinding, UsageViewModel>(R.layout.fr
 		}
 		binding.rvApp.adapter = usageAppAdapter
 	}
-
+	
 	@Subscribe
 	fun refreshEvent(refreshUsage: RefreshUsage) {
 		viewModel.loadUsageApp(typeGetUsage)
 	}
-
+	
+	override fun onResume() {
+		super.onResume()
+		EventBus.getDefault().post(RefreshUsage())
+	}
+	
 	override fun onDestroy() {
 		super.onDestroy()
 		EventBus.getDefault().unregister(this)
 	}
-
+	
 	companion object {
 		private const val KEY_TYPE_USAGE = "KEY_TYPE_USAGE"
 		const val TYPE_LAST_24_HOUR = 0

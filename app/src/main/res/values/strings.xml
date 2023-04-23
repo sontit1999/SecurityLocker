@@ -7,6 +7,7 @@
     <string name="msg_search_hint">Search</string>
     <string name="msg_ntf_secure">Protecting you</string>
     <string name="draw_patter">Draw a pattern to unlock</string>
+    <string name="input_pin">Input passcode to unlock</string>
     <string name="msg_dayOneNotificationTitle01"><![CDATA[We miss you so much 💝]]></string>
     <string name="dayOneNotificationTitle01"><![CDATA[We miss you so much 💝]]></string>
     <string name="dayOneNotificationMessage01"><![CDATA[It\'s been a day you haven\'t returned to the file opening app!]]></string>
@@ -24,7 +25,7 @@
     <string name="by_app_name">by Security Locker</string>
     <string name="label_charge_health">Charge Health</string>
     <string name="label_charge_capacity">Capacity</string>
-    <string name="label_charge_tempurature">Tempurature</string>
+    <string name="label_charge_tempurature">Temperature</string>
     <string name="label_charge_type">Battery technology</string>
     <string name="miliampe" translatable="false" tools:ignore="ExtraTranslation">mAh</string>
     <string name="battery_health_good">GOOD</string>
@@ -38,9 +39,9 @@
     <string name="grant_permission_now">Allow permission</string>
     <string name="cancel">Cancel</string>
     <string name="you_must_allow_permission">You must grant data access permission to use this function.</string>
-    <string name="desc_permission_access_data_usage">Let app to be able to statistics the usage time of the applications. We need permission to access data usage</string>
-    <string name="guide_access_permission_v5">On the next screen, find Battery Health app, then tap to ENABLE or ALLOW.</string>
-    <string name="grant_permission">Allow</string>
+    <string name="desc_permission_access_data_usage">To be able to show the lock screen when apps are opened. We need permission to access data usage</string>
+    <string name="guide_access_permission_v5">On the next screen, find Security Locker app, then tap to ENABLE or ALLOW.</string>
+    <string name="grant_permission">Allow permission</string>
     <string name="last_24_hour">24 hour ago</string>
     <string name="last_10_day">Last 10 day</string>
     <string name="hour">hour</string>
@@ -56,6 +57,14 @@
     <string name="cannot_find_app">Cannot found my app</string>
     <string name="availble">available</string>
     <string name="subject_mail_fb">Feedback app</string>
-    <string name="temp_message_fb">Content ...</string>
+    <string name="temp_message_fb">Content</string>
     <string name="choose_email">Choose an Email</string>
+    <string name="desc_require_update_app">We have a new version, please update the app to continue using it. Thanks!
+    </string>
+    <string name="guide_update_app">When opening the store, select the update button to update the app</string>
+    <string name="title_update_app">Update app</string>
+    <string name="desc_permission_draw_overlay">
+        The app will show the app lock screen when someone opens the phone.
+        \n\nThis helps protect your privacy.
+    </string>
 </resources>

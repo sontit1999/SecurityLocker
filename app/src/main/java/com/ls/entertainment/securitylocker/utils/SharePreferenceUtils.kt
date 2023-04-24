@@ -61,6 +61,13 @@ class SharePreferenceUtils constructor(context: Context) {
             editor.commit()
         }
 
+    var pathImageLock: String?
+        get() = pre.getString("pathImageLock", null)
+        set(i) {
+            editor.putString("pathImageLock", i)
+            editor.commit()
+        }
+
     fun setListPackageLock(list: ArrayList<String>) {
         val gson = Gson()
         val json = gson.toJson(list)//converting list to Json

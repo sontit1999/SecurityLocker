@@ -7,11 +7,7 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/ivWallpaper"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <com.andrognito.patternlockview.PatternLockView
-            android:id="@+id/viewPreview"
+            android:scaleType="centerCrop"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </FrameLayout>

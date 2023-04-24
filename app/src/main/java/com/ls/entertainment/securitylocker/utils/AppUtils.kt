@@ -7,6 +7,7 @@ import android.content.pm.ApplicationInfo
 import android.net.Uri
 import android.widget.Toast
 import com.ls.entertainment.securitylocker.R
+import com.ls.entertainment.securitylocker.adapter.WallpaperModel
 
 
 object AppUtils {
@@ -55,5 +56,14 @@ object AppUtils {
 		//need this to prompts email client only
 		email.type = "message/rfc822"
 		context.startActivity(Intent.createChooser(email, context.getString(R.string.choose_email)))
+	}
+
+	fun getListImageFromConfig(): List<WallpaperModel> {
+		val list = mutableListOf<WallpaperModel>()
+		RemoteConfig.commonConfig.listImage.split(AppConstant.SEPARATE_LIST_IMAGE).forEach {
+			val wallpaperModel = WallpaperModel(System.currentTimeMillis().toInt(), "", it, false)
+			list.add(wallpaperModel)
+		}
+		return list
 	}
 }

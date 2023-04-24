@@ -5,4 +5,5 @@ object AppConstant {
 	const val CHANEL_NAME = "security_lock"
 	const val CHANEL_GROUP_ID = "security_group"
 	const val CHANEL_GROUP_NAME = "security_lock_group"
+	const val SEPARATE_LIST_IMAGE = "????"
 }

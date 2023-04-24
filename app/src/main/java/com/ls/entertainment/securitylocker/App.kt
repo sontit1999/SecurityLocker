@@ -25,6 +25,7 @@ class App : Application() {
 
     companion object{
         var isShowLock = false
+		var didLoadConfigSuccess = false
 
         @SuppressLint("StaticFieldLeak")
         lateinit var instance: App

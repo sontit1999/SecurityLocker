@@ -21,9 +21,8 @@ class ThemeFragment : BaseFragment<FragThemeBinding, ThemeViewModel>(R.layout.fr
 	
 	override fun viewCreated(savedInstanceState: Bundle?) {
 		super.viewCreated(savedInstanceState)
-		//requestReadExternalStoragePermission()
 		initRecyclerView()
-		viewModel.getImageLocal()
+		viewModel.getImageLock()
 	}
 	
 	private fun initRecyclerView() {
@@ -41,7 +40,7 @@ class ThemeFragment : BaseFragment<FragThemeBinding, ThemeViewModel>(R.layout.fr
 			ActivityResultContracts.RequestMultiplePermissions()
 		) { list: Map<String, Boolean> ->
 			if (list.all { it.value }) {
-				viewModel.getImageLocal()
+				viewModel.getImageLock()
 			} else {
 				showToast("Permission deny")
 				
@@ -53,7 +52,7 @@ class ThemeFragment : BaseFragment<FragThemeBinding, ThemeViewModel>(R.layout.fr
 			ActivityResultContracts.RequestPermission()
 		) { isGranted: Boolean ->
 			if (isGranted) {
-				viewModel.getImageLocal()
+				viewModel.getImageLock()
 			} else {
 				// Permission not granted
 				

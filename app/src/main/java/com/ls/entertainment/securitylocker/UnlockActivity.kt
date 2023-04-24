@@ -13,7 +13,9 @@ import com.andrognito.pinlockview.IndicatorDots
 import com.andrognito.pinlockview.PinLockListener
 import com.example.demoandroidrikkei.base.ui.BaseActivityNotRequireViewModel
 import com.ls.entertainment.securitylocker.databinding.ActivityLockBinding
+import com.ls.entertainment.securitylocker.utils.GlideHelper
 import com.ls.entertainment.securitylocker.utils.LogUtils
+import com.ls.entertainment.securitylocker.utils.SharePreferenceUtils
 
 
 class UnlockActivity : BaseActivityNotRequireViewModel<ActivityLockBinding>() {
@@ -22,8 +24,15 @@ class UnlockActivity : BaseActivityNotRequireViewModel<ActivityLockBinding>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        initBackGround()
         initLockView()
         bindingAction()
+
+    }
+
+    private fun initBackGround() {
+        val path = SharePreferenceUtils.getInstance().pathImageLock
+        if (!path.isNullOrEmpty()) GlideHelper.load(binding.ivBackground, path)
     }
 
     private val mPinLockListener: PinLockListener = object : PinLockListener {

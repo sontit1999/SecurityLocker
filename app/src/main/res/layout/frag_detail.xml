@@ -8,40 +8,40 @@
         android:layout_height="match_parent"
         android:background="@color/white">
 
-        <androidx.appcompat.widget.AppCompatImageButton
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/viewPager"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.385" />
+
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/ivBack"
             android:layout_width="49dp"
             android:layout_height="49dp"
             android:layout_margin="10dp"
+            android:background="@drawable/btn_downdload"
+            android:padding="10dp"
             android:layout_marginBottom="15dp"
-            android:background="@drawable/bg_btn_back"
-            android:backgroundTint="@color/color_main"
-            android:tint="@color/white"
+            app:tint="@color/color_main"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/baseline_keyboard_backspace_24" />
 
-        <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/viewPager"
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:layout_margin="30dp"
-            android:paddingHorizontal="20dp"
-            app:layout_constraintBottom_toTopOf="@+id/ivSetting"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ivBack" />
-
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/ivSetting"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_marginBottom="15dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginBottom="25dp"
             android:padding="10dp"
+            android:background="@drawable/btn_downdload"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:srcCompat="@drawable/baseline_download_for_offline_24"
+            app:srcCompat="@drawable/ic_download"
             app:tint="@color/color_main" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

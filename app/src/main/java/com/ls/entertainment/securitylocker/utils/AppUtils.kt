@@ -64,6 +64,7 @@ object AppUtils {
 			val wallpaperModel = WallpaperModel(System.currentTimeMillis().toInt(), "", it, false)
 			list.add(wallpaperModel)
 		}
+		list.shuffle()
 		return list
 	}
 }

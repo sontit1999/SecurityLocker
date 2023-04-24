@@ -22,6 +22,7 @@ import com.ls.entertainment.securitylocker.MainActivity
 import com.ls.entertainment.securitylocker.R
 import com.ls.entertainment.securitylocker.UnlockActivity
 import com.ls.entertainment.securitylocker.model.BatteryModel
+import com.ls.entertainment.securitylocker.ui.confirm.ConfirmActivity
 import com.ls.entertainment.securitylocker.utils.AlarmUtils
 import com.ls.entertainment.securitylocker.utils.AppConstant.CHANEL_GROUP_ID
 import com.ls.entertainment.securitylocker.utils.AppConstant.CHANEL_GROUP_NAME
@@ -87,9 +88,17 @@ class LockService : Service() {
 			LogUtils.logCustomMessage(TAG, "receiver ${p1?.action} in lock service")
 			when (p1?.action) {
 				Intent.ACTION_BATTERY_CHANGED -> handleBatteryChange(p1)
+				Intent.ACTION_POWER_CONNECTED -> handlePowerConnected(p0)
 			}
 		}
 
+	}
+
+	private fun handlePowerConnected(ctx: Context?) {
+		ctx ?: return
+		val intent = Intent(ctx, ConfirmActivity::class.java)
+		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+		startActivity(intent)
 	}
 
 	private fun handleBatteryChange(intent: Intent) {

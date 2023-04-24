@@ -67,5 +67,7 @@
         The app will show the app lock screen when someone opens the phone.
         \n\nThis helps protect your privacy.
     </string>
+    <string name="msg_no">No</string>
+    <string name="fast_charge">Turn off some tasks to optimize fast and efficient battery charging</string>
 
 </resources>

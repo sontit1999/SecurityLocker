@@ -69,6 +69,15 @@
             tools:ignore="LockedOrientationActivity" />
 
         <activity
+            android:name=".ui.confirm.ConfirmActivity"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:showOnLockScreen="true"
+            android:theme="@style/Theme.Transparent"
+            tools:ignore="LockedOrientationActivity" />
+
+        <activity
             android:name=".ui.splash.SplashActivity"
             android:exported="true"
             android:screenOrientation="portrait"

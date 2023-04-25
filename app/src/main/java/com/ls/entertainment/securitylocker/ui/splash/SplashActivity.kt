@@ -16,9 +16,6 @@ import com.ls.entertainment.securitylocker.databinding.ActivitySplashBinding
 import com.ls.entertainment.securitylocker.model.ConfigModel
 import com.ls.entertainment.securitylocker.service.LockService
 import com.ls.entertainment.securitylocker.utils.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 class SplashActivity : BaseActivity<ActivitySplashBinding, SplashViewModel>() {
 
@@ -28,10 +25,16 @@ class SplashActivity : BaseActivity<ActivitySplashBinding, SplashViewModel>() {
 
 	private var isShowDialogUpdate = false
 
+	private var didGoToMain = false
+
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		LockService.startLockService(this)
-		CoroutineScope(Dispatchers.Main).launch {
+	}
+
+	override fun onResume() {
+		super.onResume()
+		if (!didGoToMain) {
 			loadRemoteConfig()
 		}
 	}
@@ -96,7 +99,8 @@ class SplashActivity : BaseActivity<ActivitySplashBinding, SplashViewModel>() {
 	}
 
 	private fun goMainActivity() {
-		if (isShowDialogUpdate) return
+		if (isShowDialogUpdate && !didGoToMain) return
+		didGoToMain = true
 		val openCount = SharePreferenceUtils.getInstance().openCount
 		SharePreferenceUtils.getInstance().openCount = openCount + 1
 		if ((openCount + 1) == 1 || !SharePreferenceUtils.getInstance().isSetupLanguage) {

@@ -72,14 +72,17 @@ object NotificationCenter {
 		bundle: Bundle,
 		bigPicture: Bitmap? = null,
 		image: String? = null,
-		isFromFCM: Boolean = false
+		isFromFCM: Boolean = false,
+		ntfId: Int = -1
 	): Boolean {
 		val cal = Calendar.getInstance()
 		val hour = cal.get(Calendar.HOUR_OF_DAY)
 		val app = App.instance
 		val con = app.applicationContext ?: return false
 
-		val notificationId = System.currentTimeMillis().toInt()
+		val notificationId = if (ntfId == -1) {
+			System.currentTimeMillis().toInt()
+		} else ntfId
 		bundle.putString(ID, notificationId.toString() + "")
 
 		val title = bundle.getString(TITLE)
@@ -150,19 +153,20 @@ object NotificationCenter {
 		return true
 	}
 
-	fun pushNotification(title: String, content: String, action: String) {
+	fun pushNotification(title: String, content: String, action: String, ntfId: Int = -1) {
 		val bundle = Bundle()
 		bundle.putString(TITLE, title)
 		bundle.putString(MESSAGE, content)
 		bundle.putString(ACTION, action)
-		push(bundle, isFromFCM = false)
+		push(bundle, isFromFCM = false, ntfId = ntfId)
 	}
 
 	fun pushFullBatteryNotify() {
 		pushNotification(
 			App.instance.getString(R.string.title_battery_full),
 			App.instance.getString(R.string.content_battery_full),
-			""
+			"",
+			ntfId = 999
 		)
 	}
 
@@ -170,7 +174,8 @@ object NotificationCenter {
 		pushNotification(
 			App.instance.getString(R.string.title_battery_low),
 			App.instance.getString(R.string.content_battery_low),
-			""
+			"",
+			ntfId = 888
 		)
 	}
 
@@ -178,7 +183,8 @@ object NotificationCenter {
 		pushNotification(
 			App.instance.getString(R.string.title_battery_temp_high),
 			App.instance.getString(R.string.content_battery_temp_high),
-			""
+			"",
+			ntfId = 777
 		)
 	}
 

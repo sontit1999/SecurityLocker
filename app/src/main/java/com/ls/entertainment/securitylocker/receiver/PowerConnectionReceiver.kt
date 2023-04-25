@@ -20,9 +20,8 @@ class PowerConnectionReceiver : BroadcastReceiver() {
 			saveBrightness(p0)
 			// Open app when plugged
 			if (isInBackground()) {
-				val intent = Intent(p0, ConfirmActivity::class.java).apply {
-					addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
-				}
+				val intent = Intent(p0, ConfirmActivity::class.java)
+				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
 				p0?.startActivity(intent)
 			}
 			PowerRestartWorker.schedule()

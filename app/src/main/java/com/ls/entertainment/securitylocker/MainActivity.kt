@@ -3,8 +3,10 @@ package com.ls.entertainment.securitylocker
 import android.content.Intent
 import android.os.Bundle
 import android.provider.Settings
+import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
-import com.example.demoandroidrikkei.base.ui.BaseActivityNotRequireViewModel
+import androidx.lifecycle.viewModelScope
+import com.entertainment.basemvvmproject.base.BaseActivity
 import com.ls.entertainment.securitylocker.adapter.MainViewPagerAdapter
 import com.ls.entertainment.securitylocker.databinding.ActivityMainBinding
 import com.ls.entertainment.securitylocker.extension.canDrawOverlay
@@ -12,34 +14,76 @@ import com.ls.entertainment.securitylocker.extension.requestDrawOverlayPermissio
 import com.ls.entertainment.securitylocker.model.CheckPermissionEvent
 import com.ls.entertainment.securitylocker.model.RefreshUsage
 import com.ls.entertainment.securitylocker.service.LockService.Companion.startLockService
+import com.ls.entertainment.securitylocker.ui.MainViewModel
+import com.ls.entertainment.securitylocker.ui.batterysaver.BatterySaverFragment
+import com.ls.entertainment.securitylocker.ui.splash.SplashActivity
 import com.ls.entertainment.securitylocker.utils.LogUtils
 import com.ls.entertainment.securitylocker.utils.checkUsageStatsPermission
 import com.ls.entertainment.securitylocker.utils.showAccessDataUsagePermissionDialog
 import com.ls.entertainment.securitylocker.utils.showDrawOverlayPermissionDescDialog
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 
 @AndroidEntryPoint
-class MainActivity : BaseActivityNotRequireViewModel<ActivityMainBinding>() {
-	
+class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
+
+	private val viewModel: MainViewModel by viewModels()
+
 	override val layoutId = R.layout.activity_main
-	
+
+	override fun getVM() = viewModel
+
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		EventBus.getDefault().register(this)
 		startLockService(this)
+		getDataFromIntent()
 		checkPermissionApp()
 		initViewPager()
 		bindingAction()
 	}
-	
+
+	private fun getDataFromIntent() {
+		when (intent.getIntExtra(SplashActivity.KEY_TYPE_OPTIMIZE, -1)) {
+			SplashActivity.TYPE_FROM_FAST_CHARGER -> handleOpenFromFastCharge()
+			SplashActivity.TYPE_FROM_UNLOCK       -> handleOpenFromUnlock()
+			else                                  -> {}
+		}
+	}
+
+	private fun handleOpenFromFastCharge() {
+		addFragment(BatterySaverFragment())
+	}
+
+	private fun handleOpenFromUnlock() {
+		viewModel.viewModelScope.launch {
+			try {
+				val typeAction = intent.getIntExtra(SplashActivity.KEY_ACTION_MENU_LOCK, -1)
+				delay(1000)
+				when (typeAction) {
+					SplashActivity.ACTION_MENU_LOCK_APP     -> binding.bottomNavigation.selectedItemId =
+						R.id.menu_app
+					SplashActivity.ACTION_MENU_CHANGE_THEME -> binding.bottomNavigation.selectedItemId =
+						R.id.menu_theme
+					SplashActivity.ACTION_MENU_SETTING      -> binding.bottomNavigation.selectedItemId =
+						R.id.menu_setting
+					else                                    -> {}
+				}
+			} catch (e: Exception) {
+				LogUtils.logCustomMessage(e.message.toString())
+			}
+		}
+	}
+
 	private fun bindingAction() {
-		
+
 		binding.bottomNavigation.setOnItemSelectedListener { item ->
 			checkPermissionApp()
 			when (item.itemId) {
-				R.id.menu_app -> {
+				R.id.menu_app   -> {
 					binding.viewPager.setCurrentItem(0, true)
 					true
 				}
@@ -131,4 +175,6 @@ class MainActivity : BaseActivityNotRequireViewModel<ActivityMainBinding>() {
 		super.onDestroy()
 		EventBus.getDefault().unregister(this)
 	}
+
+
 }

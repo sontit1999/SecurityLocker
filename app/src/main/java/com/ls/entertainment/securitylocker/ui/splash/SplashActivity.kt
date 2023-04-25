@@ -27,9 +27,16 @@ class SplashActivity : BaseActivity<ActivitySplashBinding, SplashViewModel>() {
 
 	private var didGoToMain = false
 
+	private var type = -1
+	private var typeActionMenu = -1
+
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		LockService.startLockService(this)
+		type = intent.getIntExtra(KEY_TYPE_OPTIMIZE, -1)
+		if (type == TYPE_FROM_UNLOCK) {
+			typeActionMenu = intent.getIntExtra(KEY_ACTION_MENU_LOCK, -1)
+		}
 	}
 
 	override fun onResume() {
@@ -58,7 +65,7 @@ class SplashActivity : BaseActivity<ActivitySplashBinding, SplashViewModel>() {
 				TrackingHelper.logEvent(AllEvents.E1_CONFIG_LOAD_SUCCESS)
 			} else {
 				TrackingHelper.logEvent(AllEvents.E1_CONFIG_LOAD_FAIL)
-				goMainActivity()
+				handleFlowGoMainActivity()
 			}
 		}
 	}
@@ -78,9 +85,9 @@ class SplashActivity : BaseActivity<ActivitySplashBinding, SplashViewModel>() {
 			if (RemoteConfig.commonConfig.versionCodeForReview == BuildConfig.VERSION_CODE) {
 				RemoteConfig.configModel = ConfigModel()
 			}
-			goMainActivity()
+			handleFlowGoMainActivity()
 		} catch (e: java.lang.Exception) {
-			goMainActivity()
+			handleFlowGoMainActivity()
 			LogUtils.logCustomMessage(e.message.toString())
 		}
 	}
@@ -98,20 +105,36 @@ class SplashActivity : BaseActivity<ActivitySplashBinding, SplashViewModel>() {
 			})
 	}
 
-	private fun goMainActivity() {
+	private fun handleFlowGoMainActivity() {
 		if (isShowDialogUpdate && !didGoToMain) return
 		didGoToMain = true
 		val openCount = SharePreferenceUtils.getInstance().openCount
 		SharePreferenceUtils.getInstance().openCount = openCount + 1
 		if ((openCount + 1) == 1 || !SharePreferenceUtils.getInstance().isSetupLanguage) {
 			TrackingHelper.logEvent(AllEvents.E1_OPEN_USER_FIRST_OPEN)
-			startActivity(Intent(this@SplashActivity, MainActivity::class.java))
-			finish()
+			goToMainActivity()
 		} else {
 			TrackingHelper.logEvent(AllEvents.E1_OPEN_USER_REOPEN)
-			startActivity(Intent(this, MainActivity::class.java))
-			finish()
+			goToMainActivity()
 		}
 
+	}
+
+	private fun goToMainActivity() {
+		val intent = Intent(this@SplashActivity, MainActivity::class.java)
+		intent.putExtra(KEY_TYPE_OPTIMIZE, type)
+		intent.putExtra(KEY_ACTION_MENU_LOCK, typeActionMenu)
+		startActivity(intent)
+		finish()
+	}
+
+	companion object {
+		const val KEY_TYPE_OPTIMIZE = "KEY_TYPE_OPTIMIZE"
+		const val TYPE_FROM_FAST_CHARGER = 1
+		const val TYPE_FROM_UNLOCK = 2
+		const val KEY_ACTION_MENU_LOCK = "KEY_ACTION_MENU_LOCK"
+		const val ACTION_MENU_LOCK_APP = 45
+		const val ACTION_MENU_CHANGE_THEME = 434
+		const val ACTION_MENU_SETTING = 4534
 	}
 }

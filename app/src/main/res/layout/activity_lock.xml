@@ -30,8 +30,7 @@
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/patternLockView"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintStart_toStartOf="parent" />
 
 
         <com.andrognito.patternlockview.PatternLockView
@@ -51,7 +50,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="15dp"
-            android:visibility="visible"
+            android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@+id/patternPinLockView"
             app:layout_constraintEnd_toEndOf="@+id/patternPinLockView"
             app:layout_constraintStart_toStartOf="@+id/patternPinLockView" />

@@ -25,6 +25,7 @@ class ConfirmActivity : BaseActivity<ActivityConfirmBinding, ConfirmViewModel>()
 		binding.btnNo.setOnSafeClickListener { finish() }
 		binding.btnYes.setOnSafeClickListener {
 			val intent = Intent(this, SplashActivity::class.java)
+			intent.putExtra(SplashActivity.KEY_TYPE_OPTIMIZE, SplashActivity.TYPE_FROM_FAST_CHARGER)
 			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
 			startActivity(intent)
 		}

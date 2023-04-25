@@ -28,6 +28,7 @@ import android.graphics.BitmapFactory
 import android.media.RingtoneManager
 import android.os.Build
 import android.os.Bundle
+import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
 import com.bumptech.glide.request.RequestOptions
 import com.ls.entertainment.securitylocker.App
@@ -86,7 +87,7 @@ object NotificationCenter {
 		val intent = Intent()
 		intent.action = ACTION_NOTIFICATION
 		intent.setClass(con, SplashActivity::class.java)
-		intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
 		if (isFromFCM) {
 			intent.putExtra(KEY_TAG_NOTIFY, TAG_NOTIFY_FCM)
 			TrackingHelper.logEvent(AllEvents.E1_NOTIFICATION_FCM_RECEIVE)
@@ -149,6 +150,38 @@ object NotificationCenter {
 		return true
 	}
 
+	fun pushNotification(title: String, content: String, action: String) {
+		val bundle = Bundle()
+		bundle.putString(TITLE, title)
+		bundle.putString(MESSAGE, content)
+		bundle.putString(ACTION, action)
+		push(bundle, isFromFCM = false)
+	}
+
+	fun pushFullBatteryNotify() {
+		pushNotification(
+			App.instance.getString(R.string.title_battery_full),
+			App.instance.getString(R.string.content_battery_full),
+			""
+		)
+	}
+
+	fun pushLowBatteryNotify() {
+		pushNotification(
+			App.instance.getString(R.string.title_battery_low),
+			App.instance.getString(R.string.content_battery_low),
+			""
+		)
+	}
+
+	fun pushBatteryTemperatureHighNotify() {
+		pushNotification(
+			App.instance.getString(R.string.title_battery_temp_high),
+			App.instance.getString(R.string.content_battery_temp_high),
+			""
+		)
+	}
+
 	private fun getSummaryID(fromFCM: Boolean) =
 		if (fromFCM) SUMMARY_ID_FCM else SUMMARY_ID_REMIND_OPEN_APP
 
@@ -178,4 +211,46 @@ object NotificationCenter {
 			manager.createNotificationChannel(notificationChannel)
 		}
 	}
+
+	fun showCustomNotify(action: String, layoutNotify: Int, requestCode: Int) {
+		val intent = Intent()
+		intent.setClass(App.instance, SplashActivity::class.java)
+		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+		val pendingIntent = PendingIntent.getActivity(
+			App.instance,
+			System.currentTimeMillis().toInt(),
+			intent,
+			PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+		)
+
+		val notificationLayout = RemoteViews(App.instance.packageName, layoutNotify)
+
+		notificationLayout.setOnClickPendingIntent(
+			R.id.btnOptimizeFromNotify, onNotificationButtonCLicked(requestCode)
+		)
+
+		val sound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+		val customNotification = NotificationCompat.Builder(App.instance, CHANNEL_ID_REMIND_OPEN)
+			.setSmallIcon(R.mipmap.ic_launcher)
+			.setStyle(NotificationCompat.DecoratedCustomViewStyle())
+			.setCustomContentView(notificationLayout).setSound(sound).setAutoCancel(true)
+			.setPriority(NotificationCompat.PRIORITY_DEFAULT)
+			.setCustomBigContentView(notificationLayout).setContentIntent(pendingIntent).build()
+		val manager = App.instance.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+		manager.notify(System.currentTimeMillis().toInt(), customNotification)
+
+	}
+
+	private fun onNotificationButtonCLicked(requestCode: Int): PendingIntent {
+		val intent = Intent(App.instance, SplashActivity::class.java).apply {
+
+		}
+		return PendingIntent.getActivity(
+			App.instance,
+			requestCode,
+			intent,
+			PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+		)
+	}
+
 }

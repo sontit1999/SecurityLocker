@@ -37,8 +37,12 @@ class WallpaperAdapter : RecyclerView.Adapter<WallpaperHolder>() {
 	
 	override fun onBindViewHolder(holder: WallpaperHolder, position: Int) {
 		holder.binDataWall(listWallpaper[position])
-		holder.binding.ivWallpaper.setOnClickListener { onClickItem?.invoke(listWallpaper[position]) }
+		holder.binding.ivWallpaper.setOnClickListener {
+			onClickItem?.invoke(listWallpaper[position])
+			holder.changePreview()
+		}
+		holder.binding.pinLockView.attachIndicatorDots(holder.binding.indicatorDots)
 	}
-	
+
 	override fun getItemCount() = listWallpaper.size
 }

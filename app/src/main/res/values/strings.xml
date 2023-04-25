@@ -69,5 +69,20 @@
     </string>
     <string name="msg_no">No</string>
     <string name="fast_charge">Turn off some tasks to optimize fast and efficient battery charging</string>
-
+    <string name="lock_app">Manage app lock</string>
+    <string name="change_theme">Change background</string>
+    <string name="scan_app_battery">Scan for battery-draining apps</string>
+    <string name="optimizing">Optimizing</string>
+    <string name="opimize_battery_success">Congratulations on your successful optimization of some battery-hungry tasks. The phone is in the best charging state</string>
+    <string name="no_support_bluetooth">Device not support bluetooth</string>
+    <string name="desc_permission_write_setting">So that the application can perform battery optimization tasks. For some Android phones, you\'ll need to grant permission to modify settings, allowing this app to take actions to save battery.</string>
+    <string name="title_explain_permission_optimize">Permission modify the system</string>
+    <string name="battery_saver_suggest_notify">Detected many battery-hungry apps that slow down your charging</string>
+    <string name="optimized">Optimized</string>
+    <string name="title_battery_full">Battery is full</string>
+    <string name="content_battery_full">Please unplug the charger to ensure the best battery life</string>
+    <string name="title_battery_low">Battery low</string>
+    <string name="content_battery_low">Please charge the battery so that the phone can work at its best</string>
+    <string name="title_battery_temp_high">" Battery temperature too high"</string>
+    <string name="content_battery_temp_high">Turn off applications running in the background that consume CPU resources right away to make your phone cooler</string>
 </resources>

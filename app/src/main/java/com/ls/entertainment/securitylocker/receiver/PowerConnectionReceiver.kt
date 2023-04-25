@@ -4,14 +4,20 @@ import android.app.ActivityManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.provider.Settings
+import android.widget.Toast
+import com.ls.entertainment.securitylocker.App
 import com.ls.entertainment.securitylocker.ui.confirm.ConfirmActivity
 import com.ls.entertainment.securitylocker.utils.LogUtils
+import com.ls.entertainment.securitylocker.worker.Notification10mAfterUnplug
 import com.ls.entertainment.securitylocker.worker.PowerRestartWorker
 
 class PowerConnectionReceiver : BroadcastReceiver() {
 	override fun onReceive(p0: Context?, p1: Intent?) {
 		if (p1?.action == Intent.ACTION_POWER_CONNECTED) {
+			Toast.makeText(p0, "ACTION_POWER_CONNECTED", Toast.LENGTH_LONG).show()
 			LogUtils.logCustomMessage("ACTION_POWER_CONNECTED")
+			saveBrightness(p0)
 			// Open app when plugged
 			if (isInBackground()) {
 				val intent = Intent(p0, ConfirmActivity::class.java).apply {
@@ -21,9 +27,39 @@ class PowerConnectionReceiver : BroadcastReceiver() {
 			}
 			PowerRestartWorker.schedule()
 		} else if (p1?.action == Intent.ACTION_POWER_DISCONNECTED) {
+			Toast.makeText(p0, "ACTION_POWER_DISCONNECTED", Toast.LENGTH_LONG).show()
 			LogUtils.logCustomMessage("ACTION_POWER_DISCONNECTED")
 			PowerRestartWorker.schedule()
+			scheduleAfter10mUnplug()
 		}
+	}
+
+	private fun saveBrightness(ctx: Context?) {
+		try {
+			val brightness = Settings.System.getInt(
+				ctx?.contentResolver, Settings.System.SCREEN_BRIGHTNESS
+			)
+			App.brightnessValue = brightness
+		} catch (e: Exception) {
+			LogUtils.logCustomMessage(e.message.toString())
+		}
+	}
+
+	private fun handleRestoreBrightness(context: Context) {
+		Settings.System.putInt(
+			context.contentResolver,
+			Settings.System.SCREEN_BRIGHTNESS_MODE,
+			Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL
+		)
+		val brightness = if (App.brightnessValue != 0) App.brightnessValue else 100
+		Settings.System.putInt(
+			context.contentResolver, Settings.System.SCREEN_BRIGHTNESS, brightness
+		)
+	}
+
+	private fun scheduleAfter10mUnplug() {
+		Notification10mAfterUnplug.cancel()
+		Notification10mAfterUnplug.schedule()
 	}
 
 	private fun isInBackground(): Boolean {

@@ -1,14 +1,21 @@
 package com.ls.entertainment.securitylocker.utils
 
+import android.Manifest
 import android.app.AppOpsManager
 import android.bluetooth.BluetoothAdapter
 import android.content.ContentResolver
 import android.content.Context
+import android.content.Intent
+import android.content.pm.ApplicationInfo
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.net.wifi.WifiManager
 import android.os.Build
 import android.os.Process
 import android.provider.Settings
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.fragment.app.Fragment
 import com.ls.entertainment.securitylocker.R
 
 inline val Context.ctx: Context
@@ -314,4 +321,95 @@ fun Context.checkUsageStatsPermission(): Boolean {
 		)
 	}
 	return mode == AppOpsManager.MODE_ALLOWED
+}
+
+fun Context.canWriteSettings(): Boolean {
+	return (PermissionUtil.isApi23orHigher() && Settings.System.canWrite(this)) || !PermissionUtil.isApi23orHigher()
+}
+
+
+fun Context.getInstalledApps(): List<ApplicationInfo> {
+	return try {
+		packageManager.getInstalledApplications(0).filter {
+			(it.flags and ApplicationInfo.FLAG_SYSTEM) != 1 && it.packageName != packageName
+		}
+	} catch (e: java.lang.Exception) {
+		listOf()
+	}
+}
+
+fun Context.toggleBluetooth(enable: Boolean): Boolean {
+	val targetSdkVersion = applicationInfo.targetSdkVersion
+	val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
+	if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && targetSdkVersion >= Build.VERSION_CODES.S) {
+		return if (ActivityCompat.checkSelfPermission(
+				this,
+				Manifest.permission.BLUETOOTH_CONNECT
+			) != PackageManager.PERMISSION_GRANTED
+		) {
+			return false
+		} else {
+			if (enable) {
+				bluetoothAdapter?.enable()
+			} else {
+				bluetoothAdapter?.disable()
+			} ?: false
+		}
+	} else {
+		return if (enable) {
+			bluetoothAdapter?.enable()
+		} else {
+			bluetoothAdapter?.disable()
+		} ?: false
+	}
+}
+
+fun Context.toggleAutoRotation(value: Int): Boolean {
+	return Settings.System.putInt(contentResolver, Settings.System.ACCELEROMETER_ROTATION, value)
+}
+
+fun Context.toggleAutoSync(enable: Boolean) {
+	ContentResolver.setMasterSyncAutomatically(enable)
+}
+
+fun Context.toggleWifi(enable: Boolean) {
+	if (!PermissionUtil.isApi29orHigher()) {
+		val wifiManager = applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager?
+		wifiManager?.isWifiEnabled = enable
+	}
+}
+
+fun Context.showWriteSettingPermissionDescDialog(
+	onOkListener: () -> Unit, onCancelListener: () -> Unit
+) {
+	val message =
+		getString(R.string.desc_permission_write_setting) + "\n" + "\n" + getString(R.string.guide_access_permission_v5)
+	DialogUtil.showConfirmationDialog(ctx,
+		R.string.title_explain_permission_optimize,
+		message,
+		R.string.msg_ok,
+		"",
+		okListener = {
+			onOkListener.invoke()
+		},
+		cancelListener = {
+			onCancelListener.invoke()
+		})
+}
+
+fun Context.requestWriteSettingsPermission(requestFrom: Any, requestCode: Int) {
+	if (PermissionUtil.isApi23orHigher()) {
+		Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS).apply {
+			data = Uri.parse("package:${ctx.packageName}")
+		}.run {
+			when (requestFrom) {
+				is AppCompatActivity -> {
+					requestFrom.startActivityForResult(this, requestCode)
+				}
+				is Fragment          -> {
+					requestFrom.startActivityForResult(this, requestCode)
+				}
+			}
+		}
+	}
 }

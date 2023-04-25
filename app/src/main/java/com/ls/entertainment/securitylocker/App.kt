@@ -25,7 +25,9 @@ class App : Application() {
 
     companion object{
         var isShowLock = false
-		var didLoadConfigSuccess = false
+        var didLoadConfigSuccess = false
+        var didOptimizeBatterySaver = false
+        var brightnessValue = 0
 
         @SuppressLint("StaticFieldLeak")
         lateinit var instance: App

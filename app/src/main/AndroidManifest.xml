@@ -37,6 +37,9 @@
     <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES" />
     <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
     <uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />
+    <uses-permission
+        android:name="android.permission.POWER_SAVER"
+        tools:ignore="ProtectedPermissions" />
 
 
     <application
@@ -63,7 +66,7 @@
         </activity>
 
         <activity
-            android:name=".UnlockActivity"
+            android:name=".ui.unlock.UnlockActivity"
             android:theme="@style/UnlockTheme"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />

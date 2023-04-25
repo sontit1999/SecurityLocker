@@ -18,19 +18,17 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.core.extensions.jsonBody
+import com.ls.entertainment.securitylocker.App
 import com.ls.entertainment.securitylocker.MainActivity
 import com.ls.entertainment.securitylocker.R
-import com.ls.entertainment.securitylocker.UnlockActivity
 import com.ls.entertainment.securitylocker.model.BatteryModel
 import com.ls.entertainment.securitylocker.ui.confirm.ConfirmActivity
-import com.ls.entertainment.securitylocker.utils.AlarmUtils
+import com.ls.entertainment.securitylocker.ui.unlock.UnlockActivity
+import com.ls.entertainment.securitylocker.utils.*
 import com.ls.entertainment.securitylocker.utils.AppConstant.CHANEL_GROUP_ID
 import com.ls.entertainment.securitylocker.utils.AppConstant.CHANEL_GROUP_NAME
 import com.ls.entertainment.securitylocker.utils.AppConstant.CHANEL_ID
 import com.ls.entertainment.securitylocker.utils.AppConstant.CHANEL_NAME
-import com.ls.entertainment.securitylocker.utils.LogUtils
-import com.ls.entertainment.securitylocker.utils.PermissionUtil
-import com.ls.entertainment.securitylocker.utils.SharePreferenceUtils
 import kotlinx.coroutines.*
 import org.greenrobot.eventbus.EventBus
 import java.text.SimpleDateFormat
@@ -87,8 +85,11 @@ class LockService : Service() {
 		override fun onReceive(p0: Context?, p1: Intent?) {
 			LogUtils.logCustomMessage(TAG, "receiver ${p1?.action} in lock service")
 			when (p1?.action) {
-				Intent.ACTION_BATTERY_CHANGED -> handleBatteryChange(p1)
-				Intent.ACTION_POWER_CONNECTED -> handlePowerConnected(p0)
+				Intent.ACTION_BATTERY_CHANGED    -> handleBatteryChange(p1)
+				Intent.ACTION_POWER_CONNECTED    -> handlePowerConnected(p0)
+				Intent.ACTION_POWER_DISCONNECTED -> handlePowerDisconnected(p0)
+				Intent.ACTION_BATTERY_OKAY       -> handlePowerFullLow(p0, true)
+				Intent.ACTION_BATTERY_LOW        -> handlePowerFullLow(p0, false)
 			}
 		}
 
@@ -96,9 +97,55 @@ class LockService : Service() {
 
 	private fun handlePowerConnected(ctx: Context?) {
 		ctx ?: return
+		saveBrightness(ctx)
 		val intent = Intent(ctx, ConfirmActivity::class.java)
 		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
 		startActivity(intent)
+	}
+
+	private fun handlePowerDisconnected(ctx: Context?) {
+		ctx ?: return
+		try {
+			handleRestoreBrightness(ctx)
+		} catch (e: Exception) {
+			LogUtils.logCustomMessage(e.message.toString())
+		}
+	}
+
+	private fun handlePowerFullLow(ctx: Context?, isFull: Boolean) {
+		ctx ?: return
+		try {
+			if (isFull) {
+				NotificationCenter.pushFullBatteryNotify()
+			} else {
+				NotificationCenter.pushLowBatteryNotify()
+			}
+		} catch (e: Exception) {
+			LogUtils.logCustomMessage(e.message.toString())
+		}
+	}
+
+	private fun saveBrightness(ctx: Context?) {
+		try {
+			val brightness = Settings.System.getInt(
+				ctx?.contentResolver, Settings.System.SCREEN_BRIGHTNESS
+			)
+			App.brightnessValue = brightness
+		} catch (e: Exception) {
+			LogUtils.logCustomMessage(e.message.toString())
+		}
+	}
+
+	private fun handleRestoreBrightness(context: Context) {
+		Settings.System.putInt(
+			context.contentResolver,
+			Settings.System.SCREEN_BRIGHTNESS_MODE,
+			Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL
+		)
+		val brightness = if (App.brightnessValue != 0) App.brightnessValue else 100
+		Settings.System.putInt(
+			context.contentResolver, Settings.System.SCREEN_BRIGHTNESS, brightness
+		)
 	}
 
 	private fun handleBatteryChange(intent: Intent) {
@@ -109,15 +156,31 @@ class LockService : Service() {
 		} else {
 			0f
 		}
-
 		// Battery status - charging/not charging
 		val status = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1)
+		// Battery charger
+		val chargePlugged = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1)
+		val isCharging: Boolean =
+			(status == BatteryManager.BATTERY_STATUS_CHARGING || status == BatteryManager.BATTERY_STATUS_FULL)
+		if (isCharging) {
+			if (batteryPct >= 99) {
+				NotificationCenter.pushFullBatteryNotify()
+			}
+		}
+
+		if (!isCharging) {
+			if (batteryPct <= 20) {
+				NotificationCenter.pushLowBatteryNotify()
+			}
+		}
 
 		// Battery temperature
 		val temperature = intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, -1).toFloat().div(10)
 
-		// Battery charger
-		val chargePlugged = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1)
+		if (temperature > 35) {
+			NotificationCenter.pushBatteryTemperatureHighNotify()
+		}
+
 
 		// Battery health
 		val health = intent.getIntExtra(BatteryManager.EXTRA_HEALTH, -1)

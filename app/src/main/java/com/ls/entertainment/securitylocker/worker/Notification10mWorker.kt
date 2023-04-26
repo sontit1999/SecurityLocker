@@ -3,10 +3,8 @@ package com.ls.entertainment.securitylocker.worker
 import android.content.Context
 import android.os.Bundle
 import androidx.work.*
-
 import com.ls.entertainment.securitylocker.App
 import com.ls.entertainment.securitylocker.R
-
 import com.ls.entertainment.securitylocker.utils.LogUtils
 import com.ls.entertainment.securitylocker.utils.NotificationCenter
 import com.ls.entertainment.securitylocker.utils.RemoteConfig
@@ -24,7 +22,6 @@ class Notification10mWorker(
 
 	private fun pushNotification() {
 		try {
-
 			val bundle = Bundle()
 			bundle.putString(
 				NotificationCenter.TITLE, App.instance.getString(R.string.NotificationTitle10m)

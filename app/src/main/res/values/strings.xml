@@ -19,8 +19,8 @@
     <string name="daySevenNotificationMessage02"><![CDATA[🌪 It\'s been seven days and you haven\'t returned to the app to open interesting files!]]></string>
     <string name="weeklyNotificationTitle04"><![CDATA[How\'s your weekend?]]></string>
     <string name="weeklyNotificationMessage04"><![CDATA[💌 Take a walk around to find your new inspiration right away!]]></string>
-    <string name="NotificationTitle10m"><![CDATA[Check it out now!]]></string>
-    <string name="NotificationMessage10m"><![CDATA[💌 Forgot to open a file??!]]></string>
+    <string name="NotificationTitle10m"><![CDATA[Lock now 🔐]]></string>
+    <string name="NotificationMessage10m"><![CDATA[💌 Lock apps for data security and privacy]]></string>
     <string name="msg_action_ads"><![CDATA[This action may contain ads]]></string>
     <string name="by_app_name">by Security Locker</string>
     <string name="label_charge_health">Charge Health</string>
@@ -83,6 +83,7 @@
     <string name="content_battery_full">Please unplug the charger to ensure the best battery life</string>
     <string name="title_battery_low">Battery low</string>
     <string name="content_battery_low">Please charge the battery so that the phone can work at its best</string>
-    <string name="title_battery_temp_high">" Battery temperature too high"</string>
+    <string name="title_battery_temp_high">Battery temperature too high</string>
     <string name="content_battery_temp_high">Turn off applications running in the background that consume CPU resources right away to make your phone cooler</string>
+    <string name="boosted">Boosted </string>
 </resources>

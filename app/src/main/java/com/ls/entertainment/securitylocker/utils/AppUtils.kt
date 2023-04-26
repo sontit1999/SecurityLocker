@@ -8,6 +8,10 @@ import android.net.Uri
 import android.widget.Toast
 import com.ls.entertainment.securitylocker.R
 import com.ls.entertainment.securitylocker.adapter.WallpaperModel
+import java.io.IOException
+import java.io.RandomAccessFile
+import java.text.DecimalFormat
+import java.util.regex.Pattern
 
 
 object AppUtils {
@@ -66,5 +70,37 @@ object AppUtils {
 		}
 		list.shuffle()
 		return list
+	}
+
+	fun getTotalRam(): Long {
+		var j: Long
+		DecimalFormat("#.##")
+		try {
+			val randomAccessFile = RandomAccessFile("/proc/meminfo", "r")
+			val matcher = Pattern.compile("(\\d+)").matcher(randomAccessFile.readLine())
+			var str: String? = ""
+			while (matcher.find()) {
+				str = matcher.group(1)
+			}
+			randomAccessFile.close()
+			j = Integer.valueOf(str).toInt().toLong()
+		} catch (e: IOException) {
+			e.printStackTrace()
+			j = 0
+		}
+		return j * 1024
+	}
+
+	fun formatSize(j: Long): String {
+		if (j <= 0) {
+			return ""
+		}
+		val d = j.toDouble()
+		val log10 = (Math.log10(d) / Math.log10(1024.0)).toInt()
+		return DecimalFormat("#,##0.#").format(
+			d / Math.pow(
+				1024.0, log10.toDouble()
+			)
+		) + " " + arrayOf("B", "KB", "MB", "GB", "TB")[log10]
 	}
 }

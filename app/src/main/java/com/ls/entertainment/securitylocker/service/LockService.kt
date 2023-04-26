@@ -13,6 +13,7 @@ import android.os.PowerManager
 import android.provider.Settings
 import android.text.format.DateUtils
 import android.widget.RemoteViews
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
@@ -29,10 +30,14 @@ import com.ls.entertainment.securitylocker.utils.AppConstant.CHANEL_GROUP_ID
 import com.ls.entertainment.securitylocker.utils.AppConstant.CHANEL_GROUP_NAME
 import com.ls.entertainment.securitylocker.utils.AppConstant.CHANEL_ID
 import com.ls.entertainment.securitylocker.utils.AppConstant.CHANEL_NAME
+import com.ls.entertainment.securitylocker.worker.Notification10mWorker
 import kotlinx.coroutines.*
 import org.greenrobot.eventbus.EventBus
 import java.text.SimpleDateFormat
 import java.util.*
+
+const val ACTION_BOOSTED_SUCCESS = "action_boosted_success"
+const val KEY_BOOSTED_RAM = "key_boosted_ram"
 
 class LockService : Service() {
 
@@ -79,20 +84,6 @@ class LockService : Service() {
 		registerBroadCast()
 		usageStageManager = getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
 		generateForegroundNotification()
-	}
-
-	private val receiver = object : BroadcastReceiver() {
-		override fun onReceive(p0: Context?, p1: Intent?) {
-			LogUtils.logCustomMessage(TAG, "receiver ${p1?.action} in lock service")
-			when (p1?.action) {
-				Intent.ACTION_BATTERY_CHANGED    -> handleBatteryChange(p1)
-				Intent.ACTION_POWER_CONNECTED    -> handlePowerConnected(p0)
-				Intent.ACTION_POWER_DISCONNECTED -> handlePowerDisconnected(p0)
-				Intent.ACTION_BATTERY_OKAY       -> handlePowerFullLow(p0, true)
-				Intent.ACTION_BATTERY_LOW        -> handlePowerFullLow(p0, false)
-			}
-		}
-
 	}
 
 	private fun handlePowerConnected(ctx: Context?) {
@@ -225,13 +216,57 @@ class LockService : Service() {
 	}
 
 	private fun registerBroadCast() {
-		val intentFilter = IntentFilter(Intent.ACTION_SCREEN_ON)
-		intentFilter.addAction(Intent.ACTION_BATTERY_CHANGED)
+		val intentFilter = IntentFilter(Intent.ACTION_BATTERY_CHANGED)
 		intentFilter.addAction(Intent.ACTION_BATTERY_LOW)
 		intentFilter.addAction(Intent.ACTION_BATTERY_OKAY)
 		intentFilter.addAction(Intent.ACTION_POWER_DISCONNECTED)
 		intentFilter.addAction(Intent.ACTION_POWER_CONNECTED)
+		intentFilter.addAction(Intent.ACTION_USER_PRESENT)
+		intentFilter.addAction(Intent.ACTION_SCREEN_OFF)
+		intentFilter.addAction(Intent.ACTION_SCREEN_ON)
+		intentFilter.addAction(ACTION_BOOSTED_SUCCESS)
 		registerReceiver(receiver, intentFilter)
+	}
+
+	private val receiver = object : BroadcastReceiver() {
+		override fun onReceive(p0: Context?, p1: Intent?) {
+			LogUtils.logCustomMessage(TAG, "receiver ${p1?.action} in lock service")
+			when (p1?.action) {
+				Intent.ACTION_BATTERY_CHANGED -> handleBatteryChange(p1)
+				Intent.ACTION_POWER_CONNECTED -> handlePowerConnected(p0)
+				Intent.ACTION_POWER_DISCONNECTED -> handlePowerDisconnected(p0)
+				Intent.ACTION_BATTERY_OKAY -> handlePowerFullLow(p0, true)
+				Intent.ACTION_BATTERY_LOW -> handlePowerFullLow(p0, false)
+				Intent.ACTION_USER_PRESENT -> handleUserPresent(p0)
+				Intent.ACTION_SCREEN_OFF -> handleScreenOnOff(p0, false)
+				Intent.ACTION_SCREEN_ON -> handleScreenOnOff(p0, true)
+				ACTION_BOOSTED_SUCCESS -> handleBoostedSuccess(p1)
+			}
+		}
+
+	}
+
+	private fun handleBoostedSuccess(intent: Intent) {
+		Toast.makeText(
+			this@LockService,
+			getString(R.string.boosted) + intent.getStringExtra(KEY_BOOSTED_RAM),
+			Toast.LENGTH_LONG
+		).show()
+	}
+
+	private fun handleScreenOnOff(p0: Context?, isOn: Boolean) {
+		if (isOn) {
+			LogUtils.logCustomMessage(TAG, "Screen ON")
+			BoostedRamService.cancel()
+			BoostedRamService.schedule()
+		} else {
+			LogUtils.logCustomMessage(TAG, "Screen OFF")
+		}
+	}
+
+	private fun handleUserPresent(p0: Context?) {
+		Notification10mWorker.cancel()
+		Notification10mWorker.schedule()
 	}
 
 	private fun unRegisterBroadCast() {

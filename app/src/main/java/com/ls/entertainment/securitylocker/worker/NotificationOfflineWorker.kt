@@ -1,22 +1,37 @@
 package com.ls.entertainment.securitylocker.worker
 
-
 import android.content.Context
+import android.os.Bundle
 import androidx.work.*
+
+
 import com.ls.entertainment.securitylocker.App
+import com.ls.entertainment.securitylocker.R
 import com.ls.entertainment.securitylocker.utils.LogUtils
+import com.ls.entertainment.securitylocker.utils.NotificationCenter
 import com.ls.entertainment.securitylocker.utils.RemoteConfig
 import com.ls.entertainment.securitylocker.utils.SharePreferenceUtils
+
+
 import java.util.*
+
 import java.util.concurrent.TimeUnit
 
-class ScheduleRestartServiceWorker(
+class NotificationOfflineWorker(
 	appContext: Context, workerParams: WorkerParameters
 ) : Worker(appContext, workerParams) {
 
 
+	private val listNotification = arrayOf(
+		Pair(R.string.msg_dayOneNotificationTitle01, R.string.dayOneNotificationMessage01),
+		Pair(R.string.msg_dayOneNotificationTitle01, R.string.dayTwoNotificationMessage01),
+		Pair(R.string.msg_dayOneNotificationTitle01, R.string.dayFourNotificationMessage03),
+		Pair(R.string.msg_dayOneNotificationTitle01, R.string.daySevenNotificationMessage02),
+		Pair(R.string.weeklyNotificationTitle04, R.string.weeklyNotificationMessage04),
+	)
+
 	override fun doWork(): Result {
-		// check service restart if need
+		pushNotification()
 		reschedule()
 		return Result.success()
 	}
@@ -28,11 +43,26 @@ class ScheduleRestartServiceWorker(
 		}
 	}
 
+	private fun pushNotification() {
+		try {
+			val index = SharePreferenceUtils.getInstance().indexNotification
+			val data = listNotification[index]
+			SharePreferenceUtils.getInstance().indexNotification =
+				if (index < listNotification.size - 1) index + 1 else 0
+			val bundle = Bundle()
+			bundle.putString(NotificationCenter.TITLE, applicationContext.getString(data.first))
+			bundle.putString(NotificationCenter.MESSAGE, applicationContext.getString(data.second))
+			bundle.putString(NotificationCenter.ACTION, NotificationCenter.ACTION_NOTIFICATION)
+			NotificationCenter.push(bundle, isFromFCM = false)
+		} catch (e: Exception) {
+			LogUtils.logCustomMessage("Do work notification worker exception :" + e.message)
+		}
+	}
 
 	companion object {
-		const val TAGS = "ScheduleRestartServiceWorker"
+		const val TAGS = "NotificationOfflineWorker"
 		fun schedule() {
-
+			LogUtils.logCustomMessage("Schedule notification remind open app offline")
 			val listHours = RemoteConfig.commonConfig.scenarioChangedWallpaper.split(",")
 			if (listHours.isEmpty()) return
 			val delay =
@@ -54,7 +84,7 @@ class ScheduleRestartServiceWorker(
 				Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
 
 			val work: OneTimeWorkRequest =
-				OneTimeWorkRequest.Builder(ScheduleRestartServiceWorker::class.java)
+				OneTimeWorkRequest.Builder(NotificationOfflineWorker::class.java)
 					.setInitialDelay(delta, TimeUnit.MILLISECONDS).setConstraints(constraints)
 					.build()
 			WorkManager.getInstance(App.instance)
@@ -62,7 +92,7 @@ class ScheduleRestartServiceWorker(
 		}
 
 		fun cancel() {
-			LogUtils.logCustomMessage("Cancel notification offline")
+			LogUtils.logCustomMessage("Cancel notification remind open app offline")
 			WorkManager.getInstance(App.instance).cancelUniqueWork(TAGS)
 		}
 	}

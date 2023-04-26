@@ -10,7 +10,7 @@ import com.ls.entertainment.securitylocker.utils.NotificationCenter
 import com.ls.entertainment.securitylocker.utils.RemoteConfig
 import java.util.concurrent.TimeUnit
 
-class Notification10mWorker(
+class NotificationAfter10mPresentWorker(
 	appContext: Context, workerParams: WorkerParameters
 ) : Worker(appContext, workerParams) {
 
@@ -37,14 +37,14 @@ class Notification10mWorker(
 	}
 
 	companion object {
-		const val TAGS = "NotificationWorker10m"
+		const val TAGS = "NotificationAfter10mPresentWorker"
 		fun schedule() {
-			LogUtils.logCustomMessage("Schedule notification 10m")
+			LogUtils.logCustomMessage("Schedule NotificationAfter10mPresentWorker")
 			val constraints =
 				Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
 			val delta = RemoteConfig.commonConfig.timeNotify10m * 60 * 1000L
 			val work: OneTimeWorkRequest =
-				OneTimeWorkRequest.Builder(Notification10mWorker::class.java)
+				OneTimeWorkRequest.Builder(NotificationAfter10mPresentWorker::class.java)
 					.setInitialDelay(delta, TimeUnit.MILLISECONDS).setConstraints(constraints)
 					.build()
 			WorkManager.getInstance(App.instance)
@@ -52,7 +52,7 @@ class Notification10mWorker(
 		}
 
 		fun cancel() {
-			LogUtils.logCustomMessage("Cancel notification 10m")
+			LogUtils.logCustomMessage("Cancel NotificationAfter10mPresentWorker")
 			WorkManager.getInstance(App.instance).cancelUniqueWork(TAGS)
 		}
 	}

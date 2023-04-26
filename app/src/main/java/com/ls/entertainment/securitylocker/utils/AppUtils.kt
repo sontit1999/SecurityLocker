@@ -103,4 +103,14 @@ object AppUtils {
 			)
 		) + " " + arrayOf("B", "KB", "MB", "GB", "TB")[log10]
 	}
+
+	fun goDetailInformationApp(ctx: Context, packageName: String) {
+		val intent = Intent()
+		intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+		intent.action = "android.settings.APPLICATION_DETAILS_SETTINGS"
+		intent.data = Uri.parse(
+			"package:$packageName"
+		)
+		ctx.startActivity(intent)
+	}
 }

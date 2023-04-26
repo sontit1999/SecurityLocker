@@ -1,5 +1,7 @@
 package com.ls.entertainment.securitylocker.ui.app
 
+import android.content.Context
+import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -7,6 +9,7 @@ import com.entertainment.basemvvmproject.base.BaseViewModel
 import com.entertainment.basemvvmproject.base.SingleLiveEvent
 import com.ls.entertainment.securitylocker.App
 import com.ls.entertainment.securitylocker.model.AppModel
+import com.ls.entertainment.securitylocker.utils.AppUtils
 import com.ls.entertainment.securitylocker.utils.LogUtils
 import com.ls.entertainment.securitylocker.utils.SharePreferenceUtils
 import kotlinx.coroutines.Dispatchers
@@ -68,33 +71,42 @@ class AppViewModel : BaseViewModel() {
 				val list = mutableListOf<AppModel>()
 				val packageManager = App.instance.packageManager
 				val appsData = packageManager.getInstalledApplications(PackageManager.GET_META_DATA)
-				appsData.forEach {
-					/* if (!AppUtils.isSystemPackage(it)) {
-						 val appInformation =
-							 App.instance.packageManager.getApplicationInfo(it.packageName, 0)
-						 val appName = appInformation.loadLabel(App.instance.packageManager)
-						 val drawableRes = appInformation.loadIcon(App.instance.packageManager)
-						 list.add(
-							 AppModel(
-								 appName.toString(),
-								 drawableRes,
-								 it.packageName,
-								 listPackageLock.contains(it.packageName)
-							 )
-						 )
-					 }*/
+
+
+				val listInfo: List<ApplicationInfo> = packageManager.getInstalledApplications(
+					PackageManager.GET_META_DATA
+				)
+
+				val listAppInformation = checkForLaunchIntent(App.instance, listInfo)
+				listAppInformation.forEach {
 					val appInformation =
 						App.instance.packageManager.getApplicationInfo(it.packageName, 0)
 					val appName = appInformation.loadLabel(App.instance.packageManager)
 					val drawableRes = appInformation.loadIcon(App.instance.packageManager)
-					list.add(
-						AppModel(
-							appName.toString(),
-							drawableRes,
-							it.packageName,
-							if (listPackageLock.isEmpty()) false else listPackageLock.contains(it.packageName)
+					if (it.packageName != App.instance.packageName && AppUtils.isUserApp(it)) {
+						list.add(
+							AppModel(
+								appName.toString(),
+								drawableRes,
+								it.packageName,
+								if (listPackageLock.isEmpty()) false else listPackageLock.contains(
+									it.packageName
+								)
+							)
 						)
-					)
+					}
+					if (!AppUtils.isUserApp(it)) {
+						list.add(
+							AppModel(
+								appName.toString(),
+								drawableRes,
+								it.packageName,
+								if (listPackageLock.isEmpty()) false else listPackageLock.contains(
+									it.packageName
+								)
+							)
+						)
+					}
 				}
 				listAppLiveData.postValue(list)
 				needLoading.postValue(false)
@@ -103,6 +115,22 @@ class AppViewModel : BaseViewModel() {
 				LogUtils.logExceptionMessage(e.message.toString())
 			}
 		}
+	}
+
+	private fun checkForLaunchIntent(
+		context: Context, list: List<ApplicationInfo>
+	): ArrayList<ApplicationInfo> {
+		val arrayList: ArrayList<ApplicationInfo> = ArrayList<ApplicationInfo>()
+		for (next in list) {
+			try {
+				if (context.packageManager.getLaunchIntentForPackage(next.packageName) != null) {
+					arrayList.add(next)
+				}
+			} catch (e: java.lang.Exception) {
+				e.printStackTrace()
+			}
+		}
+		return arrayList
 	}
 
 }

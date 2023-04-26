@@ -11,14 +11,16 @@ import com.ls.entertainment.securitylocker.R
 import com.ls.entertainment.securitylocker.databinding.ItemAppBinding
 import com.ls.entertainment.securitylocker.model.AppModel
 import com.ls.entertainment.securitylocker.model.CheckPermissionEvent
+import com.ls.entertainment.securitylocker.utils.setOnSafeClickListener
 import org.greenrobot.eventbus.EventBus
 
 
 const val DURATION_ANIMATION: Long = 150
 
 class AppAdapter : RecyclerView.Adapter<AppAdapter.AppHolder>() {
-    
+
     private val listApp = mutableListOf<AppModel>()
+    var onClickLock: ((AppModel) -> Unit)? = null
     var onClickItem: ((AppModel) -> Unit)? = null
     var onAttach = true
     
@@ -121,6 +123,10 @@ class AppAdapter : RecyclerView.Adapter<AppAdapter.AppHolder>() {
                 } else {
                     binding.ivLock.setImageResource(R.drawable.baseline_lock_open_24)
                 }
+                onClickLock?.invoke(listApp[adapterPosition])
+            }
+
+            binding.ivInfo.setOnSafeClickListener {
                 onClickItem?.invoke(listApp[adapterPosition])
             }
         }

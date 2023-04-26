@@ -5,17 +5,15 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.provider.Settings
-import android.widget.Toast
 import com.ls.entertainment.securitylocker.App
 import com.ls.entertainment.securitylocker.ui.confirm.ConfirmActivity
 import com.ls.entertainment.securitylocker.utils.LogUtils
-import com.ls.entertainment.securitylocker.worker.Notification10mAfterUnplug
+import com.ls.entertainment.securitylocker.worker.NotificationOneHourAfterUnplug
 import com.ls.entertainment.securitylocker.worker.PowerRestartWorker
 
 class PowerConnectionReceiver : BroadcastReceiver() {
 	override fun onReceive(p0: Context?, p1: Intent?) {
 		if (p1?.action == Intent.ACTION_POWER_CONNECTED) {
-			Toast.makeText(p0, "ACTION_POWER_CONNECTED", Toast.LENGTH_LONG).show()
 			LogUtils.logCustomMessage("ACTION_POWER_CONNECTED")
 			saveBrightness(p0)
 			// Open app when plugged
@@ -24,10 +22,12 @@ class PowerConnectionReceiver : BroadcastReceiver() {
 				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
 				p0?.startActivity(intent)
 			}
+			PowerRestartWorker.cancel()
 			PowerRestartWorker.schedule()
 		} else if (p1?.action == Intent.ACTION_POWER_DISCONNECTED) {
-			Toast.makeText(p0, "ACTION_POWER_DISCONNECTED", Toast.LENGTH_LONG).show()
+			p0?.let { handleRestoreBrightness(it) }
 			LogUtils.logCustomMessage("ACTION_POWER_DISCONNECTED")
+			PowerRestartWorker.cancel()
 			PowerRestartWorker.schedule()
 			scheduleAfter10mUnplug()
 		}
@@ -57,8 +57,8 @@ class PowerConnectionReceiver : BroadcastReceiver() {
 	}
 
 	private fun scheduleAfter10mUnplug() {
-		Notification10mAfterUnplug.cancel()
-		Notification10mAfterUnplug.schedule()
+		NotificationOneHourAfterUnplug.cancel()
+		NotificationOneHourAfterUnplug.schedule()
 	}
 
 	private fun isInBackground(): Boolean {

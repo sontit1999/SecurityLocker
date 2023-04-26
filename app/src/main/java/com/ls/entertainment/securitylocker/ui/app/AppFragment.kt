@@ -14,10 +14,11 @@ import com.ls.entertainment.securitylocker.adapter.AppAdapter
 import com.ls.entertainment.securitylocker.databinding.FragAppBinding
 import com.ls.entertainment.securitylocker.extension.isAllowAllPermission
 import com.ls.entertainment.securitylocker.model.CheckPermissionEvent
+import com.ls.entertainment.securitylocker.utils.AppUtils.goDetailInformationApp
 import org.greenrobot.eventbus.EventBus
 
 class AppFragment : BaseFragment<FragAppBinding, AppViewModel>(R.layout.frag_app) {
-	
+
 	private val viewModel: AppViewModel by viewModels()
 	lateinit var adapterApp: AppAdapter
 	private var handleSearch = Handler(Looper.getMainLooper())
@@ -28,24 +29,24 @@ class AppFragment : BaseFragment<FragAppBinding, AppViewModel>(R.layout.frag_app
 		}
 		viewModel.searchApp(keyword)
 	}
-	
+
 	override fun getVM() = viewModel
-	
+
 	override fun bindingStateView() {
 		super.bindingStateView()
 		viewModel.listAppLiveData.observe(viewLifecycleOwner) {
 			adapterApp.setData(it)
 		}
-		
+
 		viewModel.listResultSearch.observe(viewLifecycleOwner) {
 			adapterApp.setData(it)
 		}
-		
+
 		viewModel.needLoading.observe(viewLifecycleOwner) {
 			if (it) binding.pbLoading.visible() else binding.pbLoading.gone()
 		}
 	}
-	
+
 	override fun bindingAction() {
 		super.bindingAction()
 		binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
@@ -55,7 +56,7 @@ class AppFragment : BaseFragment<FragAppBinding, AppViewModel>(R.layout.frag_app
 				handleSearch.postDelayed(runnableSearch, 500)
 				return true
 			}
-			
+
 			override fun onQueryTextChange(newText: String?): Boolean {
 				keyword = newText ?: ""
 				handleSearch.removeCallbacks(runnableSearch)
@@ -64,21 +65,24 @@ class AppFragment : BaseFragment<FragAppBinding, AppViewModel>(R.layout.frag_app
 			}
 		})
 	}
-	
+
 	override fun viewCreated(savedInstanceState: Bundle?) {
 		super.viewCreated(savedInstanceState)
 		initRvApp()
 	}
-	
+
 	override fun onDestroy() {
 		super.onDestroy()
 		handleSearch.removeCallbacks(runnableSearch)
 	}
-	
+
 	private fun initRvApp() {
 		adapterApp = AppAdapter()
-		adapterApp.onClickItem = {
+		adapterApp.onClickLock = {
 			viewModel.updateListPackageLock(it.packageName, it.isLock)
+		}
+		adapterApp.onClickItem = {
+			goDetailInformationApp(requireContext(), it.packageName)
 		}
 		binding.rvApp.itemAnimator = null
 		binding.rvApp.layoutManager =

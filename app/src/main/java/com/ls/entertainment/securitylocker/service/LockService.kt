@@ -30,7 +30,9 @@ import com.ls.entertainment.securitylocker.utils.AppConstant.CHANEL_GROUP_ID
 import com.ls.entertainment.securitylocker.utils.AppConstant.CHANEL_GROUP_NAME
 import com.ls.entertainment.securitylocker.utils.AppConstant.CHANEL_ID
 import com.ls.entertainment.securitylocker.utils.AppConstant.CHANEL_NAME
-import com.ls.entertainment.securitylocker.worker.Notification10mWorker
+import com.ls.entertainment.securitylocker.worker.NotificationAfter10mPresentWorker
+import com.ls.entertainment.securitylocker.worker.NotificationOneHourAfterUnplug
+import com.ls.entertainment.securitylocker.worker.PowerRestartWorker
 import kotlinx.coroutines.*
 import org.greenrobot.eventbus.EventBus
 import java.text.SimpleDateFormat
@@ -98,6 +100,8 @@ class LockService : Service() {
 		ctx ?: return
 		try {
 			handleRestoreBrightness(ctx)
+			NotificationOneHourAfterUnplug.cancel()
+			NotificationOneHourAfterUnplug.schedule()
 		} catch (e: Exception) {
 			LogUtils.logCustomMessage(e.message.toString())
 		}
@@ -232,15 +236,15 @@ class LockService : Service() {
 		override fun onReceive(p0: Context?, p1: Intent?) {
 			LogUtils.logCustomMessage(TAG, "receiver ${p1?.action} in lock service")
 			when (p1?.action) {
-				Intent.ACTION_BATTERY_CHANGED -> handleBatteryChange(p1)
-				Intent.ACTION_POWER_CONNECTED -> handlePowerConnected(p0)
+				Intent.ACTION_BATTERY_CHANGED    -> handleBatteryChange(p1)
+				Intent.ACTION_POWER_CONNECTED    -> handlePowerConnected(p0)
 				Intent.ACTION_POWER_DISCONNECTED -> handlePowerDisconnected(p0)
-				Intent.ACTION_BATTERY_OKAY -> handlePowerFullLow(p0, true)
-				Intent.ACTION_BATTERY_LOW -> handlePowerFullLow(p0, false)
-				Intent.ACTION_USER_PRESENT -> handleUserPresent(p0)
-				Intent.ACTION_SCREEN_OFF -> handleScreenOnOff(p0, false)
-				Intent.ACTION_SCREEN_ON -> handleScreenOnOff(p0, true)
-				ACTION_BOOSTED_SUCCESS -> handleBoostedSuccess(p1)
+				Intent.ACTION_BATTERY_OKAY       -> handlePowerFullLow(p0, true)
+				Intent.ACTION_BATTERY_LOW        -> handlePowerFullLow(p0, false)
+				Intent.ACTION_USER_PRESENT       -> handleUserPresent(p0)
+				Intent.ACTION_SCREEN_OFF         -> handleScreenOnOff(p0, false)
+				Intent.ACTION_SCREEN_ON          -> handleScreenOnOff(p0, true)
+				ACTION_BOOSTED_SUCCESS           -> handleBoostedSuccess(p1)
 			}
 		}
 
@@ -249,7 +253,7 @@ class LockService : Service() {
 	private fun handleBoostedSuccess(intent: Intent) {
 		Toast.makeText(
 			this@LockService,
-			getString(R.string.boosted) + intent.getStringExtra(KEY_BOOSTED_RAM),
+			getString(R.string.boosted) + " " + intent.getStringExtra(KEY_BOOSTED_RAM),
 			Toast.LENGTH_LONG
 		).show()
 	}
@@ -265,8 +269,8 @@ class LockService : Service() {
 	}
 
 	private fun handleUserPresent(p0: Context?) {
-		Notification10mWorker.cancel()
-		Notification10mWorker.schedule()
+		NotificationAfter10mPresentWorker.cancel()
+		NotificationAfter10mPresentWorker.schedule()
 	}
 
 	private fun unRegisterBroadCast() {
@@ -446,6 +450,8 @@ class LockService : Service() {
 		unRegisterBroadCast()
 		isServiceStarted = false
 		AlarmUtils.setAlarm(this, AlarmUtils.ACTION_REPEAT_SERVICE, 1000)
+		PowerRestartWorker.cancel()
+		PowerRestartWorker.schedule()
 	}
 
 	@RequiresApi(Build.VERSION_CODES.M)
@@ -454,5 +460,7 @@ class LockService : Service() {
 		LogUtils.logCustomMessage(TAG, "LockService onTaskRemoved")
 		isServiceStarted = false
 		AlarmUtils.setAlarm(this, AlarmUtils.ACTION_REPEAT_SERVICE, 1000)
+		PowerRestartWorker.cancel()
+		PowerRestartWorker.schedule()
 	}
 }

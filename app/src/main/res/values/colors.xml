@@ -27,4 +27,9 @@
     <color name="colorPrimary">#0099ED</color>
     <color name="color_text_left_menu">#6A716F</color>
     <color name="black_thin">#535252</color>
+    <color name="battery_almost_die">#F00909</color>
+    <color name="battery_averange">#F68310</color>
+    <color name="battery_bad">#F16437</color>
+    <color name="battery_good">#37E131</color>
+    <color name="bg_color">#ffffff</color>
 </resources>

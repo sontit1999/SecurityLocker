@@ -8,14 +8,19 @@ import android.os.BatteryManager
 import android.os.BatteryManager.*
 import android.os.Bundle
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import com.entertainment.basemvvmproject.base.BaseFragment
+import com.ls.entertainment.securitylocker.MainActivity
 import com.ls.entertainment.securitylocker.R
 import com.ls.entertainment.securitylocker.databinding.FragToolBinding
 import com.ls.entertainment.securitylocker.service.LockService
+import com.ls.entertainment.securitylocker.ui.batterysaver.BatterySaverFragment
 import com.ls.entertainment.securitylocker.ui.trackingtime.TrackingTimeFragment
+import com.ls.entertainment.securitylocker.utils.AppUtils
 import com.ls.entertainment.securitylocker.utils.LogUtils
 import com.ls.entertainment.securitylocker.utils.PermissionUtil
+import com.ls.entertainment.securitylocker.utils.setOnSafeClickListener
 
 class ToolFragment : BaseFragment<FragToolBinding, ToolViewModel>(R.layout.frag_tool) {
 
@@ -88,8 +93,49 @@ class ToolFragment : BaseFragment<FragToolBinding, ToolViewModel>(R.layout.frag_
 		binding.tvContentChargeCapacity.text = capacity.toString() + getString(R.string.miliampe)
 		binding.tvContentChargeTemperature.text = "$temperature° C"
 		binding.tvContentChargeType.text = technology.toString()
-		binding.tvContentChargeHealth.text = getBatteryHealth(health)
+		binding.tvContentHealth.text = getBatteryHealth(health)
+		updateStatusRam()
+	}
 
+	private fun updateStatusRam() {
+
+		val totalRam = AppUtils.getTotalRam()
+		val ramFree = AppUtils.getAvailableRam(requireContext())
+		val ramUsed = totalRam - ramFree
+		val percentRam = ((ramFree.toFloat() / totalRam) * 100).toInt()
+		LogUtils.logCustomMessage(
+			"Sontv",
+			"total = ${AppUtils.formatSize(totalRam)},free = ${AppUtils.formatSize(ramFree)},ramUsed = ${
+				AppUtils.formatSize(ramUsed)
+			}, percentRam = $percentRam"
+		)
+		binding.tvContentRam.text = "$percentRam%"
+		if (percentRam <= 5) {
+			binding.waveLoadingView.waveColor = ContextCompat.getColor(
+				requireContext(), R.color.battery_almost_die
+			)
+			binding.waveLoadingView.progressValue = percentRam
+		} else if (percentRam in 6..15) {
+			binding.waveLoadingView.waveColor = ContextCompat.getColor(
+				requireContext(), R.color.battery_bad
+			)
+			binding.waveLoadingView.progressValue = percentRam
+		} else if (percentRam in 16..30) {
+			binding.waveLoadingView.waveColor = ContextCompat.getColor(
+				requireContext(), R.color.battery_averange
+			)
+			binding.waveLoadingView.progressValue = percentRam
+		} else if (percentRam in 31..60) {
+			binding.waveLoadingView.waveColor = ContextCompat.getColor(
+				requireContext(), R.color.battery_good
+			)
+			binding.waveLoadingView.progressValue = percentRam
+		} else if (percentRam in 61..100) {
+			binding.waveLoadingView.waveColor = ContextCompat.getColor(
+				requireContext(), R.color.battery_good
+			)
+			binding.waveLoadingView.progressValue = percentRam
+		}
 	}
 
 	private fun getBatteryHealth(health: Int): String {
@@ -100,6 +146,13 @@ class ToolFragment : BaseFragment<FragToolBinding, ToolViewModel>(R.layout.frag_
 			BATTERY_HEALTH_OVERHEAT            -> getString(R.string.battery_health_overheat)
 			BATTERY_HEALTH_UNSPECIFIED_FAILURE -> getString(R.string.battery_health_unspecified_failure)
 			else                               -> getString(R.string.battery_health_unkown)
+		}
+	}
+
+	override fun bindingAction() {
+		super.bindingAction()
+		binding.btnOptimizeRam.setOnSafeClickListener {
+			(requireActivity() as? MainActivity?)?.addFragment(BatterySaverFragment())
 		}
 	}
 

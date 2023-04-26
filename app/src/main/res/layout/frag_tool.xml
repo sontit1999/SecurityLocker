@@ -23,6 +23,90 @@
                     android:layout_height="match_parent">
 
                     <androidx.cardview.widget.CardView
+                        android:id="@+id/ramBLock"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        app:cardCornerRadius="10dp"
+                        app:cardElevation="5dp"
+                        app:cardUseCompatPadding="true"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintWidth_percent="0.48">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:paddingBottom="10dp">
+
+                            <com.ls.entertainment.securitylocker.custom.CustomTextView
+                                android:id="@+id/tvLabelRam"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentTop="true"
+                                android:layout_marginStart="10dp"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginEnd="10dp"
+                                android:layout_marginBottom="10dp"
+                                android:gravity="center"
+                                android:text="@string/label_ram_free"
+                                android:textColor="@color/color_gray"
+                                android:textSize="13sp" />
+
+
+                            <me.itangqi.waveloadingview.WaveLoadingView
+                                android:id="@+id/waveLoadingView"
+                                android:layout_width="100dp"
+                                android:layout_height="100dp"
+                                android:layout_centerInParent="true"
+                                app:wlv_borderColor="#e8ebf3"
+                                app:wlv_borderWidth="4dp"
+                                app:wlv_progressValue="0"
+                                app:wlv_round_rectangle="true"
+                                app:wlv_shapeType="circle"
+                                app:wlv_titleCenterColor="@android:color/white"
+                                app:wlv_titleCenterSize="24sp"
+                                app:wlv_titleCenterStrokeColor="@color/white"
+                                app:wlv_titleCenterStrokeWidth="3dp"
+                                app:wlv_triangle_direction="north"
+                                app:wlv_waveAmplitude="70"
+                                app:wlv_waveColor="#e8ebf3"
+                                app:wlv_wave_background_Color="#e8ebf3" />
+
+                            <com.ls.entertainment.securitylocker.custom.CustomTextView
+                                android:id="@+id/tvContentRam"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_centerInParent="true"
+                                android:layout_marginStart="10dp"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginEnd="10dp"
+                                android:layout_marginBottom="10dp"
+                                android:gravity="center"
+                                android:text="2GB"
+                                android:textColor="@color/black"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+
+                            <androidx.appcompat.widget.AppCompatButton
+                                android:id="@+id/btnOptimizeRam"
+                                android:layout_width="wrap_content"
+                                android:layout_height="30dp"
+                                android:layout_below="@id/waveLoadingView"
+                                android:layout_centerHorizontal="true"
+                                android:layout_gravity="bottom"
+                                android:layout_marginTop="40dp"
+                                android:background="@drawable/btn_main"
+                                android:src="@drawable/ic_baseline_health_and_safety_24"
+                                android:text="@string/optimized_now"
+                                android:textColor="@color/white"
+                                android:textSize="8sp"
+                                app:tint="@color/color_main" />
+                        </RelativeLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
                         android:id="@+id/chargeHealth"
                         android:layout_width="0dp"
                         android:layout_height="0dp"
@@ -32,7 +116,7 @@
                         app:cardUseCompatPadding="true"
                         app:layout_constraintDimensionRatio="1:1"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/ramBLock"
                         app:layout_constraintWidth_percent="0.48">
 
                         <RelativeLayout
@@ -54,8 +138,9 @@
                                 android:textColor="@color/color_gray"
                                 android:textSize="13sp" />
 
+
                             <com.ls.entertainment.securitylocker.custom.CustomTextView
-                                android:id="@+id/tvContentChargeHealth"
+                                android:id="@+id/tvContentHealth"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_below="@+id/tvLabelChargeHealth"
@@ -65,7 +150,7 @@
                                 android:layout_marginEnd="10dp"
                                 android:layout_marginBottom="10dp"
                                 android:gravity="center"
-                                android:text="GOOD"
+                                android:text="@string/battery_health_good"
                                 android:textColor="@color/black"
                                 android:textSize="16sp"
                                 android:textStyle="bold" />
@@ -73,7 +158,7 @@
                             <androidx.appcompat.widget.AppCompatImageView
                                 android:layout_width="30dp"
                                 android:layout_height="30dp"
-                                android:layout_below="@id/tvContentChargeHealth"
+                                android:layout_below="@id/tvContentHealth"
                                 android:layout_centerHorizontal="true"
                                 android:layout_gravity="bottom"
                                 android:layout_marginStart="10dp"
@@ -95,7 +180,7 @@
                         app:cardUseCompatPadding="true"
                         app:layout_constraintDimensionRatio="1:1"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/ramBLock"
                         app:layout_constraintWidth_percent="0.48">
 
                         <RelativeLayout
@@ -141,8 +226,6 @@
                                 android:layout_gravity="bottom"
                                 android:layout_marginStart="10dp"
                                 android:layout_marginTop="10dp"
-                                android:layout_marginEnd="129dp"
-                                android:layout_marginBottom="10dp"
                                 android:src="@drawable/ic_baseline_insert_chart_outlined_24"
                                 app:tint="@color/color_main" />
                         </RelativeLayout>

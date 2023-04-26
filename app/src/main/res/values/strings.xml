@@ -86,4 +86,6 @@
     <string name="title_battery_temp_high">Battery temperature too high</string>
     <string name="content_battery_temp_high">Turn off applications running in the background that consume CPU resources right away to make your phone cooler</string>
     <string name="boosted">Boosted </string>
+    <string name="label_ram_free">Ram Available</string>
+    <string name="optimized_now">Optimize now</string>
 </resources>

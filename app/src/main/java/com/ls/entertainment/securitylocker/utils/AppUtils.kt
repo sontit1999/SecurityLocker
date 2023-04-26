@@ -1,5 +1,7 @@
 package com.ls.entertainment.securitylocker.utils
 
+import android.app.ActivityManager
+import android.app.Service
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
@@ -89,6 +91,13 @@ object AppUtils {
 			j = 0
 		}
 		return j * 1024
+	}
+
+	fun getAvailableRam(context: Context): Long {
+		val memoryInfo = ActivityManager.MemoryInfo()
+		val activityManager = context.getSystemService(Service.ACTIVITY_SERVICE) as ActivityManager
+		activityManager.getMemoryInfo(memoryInfo)
+		return memoryInfo.availMem
 	}
 
 	fun formatSize(j: Long): String {

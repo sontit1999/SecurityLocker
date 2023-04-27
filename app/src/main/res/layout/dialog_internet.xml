@@ -8,6 +8,17 @@
     android:minWidth="@dimen/dimen_340"
     android:paddingBottom="@dimen/dimen_10">
 
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lvView"
+        android:layout_width="130dp"
+        android:layout_height="130dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/no_internet" />
+
     <com.ls.entertainment.securitylocker.custom.CustomTextView
         android:id="@+id/lbl_title"
         android:layout_width="0dp"
@@ -20,7 +31,7 @@
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/lvView" />
 
 
     <androidx.appcompat.widget.AppCompatTextView
@@ -36,7 +47,7 @@
         android:minWidth="@dimen/dimen_96"
         android:text="@string/ok"
         android:textAllCaps="false"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:textSize="@dimen/text_size_14"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"

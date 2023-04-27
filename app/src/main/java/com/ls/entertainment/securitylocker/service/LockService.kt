@@ -6,6 +6,7 @@ import android.app.usage.UsageStatsManager
 import android.content.*
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.media.MediaPlayer
 import android.os.BatteryManager
 import android.os.Build
 import android.os.IBinder
@@ -51,6 +52,7 @@ class LockService : Service() {
 	lateinit var usageStageManager: UsageStatsManager
 	var mNotificationManager: NotificationManager? = null
 	private var isServiceStarted = false
+	var mediaPlayer: MediaPlayer? = null
 
 
 	companion object {
@@ -85,6 +87,7 @@ class LockService : Service() {
 		LogUtils.logCustomMessage(TAG, "LockService onCreate")
 		registerBroadCast()
 		usageStageManager = getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
+		mediaPlayer = MediaPlayer.create(this, R.raw.noti_fb)
 		generateForegroundNotification()
 	}
 
@@ -160,6 +163,7 @@ class LockService : Service() {
 		if (isCharging) {
 			if (batteryPct >= 99) {
 				NotificationCenter.pushFullBatteryNotify()
+				mediaPlayer?.start()
 			}
 		}
 
@@ -447,11 +451,13 @@ class LockService : Service() {
 	override fun onDestroy() {
 		super.onDestroy()
 		LogUtils.logCustomMessage(TAG, "LockService onDestroy")
-		unRegisterBroadCast()
-		isServiceStarted = false
 		AlarmUtils.setAlarm(this, AlarmUtils.ACTION_REPEAT_SERVICE, 1000)
 		PowerRestartWorker.cancel()
 		PowerRestartWorker.schedule()
+		unRegisterBroadCast()
+		isServiceStarted = false
+		mediaPlayer?.release()
+		mediaPlayer = null
 	}
 
 	@RequiresApi(Build.VERSION_CODES.M)

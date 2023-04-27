@@ -88,4 +88,15 @@
     <string name="boosted">Boosted </string>
     <string name="label_ram_free">Ram Available</string>
     <string name="optimized_now">Optimize now</string>
+    <string name="msg_down_wall_successful">Congratulations on successfully downloading this wallpaper</string>
+    <string name="set_wallpaper">Set Wallpaper</string>
+    <string name="set_wallpaper_lock">Lock screen</string>
+    <string name="set_wallpaper_home">Home screen</string>
+    <string name="set_wallpaper_lock_app">Lock app screen</string>
+    <string name="msg_set_background_ok">Set wallpaper successfully</string>
+    <string name="msg_set_background_fail">Wallpaper setting failed</string>
+    <string name="download_image_fail">Download wallpaper failed</string>
+    <string name="fail_setwallpaper_message">Fail to set wallpaper. Sorry and You try again.Thanks</string>
+    <string name="congratulation_set_wallpaper_success">Congratulations, you have successfully set the wallpaper</string>
+    <string name="fail_crop_image">Crop image fail</string>
 </resources>

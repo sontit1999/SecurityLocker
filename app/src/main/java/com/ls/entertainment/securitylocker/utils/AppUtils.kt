@@ -2,14 +2,18 @@ package com.ls.entertainment.securitylocker.utils
 
 import android.app.ActivityManager
 import android.app.Service
+import android.app.WallpaperManager
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ApplicationInfo
+import android.graphics.Bitmap
 import android.net.Uri
 import android.widget.Toast
+import com.ls.entertainment.securitylocker.App
 import com.ls.entertainment.securitylocker.R
 import com.ls.entertainment.securitylocker.adapter.WallpaperModel
+import timber.log.Timber
 import java.io.IOException
 import java.io.RandomAccessFile
 import java.text.DecimalFormat
@@ -121,5 +125,17 @@ object AppUtils {
 			"package:$packageName"
 		)
 		ctx.startActivity(intent)
+	}
+
+	fun setWallpaper(bitmap: Bitmap?): Boolean {
+		return try {
+			val manager = WallpaperManager.getInstance(App.instance)
+			manager.setBitmap(bitmap)
+			Timber.d("Wallpaper set successfully!")
+			return true
+		} catch (e: IOException) {
+			Timber.d("Error set wallpaper because %s", e.message)
+			false
+		}
 	}
 }

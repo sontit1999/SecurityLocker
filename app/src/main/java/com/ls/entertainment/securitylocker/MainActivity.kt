@@ -1,12 +1,16 @@
 package com.ls.entertainment.securitylocker
 
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.provider.Settings
 import androidx.activity.viewModels
+import androidx.core.net.toFile
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.viewModelScope
 import com.entertainment.basemvvmproject.base.BaseActivity
+import com.ls.entertainment.securitylocker.App.Companion.typeSetWallpaper
 import com.ls.entertainment.securitylocker.adapter.MainViewPagerAdapter
 import com.ls.entertainment.securitylocker.databinding.ActivityMainBinding
 import com.ls.entertainment.securitylocker.extension.canDrawOverlay
@@ -17,10 +21,8 @@ import com.ls.entertainment.securitylocker.service.LockService.Companion.startLo
 import com.ls.entertainment.securitylocker.ui.MainViewModel
 import com.ls.entertainment.securitylocker.ui.batterysaver.BatterySaverFragment
 import com.ls.entertainment.securitylocker.ui.splash.SplashActivity
-import com.ls.entertainment.securitylocker.utils.LogUtils
-import com.ls.entertainment.securitylocker.utils.checkUsageStatsPermission
-import com.ls.entertainment.securitylocker.utils.showAccessDataUsagePermissionDialog
-import com.ls.entertainment.securitylocker.utils.showDrawOverlayPermissionDescDialog
+import com.ls.entertainment.securitylocker.utils.*
+import com.yalantis.ucrop.UCrop
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -44,6 +46,17 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
 		checkPermissionApp()
 		initViewPager()
 		bindingAction()
+		setUpObserver()
+	}
+
+	private fun setUpObserver() {
+		NetworkListener.observe(this) {
+			if (!it) {
+				DialogUtil.showConfirmationNetworkDialog(this, okListener = {
+					startActivity(Intent(Settings.ACTION_WIRELESS_SETTINGS))
+				})
+			}
+		}
 	}
 
 	private fun getDataFromIntent() {
@@ -159,18 +172,48 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
 	
 	override fun onRequestPermissionsResult(
 		requestCode: Int,
-		permissions: Array<out String>,
-		grantResults: IntArray
+		permissions: Array<out String>, grantResults: IntArray
 	) {
 		super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 		LogUtils.logCustomMessage("onRequestPermissionsResult")
 	}
-	
+
 	fun addFragment(fragment: Fragment) {
 		supportFragmentManager.beginTransaction().add(R.id.mainContainer, fragment, fragment.tag)
 			.addToBackStack(null).commit()
 	}
-	
+
+	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+		super.onActivityResult(requestCode, resultCode, data)
+		if (resultCode == RESULT_OK && requestCode == UCrop.REQUEST_CROP) {
+			val resultUri = data?.let { UCrop.getOutput(it) }
+			val path = resultUri?.toFile()?.path ?: ""
+			val bitmap = BitmapFactory.decodeFile(path)
+			setWallPaperFromBitMap(bitmap, path)
+		} else if (resultCode == UCrop.RESULT_ERROR) {
+			showToast(getString(R.string.fail_crop_image))
+		}
+	}
+
+	private fun setWallPaperFromBitMap(bitmap: Bitmap?, path: String) {
+		if (bitmap == null) {
+			showToast(getString(R.string.fail_setwallpaper_message))
+		} else {
+			if (typeSetWallpaper == WallpaperUtils.WallpaperType.LOCK_APP) {
+				viewModel.savePathImageLock(path)
+			} else {
+				val isSuccess = WallpaperUtils.setWallpaper(bitmap, typeSetWallpaper)
+				if (isSuccess) {
+					showToast(getString(R.string.congratulation_set_wallpaper_success))
+				} else {
+					showToast(getString(R.string.fail_setwallpaper_message))
+				}
+			}
+
+		}
+
+	}
+
 	override fun onDestroy() {
 		super.onDestroy()
 		EventBus.getDefault().unregister(this)

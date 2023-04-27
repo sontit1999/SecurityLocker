@@ -1,22 +1,33 @@
 package com.ls.entertainment.securitylocker.ui.detail
 
+import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.viewModels
 import androidx.viewpager2.widget.ViewPager2
 import com.entertainment.basemvvmproject.base.BaseFragment
+import com.entertainment.basemvvmproject.utils.DeviceUtil
+import com.entertainment.basemvvmproject.utils.RealPathUtil
+import com.ls.entertainment.securitylocker.App
 import com.ls.entertainment.securitylocker.R
 import com.ls.entertainment.securitylocker.adapter.WallpaperAdapter
 import com.ls.entertainment.securitylocker.adapter.WallpaperModel
 import com.ls.entertainment.securitylocker.databinding.FragDetailBinding
-import com.ls.entertainment.securitylocker.utils.AppConfig
-import com.ls.entertainment.securitylocker.utils.AppSessionManager
-import com.ls.entertainment.securitylocker.utils.setOnSafeClickListener
+import com.ls.entertainment.securitylocker.di.ApiInterface
+import com.ls.entertainment.securitylocker.utils.*
+import com.yalantis.ucrop.UCrop
+import dagger.hilt.android.AndroidEntryPoint
+import java.io.File
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class DetailFragment : BaseFragment<FragDetailBinding, DetailViewModel>(R.layout.frag_detail) {
 
 	private val viewModel: DetailViewModel by viewModels()
 
 	var adapter: WallpaperAdapter? = null
+
+	@Inject
+	lateinit var apiInterface: ApiInterface
 
 	override fun getVM() = viewModel
 
@@ -30,21 +41,62 @@ class DetailFragment : BaseFragment<FragDetailBinding, DetailViewModel>(R.layout
 		}
 
 		binding.ivSetting.setOnSafeClickListener {
-			if (adapter != null) {
-				viewModel.savePathImageLock(adapter!!.listWallpaper[binding.viewPager.currentItem].url)
+			if (NetworkListener.isNetWorkConnected()) {
+				viewModel.downLoadImage(
+					adapter?.listWallpaper?.get(binding.viewPager.currentItem)?.url ?: ""
+				)
+			} else {
+				DialogUtil.showConfirmationNetworkDialog(requireContext())
 			}
 		}
+	}
+
+	private fun showDialogSettingBackground() {
+		DialogUtil.showSetWallpaperDialog(requireContext(), lockAppListener = {
+			goCropActivityAndSet(WallpaperUtils.WallpaperType.LOCK_APP)
+		}, lockHomeListener = {
+			goCropActivityAndSet(WallpaperUtils.WallpaperType.HOME)
+		}, lockListener = {
+			goCropActivityAndSet(WallpaperUtils.WallpaperType.LOCK)
+		})
+	}
+
+	private fun goCropActivityAndSet(type: WallpaperUtils.WallpaperType) {
+		App.typeSetWallpaper = type
+		val fileLocal =
+			when (if (viewModel.pathImageToSetWallpaper.contains("storage")) WallpaperUtils.FileTypeURL.PATH else WallpaperUtils.FileTypeURL.URI) {
+				WallpaperUtils.FileTypeURL.PATH -> File(viewModel.pathImageToSetWallpaper)
+				WallpaperUtils.FileTypeURL.URI  -> File(
+					RealPathUtil.getRealPath(
+						requireContext(), Uri.parse(viewModel.pathImageToSetWallpaper)
+					) ?: ""
+				)
+			}
+
+		UCrop.of(Uri.fromFile(fileLocal), Uri.fromFile(File.createTempFile("temp", ".png")))
+			.withAspectRatio(
+				DeviceUtil.getWidthScreen(requireActivity()).toFloat(),
+				DeviceUtil.getScreenHeight(requireActivity()).toFloat()
+			).start(requireActivity())
 	}
 
 	override fun bindingStateView() {
 		super.bindingStateView()
 		viewModel.stateSave.observe(viewLifecycleOwner) {
-			if (it) showToast("Cài đặt màn hình khóa thành công") else showToast("Cài đặt màn hình khóa thất bại")
+			if (it) showToast(getString(R.string.msg_set_background_ok)) else showToast(getString(R.string.msg_set_background_fail))
+		}
+		viewModel.stateDownloadImage.observe(viewLifecycleOwner) {
+			if (it) {
+				showDialogSettingBackground()
+			} else {
+				showToast(getString(R.string.download_image_fail))
+			}
 		}
 	}
 
 	override fun viewCreated(savedInstanceState: Bundle?) {
 		super.viewCreated(savedInstanceState)
+		viewModel.init(apiInterface)
 		initViewPager()
 	}
 

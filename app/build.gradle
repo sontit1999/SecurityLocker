@@ -138,4 +138,7 @@ dependencies {
 
     implementation 'com.andrognito.pinlockview:pinlockview:2.1.0'
     implementation 'me.itangqi.waveloadingview:library:0.3.5'
+
+    // crop image library
+    implementation 'com.github.yalantis:ucrop:2.2.7'
 }

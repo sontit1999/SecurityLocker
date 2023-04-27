@@ -3,6 +3,8 @@ package com.ls.entertainment.securitylocker.utils
 
 import android.app.Dialog
 import android.content.Context
+import android.content.Intent
+import android.provider.Settings
 import android.view.View
 import android.view.Window
 import android.widget.TextView
@@ -105,7 +107,51 @@ object DialogUtil {
 			btnOk.setOnSafeClickListener {
 				if (dialog.isShowing) {
 					dialog.dismiss()
-					okListener?.invoke()
+					context.startActivity(Intent(Settings.ACTION_WIRELESS_SETTINGS))
+				}
+			}
+
+			if (!dialog.isShowing) {
+				dialog.show()
+			}
+		}
+	}
+
+	fun showSetWallpaperDialog(
+		context: Context?,
+		lockAppListener: (() -> Unit)? = null,
+		lockHomeListener: (() -> Unit)? = null,
+		lockListener: (() -> Unit)? = null,
+	) {
+		context?.run {
+			val dialog = Dialog(context)
+			dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+			dialog.window?.setBackgroundDrawableResource(R.color.transparent)
+			dialog.setContentView(R.layout.dialog_confirm_set_background)
+
+			val lockApp = dialog.findViewById<TextView>(R.id.dialogConfirmLockApp)
+			val lockHome = dialog.findViewById<TextView>(R.id.dialogConfirmHome)
+			val lock = dialog.findViewById<TextView>(R.id.dialogConfirmLock)
+
+
+			lockApp.setOnSafeClickListener {
+				if (dialog.isShowing) {
+					dialog.dismiss()
+					lockAppListener?.invoke()
+				}
+			}
+
+			lockHome.setOnSafeClickListener {
+				if (dialog.isShowing) {
+					dialog.dismiss()
+					lockHomeListener?.invoke()
+				}
+			}
+
+			lock.setOnSafeClickListener {
+				if (dialog.isShowing) {
+					dialog.dismiss()
+					lockListener?.invoke()
 				}
 			}
 

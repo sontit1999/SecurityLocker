@@ -5,11 +5,11 @@ import android.animation.Animator
 import android.app.ActivityManager
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothManager
-import android.content.ContentResolver
+import android.content.*
 import android.content.Context.ACTIVITY_SERVICE
-import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
+import android.os.BatteryManager
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
@@ -24,8 +24,10 @@ import com.entertainment.basemvvmproject.utils.gone
 import com.entertainment.basemvvmproject.utils.visible
 import com.ls.entertainment.securitylocker.App
 import com.ls.entertainment.securitylocker.R
+import com.ls.entertainment.securitylocker.ads.AdManager
 import com.ls.entertainment.securitylocker.databinding.FragBatterySaverBinding
 import com.ls.entertainment.securitylocker.extension.canDrawOverlay
+import com.ls.entertainment.securitylocker.service.LockService
 import com.ls.entertainment.securitylocker.utils.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -36,6 +38,16 @@ import kotlinx.coroutines.launch
 class BatterySaverFragment :
 	BaseFragment<FragBatterySaverBinding, BatterySaverViewModel>(R.layout.frag_battery_saver) {
 
+	private val receiver = object : BroadcastReceiver() {
+		override fun onReceive(p0: Context?, p1: Intent?) {
+			LogUtils.logCustomMessage(LockService.TAG, "receiver ${p1?.action} in lock service")
+			when (p1?.action) {
+				Intent.ACTION_BATTERY_CHANGED -> handleBatteryChange(p1)
+			}
+		}
+
+	}
+
 	private val viewModel: BatterySaverViewModel by viewModels()
 
 	override fun getVM() = viewModel
@@ -43,6 +55,7 @@ class BatterySaverFragment :
 	override fun viewCreated(savedInstanceState: Bundle?) {
 		super.viewCreated(savedInstanceState)
 		checkWriteSettingPermission()
+		AdManager.loadBanner(binding.containerAds)
 	}
 
 	private fun checkWriteSettingPermission() {
@@ -171,13 +184,23 @@ class BatterySaverFragment :
 		}
 	}
 
-	override fun bindingStateView() {
-		super.bindingStateView()
+	private fun registerBroadCast() {
+		val intentFilter = IntentFilter(Intent.ACTION_BATTERY_CHANGED)
+		requireActivity().registerReceiver(receiver, intentFilter)
+	}
 
-		viewModel.nativeAdsLiveData.observe(viewLifecycleOwner) {
-			binding.containerAds.visible()
-			binding.containerAds.binDataNativeAds(it)
-		}
+	private fun unRegisterBroadCast() {
+		requireActivity().unregisterReceiver(receiver)
+	}
+
+	override fun onCreate(savedInstanceState: Bundle?) {
+		super.onCreate(savedInstanceState)
+		registerBroadCast()
+	}
+
+	override fun onDestroy() {
+		super.onDestroy()
+		unRegisterBroadCast()
 	}
 
 	@RequiresApi(Build.VERSION_CODES.M)
@@ -261,6 +284,72 @@ class BatterySaverFragment :
 				e.printStackTrace()
 			}
 		}
+	}
+
+	private fun handleBatteryChange(intent: Intent) {
+		val level: Int = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
+		val scale: Int = intent.getIntExtra(BatteryManager.EXTRA_SCALE, -1)
+		val batteryPct: Float = if (scale != 0) {
+			level * 100 / scale.toFloat()
+		} else {
+			0f
+		}
+
+		// Battery status - charging/not charging
+		val status = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1)
+
+		// Battery temperature
+		val temperature = intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, -1).toFloat().div(10)
+
+		// Battery charger
+		val chargePlugged = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1)
+
+		// Battery health
+		val health = intent.getIntExtra(BatteryManager.EXTRA_HEALTH, -1)
+
+		// Battery technology
+		val technology = intent.getStringExtra(BatteryManager.EXTRA_TECHNOLOGY)
+
+		// Battery capacity
+		val batteryManager = if (PermissionUtil.isApi21orHigher()) {
+			requireActivity().getSystemService(Context.BATTERY_SERVICE) as? BatteryManager
+		} else {
+			null
+		}
+		val chargeCounter = if (PermissionUtil.isApi21orHigher()) {
+			batteryManager?.getIntProperty(BatteryManager.BATTERY_PROPERTY_CHARGE_COUNTER)
+		} else {
+			null
+		}
+		val capacity = if (PermissionUtil.isApi21orHigher()) {
+			batteryManager?.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)?.let {
+				if (it != 0) {
+					(chargeCounter?.div(it) ?: 0) / 10
+				} else {
+					0
+				}
+			}
+		} else {
+			null
+		}
+		binding.tvContentChargeCapacity.text = capacity.toString() + getString(R.string.miliampe)
+		binding.tvContentChargeTemperature.text = "$temperature° C"
+		binding.tvContentChargeType.text = technology.toString()
+		updateStatusRam()
+	}
+
+	private fun updateStatusRam() {
+		val totalRam = AppUtils.getTotalRam()
+		val ramFree = AppUtils.getAvailableRam(requireContext())
+		val ramUsed = totalRam - ramFree
+		val percentRam = ((ramFree.toFloat() / totalRam) * 100).toInt()
+		LogUtils.logCustomMessage(
+			"Sontv",
+			"total = ${AppUtils.formatSize(totalRam)},free = ${AppUtils.formatSize(ramFree)},ramUsed = ${
+				AppUtils.formatSize(ramUsed)
+			}, percentRam = $percentRam"
+		)
+		binding.tvContentHealth.text = AppUtils.formatSize(ramFree)
 	}
 
 	private fun Window.changeAppScreenBrightnessValue(brightnessValue: Float) {

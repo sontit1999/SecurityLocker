@@ -15,6 +15,7 @@ import com.andrognito.pinlockview.IndicatorDots
 import com.andrognito.pinlockview.PinLockListener
 import com.entertainment.basemvvmproject.base.BaseActivity
 import com.ls.entertainment.securitylocker.R
+import com.ls.entertainment.securitylocker.ads.AdManager
 import com.ls.entertainment.securitylocker.databinding.ActivityLockBinding
 import com.ls.entertainment.securitylocker.ui.splash.SplashActivity
 import com.ls.entertainment.securitylocker.utils.GlideHelper
@@ -34,6 +35,7 @@ class UnlockActivity : BaseActivity<ActivityLockBinding, UnLockViewModel>() {
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
+		AdManager.loadNativeAd(binding.nativeAdView)
 		initBackGround()
 		initLockView()
 		bindingAction()

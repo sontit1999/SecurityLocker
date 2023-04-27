@@ -10,6 +10,8 @@ import androidx.core.net.toFile
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.viewModelScope
 import com.entertainment.basemvvmproject.base.BaseActivity
+import com.entertainment.basemvvmproject.utils.gone
+import com.entertainment.basemvvmproject.utils.visible
 import com.ls.entertainment.securitylocker.App.Companion.typeSetWallpaper
 import com.ls.entertainment.securitylocker.adapter.MainViewPagerAdapter
 import com.ls.entertainment.securitylocker.ads.AdManager
@@ -17,6 +19,7 @@ import com.ls.entertainment.securitylocker.databinding.ActivityMainBinding
 import com.ls.entertainment.securitylocker.extension.canDrawOverlay
 import com.ls.entertainment.securitylocker.extension.requestDrawOverlayPermission
 import com.ls.entertainment.securitylocker.model.CheckPermissionEvent
+import com.ls.entertainment.securitylocker.model.OpenAdEvent
 import com.ls.entertainment.securitylocker.model.RefreshUsage
 import com.ls.entertainment.securitylocker.service.LockService.Companion.startLockService
 import com.ls.entertainment.securitylocker.ui.MainViewModel
@@ -43,6 +46,7 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
 		super.onCreate(savedInstanceState)
 		EventBus.getDefault().register(this)
 		AdManager.initialize()
+		AdManager.loadBanner(binding.containerAds)
 		startLockService(this)
 		getDataFromIntent()
 		checkPermissionApp()
@@ -66,6 +70,13 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
 	}
 
 	private fun setUpObserver() {
+
+		RxBus.subscribe(TAG, OpenAdEvent::class) {
+			if (it.isShow) {
+				binding.containerAds.gone()
+			} else binding.containerAds.visible()
+		}
+
 		NetworkListener.observe(this) {
 			if (!it) {
 				DialogUtil.showConfirmationNetworkDialog(this, okListener = {
@@ -232,9 +243,13 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
 	override fun onDestroy() {
 		super.onDestroy()
 		EventBus.getDefault().unregister(this)
+		RxBus.unregister(TAG)
 		AdManager.destroyAll()
 		SharePreferenceUtils.getInstance().canShowOpenAd = false
 	}
 
+	companion object {
+		const val TAG = "MainActivity"
+	}
 
 }

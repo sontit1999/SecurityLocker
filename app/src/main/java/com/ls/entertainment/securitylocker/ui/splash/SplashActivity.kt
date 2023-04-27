@@ -63,6 +63,7 @@ class SplashActivity : BaseActivity<ActivitySplashBinding, SplashViewModel>() {
 				checkUpdateInSplashScreen()
 				LogUtils.logCustomMessage("Load config success: $configJson")
 				TrackingHelper.logEvent(AllEvents.E1_CONFIG_LOAD_SUCCESS)
+				RemoteConfig.commonConfig.supportNative = true
 			} else {
 				TrackingHelper.logEvent(AllEvents.E1_CONFIG_LOAD_FAIL)
 				handleFlowGoMainActivity()

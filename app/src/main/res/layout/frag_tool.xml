@@ -20,7 +20,8 @@
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:paddingBottom="10dp">
 
                     <androidx.cardview.widget.CardView
                         android:id="@+id/ramBLock"
@@ -45,6 +46,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentTop="true"
+                                android:layout_centerHorizontal="true"
                                 android:layout_marginStart="10dp"
                                 android:layout_marginTop="10dp"
                                 android:layout_marginEnd="10dp"
@@ -55,48 +57,55 @@
                                 android:textSize="13sp" />
 
 
-                            <me.itangqi.waveloadingview.WaveLoadingView
-                                android:id="@+id/waveLoadingView"
-                                android:layout_width="100dp"
-                                android:layout_height="100dp"
-                                android:layout_centerInParent="true"
-                                app:wlv_borderColor="#e8ebf3"
-                                app:wlv_borderWidth="4dp"
-                                app:wlv_progressValue="0"
-                                app:wlv_round_rectangle="true"
-                                app:wlv_shapeType="circle"
-                                app:wlv_titleCenterColor="@android:color/white"
-                                app:wlv_titleCenterSize="24sp"
-                                app:wlv_titleCenterStrokeColor="@color/white"
-                                app:wlv_titleCenterStrokeWidth="3dp"
-                                app:wlv_triangle_direction="north"
-                                app:wlv_waveAmplitude="70"
-                                app:wlv_waveColor="#e8ebf3"
-                                app:wlv_wave_background_Color="#e8ebf3" />
+                            <FrameLayout
+                                android:id="@+id/frameWaveView"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_below="@id/tvLabelRam"
+                                android:layout_centerHorizontal="true">
 
-                            <com.ls.entertainment.securitylocker.custom.CustomTextView
-                                android:id="@+id/tvContentRam"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_centerInParent="true"
-                                android:layout_marginStart="10dp"
-                                android:layout_marginTop="10dp"
-                                android:layout_marginEnd="10dp"
-                                android:layout_marginBottom="10dp"
-                                android:gravity="center"
-                                android:text="2GB"
-                                android:textColor="@color/black"
-                                android:textSize="16sp"
-                                android:textStyle="bold" />
+                                <me.itangqi.waveloadingview.WaveLoadingView
+                                    android:id="@+id/waveLoadingView"
+                                    android:layout_width="100dp"
+                                    android:layout_height="100dp"
+                                    app:wlv_borderColor="#e8ebf3"
+                                    app:wlv_borderWidth="4dp"
+                                    app:wlv_progressValue="0"
+                                    app:wlv_round_rectangle="true"
+                                    app:wlv_shapeType="circle"
+                                    app:wlv_titleCenterColor="@android:color/white"
+                                    app:wlv_titleCenterSize="24sp"
+                                    app:wlv_titleCenterStrokeColor="@color/white"
+                                    app:wlv_titleCenterStrokeWidth="3dp"
+                                    app:wlv_triangle_direction="north"
+                                    app:wlv_waveAmplitude="70"
+                                    app:wlv_waveColor="#e8ebf3"
+                                    app:wlv_wave_background_Color="#e8ebf3" />
+
+                                <com.ls.entertainment.securitylocker.custom.CustomTextView
+                                    android:id="@+id/tvContentRam"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:layout_marginStart="10dp"
+                                    android:layout_marginTop="10dp"
+                                    android:layout_marginEnd="10dp"
+                                    android:layout_marginBottom="10dp"
+                                    android:gravity="center"
+                                    android:text="2GB"
+                                    android:textColor="@color/black"
+                                    android:textSize="16sp"
+                                    android:textStyle="bold" />
+                            </FrameLayout>
 
                             <androidx.appcompat.widget.AppCompatButton
                                 android:id="@+id/btnOptimizeRam"
                                 android:layout_width="wrap_content"
                                 android:layout_height="30dp"
-                                android:layout_below="@id/waveLoadingView"
+                                android:layout_below="@id/frameWaveView"
                                 android:layout_centerHorizontal="true"
                                 android:layout_gravity="bottom"
-                                android:layout_marginTop="40dp"
+                                android:layout_marginTop="20dp"
                                 android:background="@drawable/btn_main"
                                 android:src="@drawable/ic_baseline_health_and_safety_24"
                                 android:text="@string/optimized_now"
@@ -112,7 +121,6 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="10dp"
                         app:cardCornerRadius="10dp"
-                        app:cardElevation="5dp"
                         app:cardUseCompatPadding="true"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/ramBLock"
@@ -128,6 +136,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentTop="true"
+                                android:layout_centerHorizontal="true"
                                 android:layout_marginStart="10dp"
                                 android:layout_marginTop="10dp"
                                 android:layout_marginEnd="10dp"
@@ -143,11 +152,10 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_below="@+id/tvLabelChargeHealth"
-                                android:layout_centerInParent="true"
+                                android:layout_centerHorizontal="true"
                                 android:layout_marginStart="10dp"
                                 android:layout_marginTop="10dp"
                                 android:layout_marginEnd="10dp"
-                                android:layout_marginBottom="10dp"
                                 android:gravity="center"
                                 android:text="@string/battery_health_good"
                                 android:textColor="@color/black"
@@ -159,7 +167,7 @@
                                 android:layout_height="30dp"
                                 android:layout_below="@id/tvContentHealth"
                                 android:layout_centerHorizontal="true"
-                                android:layout_gravity="bottom"
+                                android:layout_marginTop="10dp"
                                 android:src="@drawable/ic_baseline_health_and_safety_24"
                                 app:tint="@color/color_main" />
                         </RelativeLayout>
@@ -168,11 +176,10 @@
                     <androidx.cardview.widget.CardView
                         android:id="@+id/chargeType"
                         android:layout_width="0dp"
+                        android:layout_height="wrap_content"
                         android:layout_margin="10dp"
                         app:cardCornerRadius="10dp"
-                        app:cardElevation="5dp"
                         app:cardUseCompatPadding="true"
-                        android:layout_height="wrap_content"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/ramBLock"
                         app:layout_constraintWidth_percent="0.48">
@@ -187,6 +194,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentTop="true"
+                                android:layout_centerHorizontal="true"
                                 android:layout_marginStart="10dp"
                                 android:layout_marginTop="10dp"
                                 android:layout_marginEnd="10dp"
@@ -201,11 +209,10 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_below="@+id/tvLabelChargeCapacity"
-                                android:layout_centerInParent="true"
+                                android:layout_centerHorizontal="true"
                                 android:layout_marginStart="10dp"
                                 android:layout_marginTop="10dp"
                                 android:layout_marginEnd="10dp"
-                                android:layout_marginBottom="10dp"
                                 android:gravity="center"
                                 android:text="5000 mah"
                                 android:textColor="@color/black"
@@ -219,6 +226,7 @@
                                 android:layout_centerHorizontal="true"
                                 android:layout_gravity="bottom"
                                 android:layout_marginStart="10dp"
+                                android:layout_marginTop="10dp"
                                 android:src="@drawable/ic_baseline_insert_chart_outlined_24"
                                 app:tint="@color/color_main" />
                         </RelativeLayout>
@@ -230,7 +238,6 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="10dp"
                         app:cardCornerRadius="10dp"
-                        app:cardElevation="5dp"
                         app:cardUseCompatPadding="true"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/chargeHealth"
@@ -246,10 +253,10 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentTop="true"
+                                android:layout_centerHorizontal="true"
                                 android:layout_marginStart="10dp"
                                 android:layout_marginTop="10dp"
                                 android:layout_marginEnd="10dp"
-                                android:layout_marginBottom="10dp"
                                 android:gravity="center"
                                 android:text="@string/label_charge_tempurature"
                                 android:textColor="@color/color_gray"
@@ -260,11 +267,10 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_below="@+id/tvLabelChargeTemperature"
-                                android:layout_centerInParent="true"
+                                android:layout_centerHorizontal="true"
                                 android:layout_marginStart="10dp"
                                 android:layout_marginTop="10dp"
                                 android:layout_marginEnd="10dp"
-                                android:layout_marginBottom="10dp"
                                 android:gravity="center"
                                 android:text="30 'C"
                                 android:textColor="@color/black"
@@ -276,7 +282,7 @@
                                 android:layout_height="30dp"
                                 android:layout_below="@id/tvContentChargeTemperature"
                                 android:layout_centerHorizontal="true"
-                                android:layout_gravity="bottom"
+                                android:layout_marginTop="10dp"
                                 android:src="@drawable/ic_memory"
                                 app:tint="@color/color_main" />
                         </RelativeLayout>
@@ -288,7 +294,6 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="10dp"
                         app:cardCornerRadius="10dp"
-                        app:cardElevation="5dp"
                         app:cardUseCompatPadding="true"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/chargeHealth"
@@ -304,10 +309,11 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentTop="true"
+                                android:layout_centerHorizontal="true"
                                 android:layout_marginStart="10dp"
                                 android:layout_marginTop="10dp"
                                 android:layout_marginEnd="10dp"
-                                android:layout_marginBottom="10dp"
+
                                 android:gravity="center"
                                 android:text="@string/label_charge_type"
                                 android:textColor="@color/color_gray"
@@ -322,7 +328,6 @@
                                 android:layout_marginStart="10dp"
                                 android:layout_marginTop="10dp"
                                 android:layout_marginEnd="10dp"
-                                android:layout_marginBottom="10dp"
                                 android:gravity="center"
                                 android:text="LI-ON"
                                 android:textColor="@color/black"
@@ -336,6 +341,7 @@
                                 android:layout_centerHorizontal="true"
                                 android:layout_gravity="bottom"
                                 android:layout_marginStart="10dp"
+                                android:layout_marginTop="10dp"
                                 android:src="@drawable/ic_baseline_info_24"
                                 app:tint="@color/color_main" />
                         </RelativeLayout>
@@ -350,7 +356,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
 
             <FrameLayout
                 android:id="@+id/container"

@@ -160,4 +160,39 @@ object DialogUtil {
 			}
 		}
 	}
+
+	fun showConfirmationWatchAdDialog(
+		context: Context?,
+		okListener: (() -> Unit)? = null,
+		cancelListener: (() -> Unit)? = null,
+	) {
+		context?.run {
+			val dialog = Dialog(context)
+			dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+			dialog.window?.setBackgroundDrawableResource(R.color.transparent)
+			dialog.setContentView(R.layout.dialog_confirm_watch_ads)
+			dialog.setCancelable(false)
+
+			val btnOk = dialog.findViewById<TextView>(R.id.btn_ok)
+			val btnCancel = dialog.findViewById<TextView>(R.id.btn_cancel)
+
+			btnOk.setOnSafeClickListener {
+				if (dialog.isShowing) {
+					okListener?.invoke()
+					dialog.dismiss()
+				}
+			}
+
+			btnCancel.setOnSafeClickListener {
+				if (dialog.isShowing) {
+					cancelListener?.invoke()
+					dialog.dismiss()
+				}
+			}
+
+			if (!dialog.isShowing) {
+				dialog.show()
+			}
+		}
+	}
 }

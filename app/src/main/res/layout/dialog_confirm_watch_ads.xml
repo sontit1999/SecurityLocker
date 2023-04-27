@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/dimen_2x"
+    android:background="@drawable/bg_white_radius"
+    android:minWidth="@dimen/dimen_340"
+    android:paddingBottom="@dimen/dimen_10">
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lvView"
+        android:layout_width="130dp"
+        android:layout_height="130dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/gift" />
+
+    <com.ls.entertainment.securitylocker.custom.CustomTextView
+        android:id="@+id/lbl_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:gravity="center"
+        android:paddingHorizontal="@dimen/dimen_2x"
+        android:paddingTop="@dimen/dimen_2x"
+        android:text="@string/msg_confirm_watch_ads"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_18"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lvView" />
+
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/btn_ok"
+        style="@style/Button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="15dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/btn_main"
+        android:fontFamily="@font/opensan"
+        android:minWidth="@dimen/dimen_96"
+        android:text="@string/ok"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_14"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lbl_title" />
+
+    <com.ls.entertainment.securitylocker.custom.CustomTextView
+        android:id="@+id/btn_cancel"
+        style="@style/Button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/btn_white_not_radius"
+        android:minWidth="@dimen/dimen_96"
+        android:text="@string/cancel"
+        android:textAllCaps="false"
+        android:textColor="@color/color_gray"
+        android:textSize="@dimen/text_size_15"
+        app:layout_constraintEnd_toEndOf="@id/btn_ok"
+        app:layout_constraintStart_toStartOf="@id/btn_ok"
+        app:layout_constraintTop_toBottomOf="@id/btn_ok" />
+</androidx.constraintlayout.widget.ConstraintLayout>

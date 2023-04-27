@@ -12,11 +12,13 @@ import com.google.android.gms.ads.*
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.google.android.gms.ads.nativead.NativeAd
+import com.google.android.gms.ads.rewarded.RewardedAd
+import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 import com.ls.entertainment.securitylocker.App
 import com.ls.entertainment.securitylocker.custom.CustomNativeAdView
 import com.ls.entertainment.securitylocker.model.InterAdEvent
+import com.ls.entertainment.securitylocker.model.RewardAdEvent
 import com.ls.entertainment.securitylocker.utils.*
-
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import org.greenrobot.eventbus.EventBus
@@ -28,8 +30,11 @@ object AdManager {
 
 	private var isDoingLoadInter = false
 	private var interstitialAd: InterstitialAd? = null
+	private var rewardedAd: RewardedAd? = null
 	private var showedInterstitialLastTime = 0L
 	var isShowInterOrReward = false
+	private var isDoingLoadReward = false
+	private var userEarnReward = false
 
 	fun initialize() {
 		AppOpenAdManager.start()
@@ -80,6 +85,7 @@ object AdManager {
 	}
 
 	private fun isInterAvailable() = interstitialAd != null
+	private fun isRewardAvailable() = rewardedAd != null
 
 	private fun handleLoadInter() {
 		if (!RemoteConfig.commonConfig.supportInter || !RemoteConfig.commonConfig.isActiveAds) return
@@ -105,6 +111,33 @@ object AdManager {
 				}
 			})
 		isDoingLoadInter = true
+	}
+
+	private fun handleLoadReward() {
+		if (!RemoteConfig.commonConfig.supportReward || !RemoteConfig.commonConfig.isActiveAds) return
+		if (isRewardAvailable()) return
+		if (isDoingLoadReward) return
+		isDoingLoadReward = true
+		RewardedAd.load(App.instance,
+			RemoteConfig.commonConfig.rewardAdKey,
+			buildAdRequest(),
+			object : RewardedAdLoadCallback() {
+				override fun onAdLoaded(p0: RewardedAd) {
+					super.onAdLoaded(p0)
+					rewardedAd = p0
+					isDoingLoadReward = false
+					TrackingHelper.logEvent(AllEvents.E1_ADS_REWARD_LOAD_SUCCESS)
+					LogUtils.logCustomMessage("Reward ads load success")
+				}
+
+				override fun onAdFailedToLoad(p0: LoadAdError) {
+					super.onAdFailedToLoad(p0)
+					isDoingLoadReward = false
+					rewardedAd = null
+					TrackingHelper.logEvent(AllEvents.E1_ADS_REWARD_LOAD_FAIL)
+					LogUtils.logCustomMessage("Reward ads load fail:${p0.message}")
+				}
+			})
 	}
 
 	fun showInter(
@@ -159,6 +192,63 @@ object AdManager {
 				true
 			}
 		} else false
+	}
+
+	fun showRewarded(
+		onHidden: (() -> Unit)? = null
+	): Boolean {
+		userEarnReward = false
+		if (!RemoteConfig.commonConfig.supportReward || !RemoteConfig.commonConfig.isActiveAds) return false
+		val activity = AppOpenAdManager.currentActivity?.get()
+		activity ?: return false
+		return if (!isRewardAvailable()) {
+			TrackingHelper.logEvent(AllEvents.E1_ADS_REWARD_SHOW_FAIL_NO_ADS)
+			LogUtils.logCustomMessage("Inter show fail because inter = null")
+			handleLoadReward()
+			false
+		} else {
+			rewardedAd!!.fullScreenContentCallback = object : FullScreenContentCallback() {
+
+				override fun onAdClicked() {
+					super.onAdClicked()
+					TrackingHelper.logEvent(AllEvents.E1_ADS_REWARD_CLICKED)
+				}
+
+				override fun onAdFailedToShowFullScreenContent(p0: AdError) {
+					onHidden?.invoke()
+					EventBus.getDefault().post(RewardAdEvent(false, "Reward"))
+					rewardedAd = null
+					handleLoadReward()
+					TrackingHelper.logEvent(AllEvents.E1_ADS_REWARD_SHOW_FAIL)
+					LogUtils.logCustomMessage("Reward show fail ")
+				}
+
+				override fun onAdDismissedFullScreenContent() {
+					if (userEarnReward) onHidden?.invoke()
+					EventBus.getDefault().post(RewardAdEvent(false, "Reward"))
+					isShowInterOrReward = false
+					rewardedAd = null
+					handleLoadReward()
+					LogUtils.logCustomMessage("Reward dismiss ")
+				}
+
+				override fun onAdShowedFullScreenContent() {
+					isShowInterOrReward = true
+					TrackingHelper.logEvent(AllEvents.E1_ADS_REWARD_SHOW_SUCCESS)
+					EventBus.getDefault().post(RewardAdEvent(true, "Reward"))
+					LogUtils.logCustomMessage("Reward show success ")
+				}
+
+			}
+			rewardedAd!!.show(
+				activity
+			) {
+				userEarnReward = true
+				TrackingHelper.logEvent(AllEvents.E1_ADS_REWARD_USER_EARN_SUCCESS)
+			}
+			rewardedAd = null
+			true
+		}
 	}
 
 	fun updateLastTimeShowInter(lastTime: Long) {
@@ -254,6 +344,7 @@ object AdManager {
 
 	fun loadAdIfNeed(context: Context) {
 		handleLoadInter()
+		handleLoadReward()
 		AppOpenAdManager.loadAd(context)
 	}
 

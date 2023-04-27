@@ -99,4 +99,6 @@
     <string name="fail_setwallpaper_message">Fail to set wallpaper. Sorry and You try again.Thanks</string>
     <string name="congratulation_set_wallpaper_success">Congratulations, you have successfully set the wallpaper</string>
     <string name="fail_crop_image">Crop image fail</string>
+    <string name="loading_ad">Ad loading ...</string>
+    <string name="msg_confirm_watch_ads">You need to watch the short video to be able to download this wallpaper. Thank</string>
 </resources>

@@ -13,9 +13,21 @@
             android:scaleType="centerCrop"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0"
             app:srcCompat="@drawable/bg_lock_sample" />
+
+        <FrameLayout
+            android:id="@+id/nativeAdView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ivSetting" />
 
         <com.ls.entertainment.securitylocker.custom.CustomTextView
             android:id="@+id/tvHelp"
@@ -36,13 +48,13 @@
         <com.andrognito.patternlockview.PatternLockView
             android:id="@+id/patternLockView"
             android:layout_width="0dp"
-            android:visibility="visible"
             android:layout_height="0dp"
+            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintWidth_percent="0.8" />
+            app:layout_constraintWidth_percent="0.7" />
 
         <com.andrognito.pinlockview.IndicatorDots
             android:id="@+id/indicator_dots"
@@ -58,8 +70,8 @@
         <com.andrognito.pinlockview.PinLockView
             android:id="@+id/patternPinLockView"
             android:layout_width="0dp"
-            android:visibility="gone"
             android:layout_height="0dp"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toEndOf="parent"
@@ -72,6 +84,7 @@
             android:layout_height="48dp"
             android:layout_margin="10dp"
             android:padding="10dp"
+            android:background="@drawable/btn_main"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/baseline_more_vert_24"

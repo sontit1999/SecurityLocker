@@ -68,6 +68,7 @@ object AppOpenAdManager : Application.ActivityLifecycleCallbacks, LifecycleObser
 				override fun onAdFailedToLoad(loadAdError: LoadAdError) {
 					// Called when an app open ad has failed to load.
 					LogUtils.logCustomMessage("Open ad load fail : " + loadAdError.message)
+					appOpenAd = null
 					isLoadingAd = false
 					TrackingHelper.logEvent(AllEvents.E1_ADS_OPEN_ADS_LOAD_FAIL)
 				}
@@ -126,6 +127,7 @@ object AppOpenAdManager : Application.ActivityLifecycleCallbacks, LifecycleObser
 
 			override fun onAdShowedFullScreenContent() {
 				RxBus.push(OpenAdEvent(true))
+				appOpenAd = null
 				isShowingAd = true
 				// Called when fullscreen content is shown.
 				LogUtils.logCustomMessage("Open Ads: onAdShowedFullScreenContent")

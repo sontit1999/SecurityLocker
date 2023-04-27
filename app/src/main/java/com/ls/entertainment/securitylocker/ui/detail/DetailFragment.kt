@@ -11,6 +11,7 @@ import com.ls.entertainment.securitylocker.App
 import com.ls.entertainment.securitylocker.R
 import com.ls.entertainment.securitylocker.adapter.WallpaperAdapter
 import com.ls.entertainment.securitylocker.adapter.WallpaperModel
+import com.ls.entertainment.securitylocker.ads.AdManager
 import com.ls.entertainment.securitylocker.databinding.FragDetailBinding
 import com.ls.entertainment.securitylocker.di.ApiInterface
 import com.ls.entertainment.securitylocker.utils.*
@@ -37,14 +38,27 @@ class DetailFragment : BaseFragment<FragDetailBinding, DetailViewModel>(R.layout
 		binding.container.setOnClickListener { }
 
 		binding.ivBack.setOnSafeClickListener {
-			requireActivity().onBackPressed()
+			if (!AdManager.showInter(false, TAG, onHidden = {
+					requireActivity().onBackPressed()
+				})) {
+				requireActivity().onBackPressed()
+			}
 		}
 
 		binding.ivSetting.setOnSafeClickListener {
 			if (NetworkListener.isNetWorkConnected()) {
-				viewModel.downLoadImage(
-					adapter?.listWallpaper?.get(binding.viewPager.currentItem)?.url ?: ""
-				)
+				DialogUtil.showConfirmationWatchAdDialog(requireContext(), okListener = {
+					if (!AdManager.showRewarded(onHidden = {
+							viewModel.downLoadImage(
+								adapter?.listWallpaper?.get(binding.viewPager.currentItem)?.url
+									?: ""
+							)
+						})) {
+						viewModel.downLoadImage(
+							adapter?.listWallpaper?.get(binding.viewPager.currentItem)?.url ?: ""
+						)
+					}
+				})
 			} else {
 				DialogUtil.showConfirmationNetworkDialog(requireContext())
 			}
@@ -98,6 +112,7 @@ class DetailFragment : BaseFragment<FragDetailBinding, DetailViewModel>(R.layout
 		super.viewCreated(savedInstanceState)
 		viewModel.init(apiInterface)
 		initViewPager()
+		AdManager.loadBanner(binding.containerAds)
 	}
 
 	private fun initViewPager() {
@@ -114,11 +129,13 @@ class DetailFragment : BaseFragment<FragDetailBinding, DetailViewModel>(R.layout
 
 	override fun onDestroy() {
 		super.onDestroy()
+		LogUtils.logCustomMessage("================ onDestroy Detail")
 		onClear()
 	}
 
 	companion object {
 		private const val KEY_CURRENT_POS = "current_pos"
+		const val TAG = "DetailFragment"
 
 		fun newInstance(pos: Int, list: MutableList<WallpaperModel>): DetailFragment {
 			AppSessionManager.listWallpaperDetail.clear()

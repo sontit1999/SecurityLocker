@@ -95,7 +95,7 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
 	}
 
 	private fun handleOpenFromFastCharge() {
-		addFragment(BatterySaverFragment())
+		addFragment(BatterySaverFragment.newInstance(BatterySaverFragment.TYPE_OPTIMIZE_BATTERY))
 	}
 
 	private fun handleOpenFromUnlock() {

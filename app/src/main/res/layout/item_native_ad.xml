@@ -8,13 +8,14 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
+        android:background="@color/bg_banner_ad"
+        android:padding="5dp"
         android:layout_height="wrap_content">
 
         <com.ls.entertainment.securitylocker.custom.CustomNativeAdView
             android:id="@+id/nativeLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="7dp"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

@@ -146,7 +146,7 @@ object AdManager {
 		if (!RemoteConfig.commonConfig.supportInter || !RemoteConfig.commonConfig.isActiveAds) return false
 		val activity = AppOpenAdManager.currentActivity?.get()
 		activity ?: return false
-		return if (canShowInter || isForced) {
+		return if ((canShowInter || isForced) && !isShowInterOrReward && !AppOpenAdManager.isShowingAd) {
 			if (interstitialAd == null) {
 				TrackingHelper.logEvent(AllEvents.E1_ADS_INTER_SHOW_FAIL_NO_ADS)
 				LogUtils.logCustomMessage("Inter show fail because inter = null")
@@ -201,7 +201,7 @@ object AdManager {
 		if (!RemoteConfig.commonConfig.supportReward || !RemoteConfig.commonConfig.isActiveAds) return false
 		val activity = AppOpenAdManager.currentActivity?.get()
 		activity ?: return false
-		return if (!isRewardAvailable()) {
+		return if (!isRewardAvailable() || isShowInterOrReward || AppOpenAdManager.isShowingAd) {
 			TrackingHelper.logEvent(AllEvents.E1_ADS_REWARD_SHOW_FAIL_NO_ADS)
 			LogUtils.logCustomMessage("Inter show fail because inter = null")
 			handleLoadReward()
@@ -337,8 +337,8 @@ object AdManager {
 	private fun buildAdRequest(): AdRequest {
 		val extras = Bundle()
 		return AdRequest.Builder().addNetworkExtrasBundle(
-				AdMobAdapter::class.java, extras
-			).build()
+			AdMobAdapter::class.java, extras
+		).build()
 	}
 	//endregion
 

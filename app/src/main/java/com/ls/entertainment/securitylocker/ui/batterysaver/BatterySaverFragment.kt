@@ -27,6 +27,9 @@ import com.ls.entertainment.securitylocker.R
 import com.ls.entertainment.securitylocker.ads.AdManager
 import com.ls.entertainment.securitylocker.databinding.FragBatterySaverBinding
 import com.ls.entertainment.securitylocker.extension.canDrawOverlay
+import com.ls.entertainment.securitylocker.model.OpenAdEvent
+import com.ls.entertainment.securitylocker.service.ACTION_BOOSTED_SUCCESS
+import com.ls.entertainment.securitylocker.service.BoostedRamService
 import com.ls.entertainment.securitylocker.service.LockService
 import com.ls.entertainment.securitylocker.utils.*
 import kotlinx.coroutines.CoroutineScope
@@ -38,14 +41,28 @@ import kotlinx.coroutines.launch
 class BatterySaverFragment :
 	BaseFragment<FragBatterySaverBinding, BatterySaverViewModel>(R.layout.frag_battery_saver) {
 
+	var typeOptimize = TYPE_OPTIMIZE_BATTERY
+
 	private val receiver = object : BroadcastReceiver() {
 		override fun onReceive(p0: Context?, p1: Intent?) {
 			LogUtils.logCustomMessage(LockService.TAG, "receiver ${p1?.action} in lock service")
 			when (p1?.action) {
 				Intent.ACTION_BATTERY_CHANGED -> handleBatteryChange(p1)
+				ACTION_BOOSTED_SUCCESS        -> handleBoostedSuccess(p1)
 			}
 		}
 
+	}
+
+	private fun handleBoostedSuccess(p1: Intent) {
+		/*viewModel.viewModelScope.launch {
+			delay(2000)
+			if (!AdManager.showInter(true, TAG, onHidden = {
+					requireActivity().onBackPressed()
+				})) {
+				requireActivity().onBackPressed()
+			}
+		}*/
 	}
 
 	private val viewModel: BatterySaverViewModel by viewModels()
@@ -70,6 +87,11 @@ class BatterySaverFragment :
 
 			})
 		}
+	}
+
+	private fun startBoosted() {
+		BoostedRamService.cancel()
+		BoostedRamService.schedule()
 	}
 
 	private fun startAnimationScanApp() {
@@ -112,13 +134,30 @@ class BatterySaverFragment :
 		}
 	}
 
+	private fun handleBoosted() {
+		startBoosted()
+	}
+
+	override fun bindingStateView() {
+		super.bindingStateView()
+		RxBus.subscribe(TAG, OpenAdEvent::class) {
+			if (it.isShow) {
+				binding.containerAds.gone()
+			} else binding.containerAds.visible()
+		}
+	}
+
 
 	private fun handleSaverBattery() {
 		binding.animScan.gone()
 		binding.animSaverBattery.visible()
 		binding.ivApp.visible()
 		binding.animSaverBattery.apply {
-			setAnimation(R.raw.scan)
+			setAnimation(
+				if (typeOptimize == TYPE_OPTIMIZE_BATTERY) {
+					R.raw.scan
+				} else R.raw.rocket
+			)
 			removeAllAnimatorListeners()
 			cancelAnimation()
 			repeatCount = 4
@@ -127,7 +166,11 @@ class BatterySaverFragment :
 				override fun onAnimationStart(p0: Animator) {
 					binding.tvTitle.text = getString(R.string.optimizing)
 					bindViewAvatar()
-					saverBattery()
+					if (typeOptimize == TYPE_OPTIMIZE_BATTERY) {
+						saverBattery()
+					} else if (typeOptimize == TYPE_OPTIMIZE_BOOSTER) {
+						startBoosted()
+					}
 				}
 
 				override fun onAnimationEnd(p0: Animator) {
@@ -155,6 +198,15 @@ class BatterySaverFragment :
 		binding.tvProcess.gone()
 		binding.ivApp.gone()
 		binding.tvTitle.text = getString(R.string.opimize_battery_success)
+
+		viewModel.viewModelScope.launch {
+			delay(1500)
+			if (!AdManager.showInter(true, TAG, onHidden = {
+					requireActivity().onBackPressed()
+				})) {
+				requireActivity().onBackPressed()
+			}
+		}
 	}
 
 	private fun bindViewAvatar() {
@@ -180,12 +232,17 @@ class BatterySaverFragment :
 		super.bindingAction()
 		binding.container.setOnClickListener { }
 		binding.ivBack.setOnSafeClickListener {
-			requireActivity().onBackPressed()
+			if (!AdManager.showInter(true, TAG, onHidden = {
+					requireActivity().onBackPressed()
+				})) {
+				requireActivity().onBackPressed()
+			}
 		}
 	}
 
 	private fun registerBroadCast() {
 		val intentFilter = IntentFilter(Intent.ACTION_BATTERY_CHANGED)
+		intentFilter.addAction(ACTION_BOOSTED_SUCCESS)
 		requireActivity().registerReceiver(receiver, intentFilter)
 	}
 
@@ -196,11 +253,15 @@ class BatterySaverFragment :
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		registerBroadCast()
+		arguments?.let {
+			typeOptimize = it.getInt(KEY_TYPE_OPTIMIZE, TYPE_OPTIMIZE_BATTERY)
+		}
 	}
 
 	override fun onDestroy() {
 		super.onDestroy()
 		unRegisterBroadCast()
+		RxBus.unregister(TAG)
 	}
 
 	@RequiresApi(Build.VERSION_CODES.M)
@@ -445,7 +506,19 @@ class BatterySaverFragment :
 	}
 
 	companion object {
+		const val TAG = "BatterySave"
 		const val RC_WRITE_SETTINGS = 256
 		private const val RC_DRAW_OVERLAY = 257
+		const val KEY_TYPE_OPTIMIZE = "key_optimize"
+		const val TYPE_OPTIMIZE_BATTERY = 888
+		const val TYPE_OPTIMIZE_BOOSTER = 999
+
+		fun newInstance(typeOptimize: Int): BatterySaverFragment {
+			val fragment = BatterySaverFragment()
+			val bundle = Bundle()
+			bundle.putInt(KEY_TYPE_OPTIMIZE, typeOptimize)
+			fragment.arguments = bundle
+			return fragment
+		}
 	}
 }

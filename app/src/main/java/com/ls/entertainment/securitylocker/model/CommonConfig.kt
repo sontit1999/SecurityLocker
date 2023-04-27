@@ -81,10 +81,10 @@ class CommonConfig {
 	var numberOfNativeDisplay: Long = 4
 
 	@SerializedName(value = "posAddNativeStart")
-	var posAddNativeStart: Int = 2
+	var posAddNativeStart: Int = 1
 
 	@SerializedName(value = "distanceNativeAd")
-	var distanceNativeAd: Int = 10
+	var distanceNativeAd: Int = 6
 
 	@SerializedName(value = "listImage")
 	var listImage: String =

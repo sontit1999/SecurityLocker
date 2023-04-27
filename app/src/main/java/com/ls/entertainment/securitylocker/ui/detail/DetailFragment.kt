@@ -7,6 +7,8 @@ import androidx.viewpager2.widget.ViewPager2
 import com.entertainment.basemvvmproject.base.BaseFragment
 import com.entertainment.basemvvmproject.utils.DeviceUtil
 import com.entertainment.basemvvmproject.utils.RealPathUtil
+import com.entertainment.basemvvmproject.utils.gone
+import com.entertainment.basemvvmproject.utils.visible
 import com.ls.entertainment.securitylocker.App
 import com.ls.entertainment.securitylocker.R
 import com.ls.entertainment.securitylocker.adapter.WallpaperAdapter
@@ -14,6 +16,7 @@ import com.ls.entertainment.securitylocker.adapter.WallpaperModel
 import com.ls.entertainment.securitylocker.ads.AdManager
 import com.ls.entertainment.securitylocker.databinding.FragDetailBinding
 import com.ls.entertainment.securitylocker.di.ApiInterface
+import com.ls.entertainment.securitylocker.model.OpenAdEvent
 import com.ls.entertainment.securitylocker.utils.*
 import com.yalantis.ucrop.UCrop
 import dagger.hilt.android.AndroidEntryPoint
@@ -106,6 +109,12 @@ class DetailFragment : BaseFragment<FragDetailBinding, DetailViewModel>(R.layout
 				showToast(getString(R.string.download_image_fail))
 			}
 		}
+
+		RxBus.subscribe(TAG, OpenAdEvent::class) {
+			if (it.isShow) {
+				binding.containerAds.gone()
+			} else binding.containerAds.visible()
+		}
 	}
 
 	override fun viewCreated(savedInstanceState: Bundle?) {
@@ -130,6 +139,7 @@ class DetailFragment : BaseFragment<FragDetailBinding, DetailViewModel>(R.layout
 	override fun onDestroy() {
 		super.onDestroy()
 		LogUtils.logCustomMessage("================ onDestroy Detail")
+		RxBus.unregister(TAG)
 		onClear()
 	}
 

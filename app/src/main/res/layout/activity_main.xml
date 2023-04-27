@@ -30,13 +30,13 @@
         <FrameLayout
             android:id="@+id/containerAds"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="wrap_content"
             android:background="@color/bg_banner_ad"
             app:layout_constraintBottom_toBottomOf="parent">
 
             <com.ls.entertainment.securitylocker.custom.CustomTextView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="50dp"
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:text="@string/loading_ad"

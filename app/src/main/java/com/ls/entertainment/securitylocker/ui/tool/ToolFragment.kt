@@ -152,7 +152,11 @@ class ToolFragment : BaseFragment<FragToolBinding, ToolViewModel>(R.layout.frag_
 	override fun bindingAction() {
 		super.bindingAction()
 		binding.btnOptimizeRam.setOnSafeClickListener {
-			(requireActivity() as? MainActivity?)?.addFragment(BatterySaverFragment())
+			(requireActivity() as? MainActivity?)?.addFragment(
+				BatterySaverFragment.newInstance(
+					BatterySaverFragment.TYPE_OPTIMIZE_BOOSTER
+				)
+			)
 		}
 	}
 

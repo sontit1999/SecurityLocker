@@ -38,6 +38,7 @@ class ScheduleRestartServiceEveryDayWorker(
 	companion object {
 		const val TAGS = "ScheduleRestartServiceEveryDayWorker"
 		fun schedule() {
+			LogUtils.logCustomMessage("schedule ScheduleRestartServiceEveryDayWorker")
 			val constraints =
 				Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
 			val delta = 24 * 60 * 60 * 1000L

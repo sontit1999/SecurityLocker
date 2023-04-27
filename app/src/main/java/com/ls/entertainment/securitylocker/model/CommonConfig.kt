@@ -51,19 +51,19 @@ class CommonConfig {
 	var versionCodeForReview: Int = 0
 
 	@SerializedName(value = "openAdKey")
-	var openAdKey: String = "ca-app-pub-4945756407745123/8802590615"
+	var openAdKey: String = "ca-app-pub-4945756407745123/4489203833"
 
 	@SerializedName(value = "bannerAdKey")
-	var bannerAdKey: String = "ca-app-pub-4945756407745123/1022660170"
+	var bannerAdKey: String = "ca-app-pub-4945756407745123/8428448848"
 
 	@SerializedName(value = "interAdKey")
-	var interAdKey: String = "ca-app-pub-4945756407745123/3952507047"
+	var interAdKey: String = "ca-app-pub-4945756407745123/1527998570"
 
 	@SerializedName(value = "nativeAdKey")
-	var nativeAdKey: String = "ca-app-pub-4945756407745123/4041218524"
+	var nativeAdKey: String = "ca-app-pub-4945756407745123/8380309398"
 
 	@SerializedName(value = "rewardAdKey")
-	var rewardAdKey: String = "ca-app-pub-4945756407745123/2639425375"
+	var rewardAdKey: String = "ca-app-pub-4945756407745123/1567489033"
 
 	@SerializedName(value = "bannerAdKeyApplovin")
 	var bannerAdKeyApplovin: String = "7e9d282524e92738"

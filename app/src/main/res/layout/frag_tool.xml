@@ -109,12 +109,11 @@
                     <androidx.cardview.widget.CardView
                         android:id="@+id/chargeHealth"
                         android:layout_width="0dp"
-                        android:layout_height="0dp"
+                        android:layout_height="wrap_content"
                         android:layout_margin="10dp"
                         app:cardCornerRadius="10dp"
                         app:cardElevation="5dp"
                         app:cardUseCompatPadding="true"
-                        app:layout_constraintDimensionRatio="1:1"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/ramBLock"
                         app:layout_constraintWidth_percent="0.48">
@@ -161,10 +160,6 @@
                                 android:layout_below="@id/tvContentHealth"
                                 android:layout_centerHorizontal="true"
                                 android:layout_gravity="bottom"
-                                android:layout_marginStart="10dp"
-                                android:layout_marginTop="10dp"
-                                android:layout_marginEnd="129dp"
-                                android:layout_marginBottom="10dp"
                                 android:src="@drawable/ic_baseline_health_and_safety_24"
                                 app:tint="@color/color_main" />
                         </RelativeLayout>
@@ -173,12 +168,11 @@
                     <androidx.cardview.widget.CardView
                         android:id="@+id/chargeType"
                         android:layout_width="0dp"
-                        android:layout_height="0dp"
                         android:layout_margin="10dp"
                         app:cardCornerRadius="10dp"
                         app:cardElevation="5dp"
                         app:cardUseCompatPadding="true"
-                        app:layout_constraintDimensionRatio="1:1"
+                        android:layout_height="wrap_content"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/ramBLock"
                         app:layout_constraintWidth_percent="0.48">
@@ -225,7 +219,6 @@
                                 android:layout_centerHorizontal="true"
                                 android:layout_gravity="bottom"
                                 android:layout_marginStart="10dp"
-                                android:layout_marginTop="10dp"
                                 android:src="@drawable/ic_baseline_insert_chart_outlined_24"
                                 app:tint="@color/color_main" />
                         </RelativeLayout>
@@ -234,12 +227,11 @@
                     <androidx.cardview.widget.CardView
                         android:id="@+id/chargeTemperature"
                         android:layout_width="0dp"
-                        android:layout_height="0dp"
+                        android:layout_height="wrap_content"
                         android:layout_margin="10dp"
                         app:cardCornerRadius="10dp"
                         app:cardElevation="5dp"
                         app:cardUseCompatPadding="true"
-                        app:layout_constraintDimensionRatio="1:1"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/chargeHealth"
                         app:layout_constraintWidth_percent="0.48">
@@ -285,10 +277,6 @@
                                 android:layout_below="@id/tvContentChargeTemperature"
                                 android:layout_centerHorizontal="true"
                                 android:layout_gravity="bottom"
-                                android:layout_marginStart="10dp"
-                                android:layout_marginTop="10dp"
-                                android:layout_marginEnd="129dp"
-                                android:layout_marginBottom="10dp"
                                 android:src="@drawable/ic_memory"
                                 app:tint="@color/color_main" />
                         </RelativeLayout>
@@ -297,12 +285,11 @@
                     <androidx.cardview.widget.CardView
                         android:id="@+id/chargeCapacity"
                         android:layout_width="0dp"
-                        android:layout_height="0dp"
+                        android:layout_height="wrap_content"
                         android:layout_margin="10dp"
                         app:cardCornerRadius="10dp"
                         app:cardElevation="5dp"
                         app:cardUseCompatPadding="true"
-                        app:layout_constraintDimensionRatio="1:1"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/chargeHealth"
                         app:layout_constraintWidth_percent="0.48">
@@ -349,9 +336,6 @@
                                 android:layout_centerHorizontal="true"
                                 android:layout_gravity="bottom"
                                 android:layout_marginStart="10dp"
-                                android:layout_marginTop="10dp"
-                                android:layout_marginEnd="129dp"
-                                android:layout_marginBottom="10dp"
                                 android:src="@drawable/ic_baseline_info_24"
                                 app:tint="@color/color_main" />
                         </RelativeLayout>

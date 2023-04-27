@@ -12,6 +12,7 @@ import androidx.lifecycle.viewModelScope
 import com.entertainment.basemvvmproject.base.BaseActivity
 import com.ls.entertainment.securitylocker.App.Companion.typeSetWallpaper
 import com.ls.entertainment.securitylocker.adapter.MainViewPagerAdapter
+import com.ls.entertainment.securitylocker.ads.AdManager
 import com.ls.entertainment.securitylocker.databinding.ActivityMainBinding
 import com.ls.entertainment.securitylocker.extension.canDrawOverlay
 import com.ls.entertainment.securitylocker.extension.requestDrawOverlayPermission
@@ -41,12 +42,27 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		EventBus.getDefault().register(this)
+		AdManager.initialize()
 		startLockService(this)
 		getDataFromIntent()
 		checkPermissionApp()
 		initViewPager()
 		bindingAction()
 		setUpObserver()
+		scheduleLoadAd()
+	}
+
+	private fun scheduleLoadAd() {
+		viewModel.viewModelScope.launch {
+			while (true) {
+				delay(10000)
+				if (!NetworkListener.isNetWorkConnected()) {
+					return@launch
+				}
+				AdManager.loadAdIfNeed(this@MainActivity)
+				LogUtils.logCustomMessage("handle Load ads")
+			}
+		}
 	}
 
 	private fun setUpObserver() {
@@ -96,42 +112,42 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
 		binding.bottomNavigation.setOnItemSelectedListener { item ->
 			checkPermissionApp()
 			when (item.itemId) {
-				R.id.menu_app   -> {
+				R.id.menu_app     -> {
 					binding.viewPager.setCurrentItem(0, true)
 					true
 				}
-				
-				R.id.menu_tool -> {
+
+				R.id.menu_tool    -> {
 					binding.viewPager.setCurrentItem(1, true)
 					true
 				}
-				
-				R.id.menu_theme -> {
+
+				R.id.menu_theme   -> {
 					binding.viewPager.setCurrentItem(2, true)
 					true
 				}
-				
+
 				R.id.menu_setting -> {
 					binding.viewPager.setCurrentItem(3, true)
 					true
 				}
-				
-				else -> false
+
+				else              -> false
 			}
 		}
 	}
-	
+
 	private fun checkPermissionApp() {
 		checkCanOverlayPermission()
 		checkUsagePermission()
 	}
-	
+
 	private fun initViewPager() {
 		binding.viewPager.adapter = MainViewPagerAdapter(this)
 		binding.viewPager.isUserInputEnabled = false
 		binding.viewPager.offscreenPageLimit = 3
 	}
-	
+
 	private fun checkCanOverlayPermission() {
 		if (!canDrawOverlay()) {
 			showDrawOverlayPermissionDescDialog(onOkListener = {
@@ -139,17 +155,17 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
 					this, 999
 				)
 			}, onCancelListener = {
-			
+
 			})
 		}
 	}
-	
+
 	private fun checkUsagePermission() {
 		if (checkUsageStatsPermission()) {
 			EventBus.getDefault().post(RefreshUsage())
 		} else showDialogRequestPermissionUsage()
 	}
-	
+
 	private fun showDialogRequestPermissionUsage() {
 		showAccessDataUsagePermissionDialog(onOkListener = {
 			requestPermissionUsage()
@@ -157,22 +173,21 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
 			showToast(getString(R.string.you_must_allow_permission))
 		})
 	}
-	
+
 	private fun requestPermissionUsage() {
 		Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS).apply {
 			startActivity(this)
 		}
 	}
-	
-	
+
+
 	@Subscribe
 	fun checkPermissionEvent(checkPermissionEvent: CheckPermissionEvent) {
 		checkPermissionApp()
 	}
-	
+
 	override fun onRequestPermissionsResult(
-		requestCode: Int,
-		permissions: Array<out String>, grantResults: IntArray
+		requestCode: Int, permissions: Array<out String>, grantResults: IntArray
 	) {
 		super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 		LogUtils.logCustomMessage("onRequestPermissionsResult")
@@ -217,6 +232,8 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
 	override fun onDestroy() {
 		super.onDestroy()
 		EventBus.getDefault().unregister(this)
+		AdManager.destroyAll()
+		SharePreferenceUtils.getInstance().canShowOpenAd = false
 	}
 
 

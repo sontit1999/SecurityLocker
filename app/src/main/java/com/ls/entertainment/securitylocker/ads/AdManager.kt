@@ -8,7 +8,15 @@ import android.widget.FrameLayout
 import com.entertainment.basemvvmproject.utils.gone
 import com.entertainment.basemvvmproject.utils.visible
 import com.google.ads.mediation.admob.AdMobAdapter
-import com.google.android.gms.ads.*
+import com.google.android.gms.ads.AdError
+import com.google.android.gms.ads.AdListener
+import com.google.android.gms.ads.AdLoader
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdSize
+import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.FullScreenContentCallback
+import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.VideoOptions
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.google.android.gms.ads.nativead.NativeAd
@@ -18,7 +26,11 @@ import com.ls.entertainment.securitylocker.App
 import com.ls.entertainment.securitylocker.custom.CustomNativeAdView
 import com.ls.entertainment.securitylocker.model.InterAdEvent
 import com.ls.entertainment.securitylocker.model.RewardAdEvent
-import com.ls.entertainment.securitylocker.utils.*
+import com.ls.entertainment.securitylocker.utils.AllEvents
+import com.ls.entertainment.securitylocker.utils.AppConfig
+import com.ls.entertainment.securitylocker.utils.LogUtils
+import com.ls.entertainment.securitylocker.utils.RemoteConfig
+import com.ls.entertainment.securitylocker.utils.TrackingHelper
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import org.greenrobot.eventbus.EventBus
@@ -324,16 +336,49 @@ object AdManager {
 				)
 				TrackingHelper.logEvent(AllEvents.E1_ADS_NATIVE_LOAD_FAIL)
 			}
-
+			
 			override fun onAdLoaded() {
 				TrackingHelper.logEvent(AllEvents.E1_ADS_NATIVE_LOAD_SUCCESS)
 				LogUtils.logCustomMessage("Native Ad load success")
 			}
-
+			
 		}).build()
 		adLoader.loadAd(buildAdRequest())
 	}
-
+	
+	fun loadNativeAdInLock(view: FrameLayout) {
+		val builder = AdLoader.Builder(App.instance, RemoteConfig.commonConfig.nativeAdKey)
+		val videoOptions = VideoOptions.Builder().setStartMuted(true).build()
+		val adOptions = com.google.android.gms.ads.nativead.NativeAdOptions.Builder()
+			.setVideoOptions(videoOptions).build()
+		
+		builder.forNativeAd { unifiedNativeAd ->
+			view.visible()
+			val customNativeAdView = CustomNativeAdView(view.context)
+			customNativeAdView.binDataNativeAds(unifiedNativeAd)
+			view.removeAllViews()
+			view.addView(customNativeAdView)
+		}.withNativeAdOptions(adOptions)
+		
+		val adLoader = builder.withAdListener(object : AdListener() {
+			
+			override fun onAdFailedToLoad(p0: LoadAdError) {
+				view.gone()
+				LogUtils.logCustomMessage(
+					"Native Ad load fail: ${p0.message}"
+				)
+				TrackingHelper.logEvent(AllEvents.E1_ADS_NATIVE_LOAD_FAIL)
+			}
+			
+			override fun onAdLoaded() {
+				TrackingHelper.logEvent(AllEvents.E1_ADS_NATIVE_LOAD_SUCCESS)
+				LogUtils.logCustomMessage("Native Ad load success")
+			}
+			
+		}).build()
+		adLoader.loadAd(buildAdRequest())
+	}
+	
 	private fun buildAdRequest(): AdRequest {
 		val extras = Bundle()
 		return AdRequest.Builder().addNetworkExtrasBundle(

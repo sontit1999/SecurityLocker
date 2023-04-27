@@ -163,7 +163,7 @@ class LockService : Service() {
 		if (isCharging) {
 			if (batteryPct >= 99) {
 				NotificationCenter.pushFullBatteryNotify()
-				mediaPlayer?.start()
+				// mediaPlayer?.start()
 			}
 		}
 

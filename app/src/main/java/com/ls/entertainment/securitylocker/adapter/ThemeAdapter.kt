@@ -52,7 +52,7 @@ class ThemeAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 			if (index == posAddNativeStart) {
 				listData.add(pictureModel)
 				listData.add(WallpaperModel(1, NAME_NATIVE_ADS, "", false))
-				posAddNativeStart += RemoteConfig.commonConfig.distanceNativeInList
+				posAddNativeStart += RemoteConfig.commonConfig.distanceNativeAd
 			} else {
 				listData.add(pictureModel)
 			}

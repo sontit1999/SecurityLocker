@@ -32,21 +32,21 @@ class SharePreferenceUtils constructor(context: Context) {
             editor.putInt("indexNotification", i)
             editor.commit()
         }
-
+    
     var enableNotification: Boolean
         get() = pre.getBoolean("enableNotification", true)
         set(i) {
             editor.putBoolean("enableNotification", i)
             editor.commit()
         }
-
-    var isSetupLanguage: Boolean
-        get() = pre.getBoolean("isSetupLanguage", false)
+    
+    var isSetupPass: Boolean
+        get() = pre.getBoolean("isSetupPass", false)
         set(i) {
-            editor.putBoolean("isSetupLanguage", i)
+            editor.putBoolean("isSetupPass", i)
             editor.commit()
         }
-
+    
     var canShowOpenAd: Boolean
         get() = pre.getBoolean("canShowOpenAd", false)
         set(i) {
@@ -60,21 +60,28 @@ class SharePreferenceUtils constructor(context: Context) {
             editor.putString("lastPackageLock", i)
             editor.commit()
         }
-
+    
     var pathImageLock: String?
         get() = pre.getString("pathImageLock", null)
         set(i) {
             editor.putString("pathImageLock", i)
             editor.commit()
         }
-
+    
+    var passWord: String?
+        get() = pre.getString("passWord", null)
+        set(i) {
+            editor.putString("passWord", i)
+            editor.commit()
+        }
+    
     fun setListPackageLock(list: ArrayList<String>) {
         val gson = Gson()
         val json = gson.toJson(list)//converting list to Json
         editor.putString("listPackageLock", json)
         editor.commit()
     }
-
+    
     //getting the list from shared preference
     fun getListPackageLock(): ArrayList<String> {
         val gson = Gson()

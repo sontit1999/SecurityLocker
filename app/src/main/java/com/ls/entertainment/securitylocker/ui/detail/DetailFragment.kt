@@ -17,7 +17,15 @@ import com.ls.entertainment.securitylocker.ads.AdManager
 import com.ls.entertainment.securitylocker.databinding.FragDetailBinding
 import com.ls.entertainment.securitylocker.di.ApiInterface
 import com.ls.entertainment.securitylocker.model.OpenAdEvent
-import com.ls.entertainment.securitylocker.utils.*
+import com.ls.entertainment.securitylocker.utils.AppConfig
+import com.ls.entertainment.securitylocker.utils.AppSessionManager
+import com.ls.entertainment.securitylocker.utils.AppUtils
+import com.ls.entertainment.securitylocker.utils.DialogUtil
+import com.ls.entertainment.securitylocker.utils.LogUtils
+import com.ls.entertainment.securitylocker.utils.NetworkListener
+import com.ls.entertainment.securitylocker.utils.RxBus
+import com.ls.entertainment.securitylocker.utils.WallpaperUtils
+import com.ls.entertainment.securitylocker.utils.setOnSafeClickListener
 import com.yalantis.ucrop.UCrop
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
@@ -146,13 +154,23 @@ class DetailFragment : BaseFragment<FragDetailBinding, DetailViewModel>(R.layout
 	companion object {
 		private const val KEY_CURRENT_POS = "current_pos"
 		const val TAG = "DetailFragment"
-
-		fun newInstance(pos: Int, list: MutableList<WallpaperModel>): DetailFragment {
+		
+		fun newInstance(
+			pos: Int,
+			list: MutableList<WallpaperModel>,
+			item: WallpaperModel
+		): DetailFragment {
 			AppSessionManager.listWallpaperDetail.clear()
-			AppSessionManager.listWallpaperDetail.addAll(list)
+			AppSessionManager.listWallpaperDetail.addAll(AppUtils.removeNativeItem(list))
+			var currentPos = 0
+			AppSessionManager.listWallpaperDetail.forEachIndexed { index, wallpaperModel ->
+				if (item.url == wallpaperModel.url) {
+					currentPos = index
+				}
+			}
 			val fragment = DetailFragment()
 			val bundle = Bundle()
-			bundle.putInt(KEY_CURRENT_POS, pos)
+			bundle.putInt(KEY_CURRENT_POS, currentPos)
 			fragment.arguments = bundle
 			return fragment
 		}

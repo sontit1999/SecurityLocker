@@ -15,7 +15,15 @@ import com.ls.entertainment.securitylocker.R
 import com.ls.entertainment.securitylocker.databinding.ActivitySplashBinding
 import com.ls.entertainment.securitylocker.model.ConfigModel
 import com.ls.entertainment.securitylocker.service.LockService
-import com.ls.entertainment.securitylocker.utils.*
+import com.ls.entertainment.securitylocker.ui.unlock.UnlockActivity
+import com.ls.entertainment.securitylocker.ui.unlock.UnlockActivity.Companion.KEY_TYPE_PASS
+import com.ls.entertainment.securitylocker.utils.AllEvents
+import com.ls.entertainment.securitylocker.utils.AppUtils
+import com.ls.entertainment.securitylocker.utils.DialogUtil
+import com.ls.entertainment.securitylocker.utils.LogUtils
+import com.ls.entertainment.securitylocker.utils.RemoteConfig
+import com.ls.entertainment.securitylocker.utils.SharePreferenceUtils
+import com.ls.entertainment.securitylocker.utils.TrackingHelper
 
 class SplashActivity : BaseActivity<ActivitySplashBinding, SplashViewModel>() {
 
@@ -110,14 +118,19 @@ class SplashActivity : BaseActivity<ActivitySplashBinding, SplashViewModel>() {
 		didGoToMain = true
 		val openCount = SharePreferenceUtils.getInstance().openCount
 		SharePreferenceUtils.getInstance().openCount = openCount + 1
-		if ((openCount + 1) == 1 || !SharePreferenceUtils.getInstance().isSetupLanguage) {
+		if (!SharePreferenceUtils.getInstance().isSetupPass) {
+			val intent = Intent(this@SplashActivity, UnlockActivity::class.java)
+			intent.putExtra(KEY_TYPE_PASS, UnlockActivity.TYPE_SETUP_PASS)
+			startActivity(intent)
+		} else if ((openCount + 1) == 1) {
 			TrackingHelper.logEvent(AllEvents.E1_OPEN_USER_FIRST_OPEN)
 			goToMainActivity()
 		} else {
 			TrackingHelper.logEvent(AllEvents.E1_OPEN_USER_REOPEN)
 			goToMainActivity()
 		}
-
+		
+		
 	}
 
 	private fun goToMainActivity() {

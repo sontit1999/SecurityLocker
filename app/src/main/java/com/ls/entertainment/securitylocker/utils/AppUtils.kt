@@ -12,6 +12,7 @@ import android.net.Uri
 import android.widget.Toast
 import com.ls.entertainment.securitylocker.App
 import com.ls.entertainment.securitylocker.R
+import com.ls.entertainment.securitylocker.adapter.ThemeAdapter
 import com.ls.entertainment.securitylocker.adapter.WallpaperModel
 import timber.log.Timber
 import java.io.IOException
@@ -137,5 +138,15 @@ object AppUtils {
 			Timber.d("Error set wallpaper because %s", e.message)
 			false
 		}
+	}
+	
+	fun removeNativeItem(list: MutableList<WallpaperModel>): MutableList<WallpaperModel> {
+		val result = mutableListOf<WallpaperModel>()
+		list.forEach {
+			if (it.name != ThemeAdapter.NAME_NATIVE_ADS) {
+				result.add(it)
+			}
+		}
+		return result
 	}
 }

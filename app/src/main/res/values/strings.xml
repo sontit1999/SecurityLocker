@@ -75,7 +75,7 @@
     <string name="optimizing">Optimizing</string>
     <string name="opimize_battery_success">Congratulations on your successful optimization of some battery-hungry tasks. The phone is in the best charging state</string>
     <string name="no_support_bluetooth">Device not support bluetooth</string>
-    <string name="desc_permission_write_setting">So that the application can perform battery optimization tasks. For some Android phones, you\'ll need to grant permission to modify settings, allowing this app to take actions to save battery.</string>
+    <string name="desc_permission_write_setting">So that the application can perform  optimization tasks. For some Android phones, you\'ll need to grant permission to modify settings, allowing this app to take actions to optimize.</string>
     <string name="title_explain_permission_optimize">Permission modify the system</string>
     <string name="battery_saver_suggest_notify">Detected many battery-hungry apps that slow down your charging</string>
     <string name="optimized">Optimized</string>
@@ -101,4 +101,5 @@
     <string name="fail_crop_image">Crop image fail</string>
     <string name="loading_ad">Ad loading ...</string>
     <string name="msg_confirm_watch_ads">You need to watch the short video to be able to download this wallpaper. Thank</string>
+    <string name="set_up_pass">Set up parttern lock\n</string>
 </resources>

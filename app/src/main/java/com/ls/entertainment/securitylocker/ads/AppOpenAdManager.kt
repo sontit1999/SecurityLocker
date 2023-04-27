@@ -16,6 +16,7 @@ import com.google.android.gms.ads.FullScreenContentCallback
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.appopen.AppOpenAd
 import com.ls.entertainment.securitylocker.App
+import com.ls.entertainment.securitylocker.MainActivity
 import com.ls.entertainment.securitylocker.model.OpenAdEvent
 import com.ls.entertainment.securitylocker.utils.*
 import com.ls.entertainment.securitylocker.worker.NotificationOfflineWorker
@@ -149,7 +150,11 @@ object AppOpenAdManager : Application.ActivityLifecycleCallbacks, LifecycleObser
 	@OnLifecycleEvent(Lifecycle.Event.ON_START)
 	fun onStart() {
 		Handler(Looper.getMainLooper()).postDelayed({
-			currentActivity?.get()?.let { showAdIfAvailable(it) }
+			currentActivity?.get()?.let {
+				if (it is MainActivity) {
+					showAdIfAvailable(it)
+				}
+			}
 		}, 500)
 	}
 

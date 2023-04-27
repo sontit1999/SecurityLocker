@@ -40,10 +40,10 @@ class LoadingDialog : DialogFragment() {
         }
         dialogBuilder.setView(binding.root)
         val dialog = dialogBuilder.create()
-        dialogBuilder.setCancelable(false)
+        dialogBuilder.setCancelable(true)
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        dialog.setCancelable(false)
-        isCancelable = false
+        dialog.setCancelable(true)
+        isCancelable = true
         dialog.setCanceledOnTouchOutside(false)
         return dialog
     }

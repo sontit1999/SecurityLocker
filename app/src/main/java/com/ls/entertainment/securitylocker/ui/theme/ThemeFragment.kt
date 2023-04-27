@@ -32,7 +32,13 @@ class ThemeFragment : BaseFragment<FragThemeBinding, ThemeViewModel>(R.layout.fr
 			GridLayoutManager(requireContext(), 2, GridLayoutManager.VERTICAL, false)
 		viewModel.adapter.onClickItem = { i, wallpaperModel ->
 			val mainActivity = requireActivity() as? MainActivity?
-			mainActivity?.addFragment(DetailFragment.newInstance(i, viewModel.adapter.getData()))
+			mainActivity?.addFragment(
+				DetailFragment.newInstance(
+					i,
+					viewModel.adapter.getData(),
+					wallpaperModel
+				)
+			)
 		}
 		viewModel.adapter.loadAds()
 		binding.rvTheme.adapter = viewModel.adapter
@@ -42,7 +48,7 @@ class ThemeFragment : BaseFragment<FragThemeBinding, ThemeViewModel>(R.layout.fr
 		ActivityResultContracts.RequestMultiplePermissions()
 	) { list: Map<String, Boolean> ->
 		if (list.all { it.value }) {
-			viewModel.getImageLock()
+		
 		} else {
 			showToast("Permission deny")
 
@@ -53,7 +59,7 @@ class ThemeFragment : BaseFragment<FragThemeBinding, ThemeViewModel>(R.layout.fr
 		ActivityResultContracts.RequestPermission()
 	) { isGranted: Boolean ->
 		if (isGranted) {
-			viewModel.getImageLock()
+		
 		} else {
 			// Permission not granted
 

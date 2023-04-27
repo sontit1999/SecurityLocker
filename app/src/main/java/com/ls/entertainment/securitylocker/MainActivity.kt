@@ -25,7 +25,15 @@ import com.ls.entertainment.securitylocker.service.LockService.Companion.startLo
 import com.ls.entertainment.securitylocker.ui.MainViewModel
 import com.ls.entertainment.securitylocker.ui.batterysaver.BatterySaverFragment
 import com.ls.entertainment.securitylocker.ui.splash.SplashActivity
-import com.ls.entertainment.securitylocker.utils.*
+import com.ls.entertainment.securitylocker.utils.DialogUtil
+import com.ls.entertainment.securitylocker.utils.LogUtils
+import com.ls.entertainment.securitylocker.utils.NetworkListener
+import com.ls.entertainment.securitylocker.utils.RxBus
+import com.ls.entertainment.securitylocker.utils.SharePreferenceUtils
+import com.ls.entertainment.securitylocker.utils.WallpaperUtils
+import com.ls.entertainment.securitylocker.utils.checkUsageStatsPermission
+import com.ls.entertainment.securitylocker.utils.showAccessDataUsagePermissionDialog
+import com.ls.entertainment.securitylocker.utils.showDrawOverlayPermissionDescDialog
 import com.yalantis.ucrop.UCrop
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
@@ -76,13 +84,17 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
 				binding.containerAds.gone()
 			} else binding.containerAds.visible()
 		}
-
+		
 		NetworkListener.observe(this) {
 			if (!it) {
 				DialogUtil.showConfirmationNetworkDialog(this, okListener = {
 					startActivity(Intent(Settings.ACTION_WIRELESS_SETTINGS))
 				})
 			}
+		}
+		
+		viewModel.stateSaveLockWallpaper.observe(this) {
+			if (it) showToast(getString(R.string.msg_set_background_ok)) else showToast(getString(R.string.msg_set_background_fail))
 		}
 	}
 

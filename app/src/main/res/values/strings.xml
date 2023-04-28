@@ -102,4 +102,6 @@
     <string name="loading_ad">Ad loading ...</string>
     <string name="msg_confirm_watch_ads">You need to watch the short video to be able to download this wallpaper. Thank</string>
     <string name="set_up_pass">Set up parttern lock\n</string>
+    <string name="change_pass">Change Password</string>
+    <string name="change_pass_success">Password has been successfully set</string>
 </resources>

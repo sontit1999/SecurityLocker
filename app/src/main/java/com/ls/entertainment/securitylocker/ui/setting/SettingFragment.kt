@@ -1,9 +1,11 @@
 package com.ls.entertainment.securitylocker.ui.setting
 
+import android.content.Intent
 import androidx.fragment.app.viewModels
 import com.entertainment.basemvvmproject.base.BaseFragment
 import com.ls.entertainment.securitylocker.R
 import com.ls.entertainment.securitylocker.databinding.FragSettingBinding
+import com.ls.entertainment.securitylocker.ui.unlock.UnlockActivity
 import com.ls.entertainment.securitylocker.utils.AllEvents
 import com.ls.entertainment.securitylocker.utils.AppUtils.goToMarket
 import com.ls.entertainment.securitylocker.utils.AppUtils.sendFeedBack
@@ -38,6 +40,14 @@ class SettingFragment : BaseFragment<FragSettingBinding, SettingViewModel>(R.lay
 		binding.btnPolicy.setOnClickListener {
 			if (isDoubleClick) return@setOnClickListener
 
+		}
+
+		binding.btnChangePass.setOnClickListener {
+			if (isDoubleClick) return@setOnClickListener
+			TrackingHelper.logEvent(AllEvents.E1_CHANGE_PASS)
+			val intent = Intent(requireContext(), UnlockActivity::class.java)
+			intent.putExtra(UnlockActivity.KEY_TYPE_PASS, UnlockActivity.TYPE_CHANGE_PASS)
+			startActivity(intent)
 		}
 	}
 

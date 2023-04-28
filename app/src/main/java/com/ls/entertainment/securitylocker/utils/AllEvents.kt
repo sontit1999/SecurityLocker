@@ -66,6 +66,7 @@ object AllEvents {
 	const val E1_ACCEPT_PERMISSION_READ_ALL_FILE = "e1_accept_permission_read_all_file"
 	const val E1_DENY_PERMISSION_READ_FILE = "e1_deny_permission_read_file"
 	const val E1_LOST_INTERNET = "e1_lost_internet"
+	const val E1_CHANGE_PASS = "e1_change_password"
 
 	// action user
 	const val E1_ACTION_USER_TYPE_SEARCH = "e1_action_user_type_search"

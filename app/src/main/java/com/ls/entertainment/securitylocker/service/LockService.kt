@@ -410,7 +410,7 @@ class LockService : Service() {
 				intentMainLanding,
 				PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
 			)
-			iconNotification = BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher)
+			iconNotification = BitmapFactory.decodeResource(resources, R.mipmap.ic_app)
 			if (mNotificationManager == null) {
 				mNotificationManager =
 					this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager

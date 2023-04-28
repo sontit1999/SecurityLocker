@@ -17,13 +17,7 @@ import com.ls.entertainment.securitylocker.model.ConfigModel
 import com.ls.entertainment.securitylocker.service.LockService
 import com.ls.entertainment.securitylocker.ui.unlock.UnlockActivity
 import com.ls.entertainment.securitylocker.ui.unlock.UnlockActivity.Companion.KEY_TYPE_PASS
-import com.ls.entertainment.securitylocker.utils.AllEvents
-import com.ls.entertainment.securitylocker.utils.AppUtils
-import com.ls.entertainment.securitylocker.utils.DialogUtil
-import com.ls.entertainment.securitylocker.utils.LogUtils
-import com.ls.entertainment.securitylocker.utils.RemoteConfig
-import com.ls.entertainment.securitylocker.utils.SharePreferenceUtils
-import com.ls.entertainment.securitylocker.utils.TrackingHelper
+import com.ls.entertainment.securitylocker.utils.*
 
 class SplashActivity : BaseActivity<ActivitySplashBinding, SplashViewModel>() {
 
@@ -51,6 +45,8 @@ class SplashActivity : BaseActivity<ActivitySplashBinding, SplashViewModel>() {
 		super.onResume()
 		if (!didGoToMain) {
 			loadRemoteConfig()
+		} else {
+			handleFlowGoMainActivity()
 		}
 	}
 

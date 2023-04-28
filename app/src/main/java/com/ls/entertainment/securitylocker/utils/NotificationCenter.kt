@@ -107,7 +107,7 @@ object NotificationCenter {
 		)
 		val sound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
 		val channelId = if (isFromFCM) CHANNEL_ID else CHANNEL_ID_REMIND_OPEN
-		val builder = NotificationCompat.Builder(con, channelId).setSmallIcon(R.mipmap.ic_launcher)
+		val builder = NotificationCompat.Builder(con, channelId).setSmallIcon(R.mipmap.ic_app)
 			.setTicker(title).setContentTitle(title).setContentText(message).setAutoCancel(true)
 			.setPriority(NotificationCompat.PRIORITY_DEFAULT).setSound(sound)
 			.setContentIntent(pendingIntent).setGroup(getGroupKey(isFromFCM))
@@ -131,7 +131,7 @@ object NotificationCenter {
 			} else {
 				builder.setLargeIcon(
 					BitmapFactory.decodeResource(
-						con.resources, R.mipmap.ic_launcher
+						con.resources, R.mipmap.ic_app
 					)
 				).setStyle(NotificationCompat.BigTextStyle().bigText(message))
 			}
@@ -143,7 +143,7 @@ object NotificationCenter {
 				val summaryNotification =
 					NotificationCompat.Builder(con, channelId).setContentTitle(title)
 						//set content text to support devices running API level < 24
-						.setContentText(message).setSmallIcon(R.mipmap.ic_launcher_round)
+						.setContentText(message).setSmallIcon(R.mipmap.ic_app_round)
 						.setStyle(NotificationCompat.InboxStyle()).setGroup(getGroupKey(isFromFCM))
 						//set this notification as the summary for the group
 						.setGroupSummary(true).build()
@@ -237,7 +237,7 @@ object NotificationCenter {
 
 		val sound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
 		val customNotification = NotificationCompat.Builder(App.instance, CHANNEL_ID_REMIND_OPEN)
-			.setSmallIcon(R.mipmap.ic_launcher)
+			.setSmallIcon(R.mipmap.ic_app)
 			.setStyle(NotificationCompat.DecoratedCustomViewStyle())
 			.setCustomContentView(notificationLayout).setSound(sound).setAutoCancel(true)
 			.setPriority(NotificationCompat.PRIORITY_DEFAULT)

@@ -19,9 +19,7 @@ object FileUtils {
 		try {
 			// Link đến forder muốn lưu
 			val mediaStorageDir = File(
-				Environment
-					.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
-				folderToSave
+				App.instance.applicationContext.externalCacheDir, folderToSave
 			)
 			
 			// Create the storage directory if it does not exist

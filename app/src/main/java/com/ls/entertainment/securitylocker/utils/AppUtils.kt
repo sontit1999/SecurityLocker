@@ -16,6 +16,7 @@ import com.ls.entertainment.securitylocker.adapter.ThemeAdapter
 import com.ls.entertainment.securitylocker.adapter.WallpaperModel
 import timber.log.Timber
 import java.io.IOException
+import java.io.InputStream
 import java.io.RandomAccessFile
 import java.text.DecimalFormat
 import java.util.regex.Pattern
@@ -139,7 +140,7 @@ object AppUtils {
 			false
 		}
 	}
-	
+
 	fun removeNativeItem(list: MutableList<WallpaperModel>): MutableList<WallpaperModel> {
 		val result = mutableListOf<WallpaperModel>()
 		list.forEach {
@@ -148,5 +149,19 @@ object AppUtils {
 			}
 		}
 		return result
+	}
+
+	fun readPolicyFromAsset(fileName: String): String {
+		var string = ""
+		try {
+			val inputStream: InputStream = App.instance.applicationContext.assets.open(fileName)
+			val size = inputStream.available()
+			val buffer = ByteArray(size)
+			inputStream.read(buffer)
+			string = String(buffer)
+		} catch (e: IOException) {
+			e.printStackTrace()
+		}
+		return string
 	}
 }

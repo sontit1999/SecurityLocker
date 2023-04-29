@@ -12,10 +12,12 @@ import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.ls.entertainment.securitylocker.App
 import com.ls.entertainment.securitylocker.R
+import com.ls.entertainment.securitylocker.utils.AllEvents
 import com.ls.entertainment.securitylocker.utils.LogUtils
 import com.ls.entertainment.securitylocker.utils.NotificationCenter
 import com.ls.entertainment.securitylocker.utils.RemoteConfig
 import com.ls.entertainment.securitylocker.utils.SharePreferenceUtils
+import com.ls.entertainment.securitylocker.utils.TrackingHelper
 import java.util.Calendar
 import java.util.concurrent.TimeUnit
 
@@ -33,6 +35,7 @@ class NotificationOfflineWorker(
 	)
 
 	override fun doWork(): Result {
+		TrackingHelper.logEvent(AllEvents.WORKER_OFFLINE)
 		pushNotification()
 		reschedule()
 		return Result.success()

@@ -12,8 +12,10 @@ import com.ls.entertainment.securitylocker.R
 import com.ls.entertainment.securitylocker.databinding.FragThemeBinding
 import com.ls.entertainment.securitylocker.model.OpenAdEvent
 import com.ls.entertainment.securitylocker.ui.detail.DetailFragment
+import com.ls.entertainment.securitylocker.utils.AllEvents
 import com.ls.entertainment.securitylocker.utils.LogUtils
 import com.ls.entertainment.securitylocker.utils.RxBus
+import com.ls.entertainment.securitylocker.utils.TrackingHelper
 
 class ThemeFragment : BaseFragment<FragThemeBinding, ThemeViewModel>(R.layout.frag_theme) {
 
@@ -99,6 +101,7 @@ class ThemeFragment : BaseFragment<FragThemeBinding, ThemeViewModel>(R.layout.fr
 
 	override fun onResume() {
 		super.onResume()
+		TrackingHelper.logEvent(AllEvents.VIEW_THEME)
 		requestReadExternalStoragePermission()
 	}
 

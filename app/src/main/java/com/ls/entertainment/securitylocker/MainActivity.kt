@@ -183,6 +183,7 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
 	private fun checkCanOverlayPermission() {
 		if (!canDrawOverlay()) {
 			showDrawOverlayPermissionDescDialog(onOkListener = {
+				TrackingHelper.logEvent(AllEvents.ACTION_ALLOW_OVERLAY_DIALOG)
 				requestDrawOverlayPermission(
 					this, 999
 				)
@@ -200,6 +201,7 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
 
 	private fun showDialogRequestPermissionUsage() {
 		showAccessDataUsagePermissionDialog(onOkListener = {
+			TrackingHelper.logEvent(AllEvents.ACTION_ALLOW_USAGE_DIALOG)
 			requestPermissionUsage()
 		}, onCancelListener = {
 			showToast(getString(R.string.you_must_allow_permission))
@@ -309,6 +311,7 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
 	}
 	
 	private fun showDialogRequireUpdate() {
+		TrackingHelper.logEvent(AllEvents.VIEW_UPDATE_APP)
 		DialogUtil.showConfirmationDialog(this,
 			getString(R.string.title_update_app),
 			getString(R.string.desc_require_update_app),
@@ -317,6 +320,7 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
 			okListener = {
 				AppUtils.goToMarket(RemoteConfig.commonConfig.packageName, this)
 				TrackingHelper.logEvent(AllEvents.E1_CLICK_UPDATE_APP)
+				TrackingHelper.logEvent(AllEvents.ACTION_UPDATE)
 			})
 	}
 	

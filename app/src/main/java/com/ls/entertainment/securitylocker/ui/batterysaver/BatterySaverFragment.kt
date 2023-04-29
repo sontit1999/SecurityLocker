@@ -80,6 +80,7 @@ class BatterySaverFragment :
 			startAnimationScanApp()
 		} else {
 			requireContext().showWriteSettingPermissionDescDialog(onOkListener = {
+				TrackingHelper.logEvent(AllEvents.ACTION_ALLOW_WRITE_SETTING_DIALOG)
 				requireContext().requestWriteSettingsPermission(
 					this, RC_WRITE_SETTINGS
 				)
@@ -149,6 +150,8 @@ class BatterySaverFragment :
 
 
 	private fun handleSaverBattery() {
+		BoostedRamService.cancel()
+		BoostedRamService.schedule()
 		binding.animScan.gone()
 		binding.animSaverBattery.visible()
 		binding.ivApp.visible()
@@ -249,7 +252,7 @@ class BatterySaverFragment :
 	private fun unRegisterBroadCast() {
 		requireActivity().unregisterReceiver(receiver)
 	}
-
+	
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		registerBroadCast()
@@ -257,13 +260,18 @@ class BatterySaverFragment :
 			typeOptimize = it.getInt(KEY_TYPE_OPTIMIZE, TYPE_OPTIMIZE_BATTERY)
 		}
 	}
-
+	
+	override fun onResume() {
+		super.onResume()
+		TrackingHelper.logEvent(AllEvents.VIEW_BATTERY_SAVER)
+	}
+	
 	override fun onDestroy() {
 		super.onDestroy()
 		unRegisterBroadCast()
 		RxBus.unregister(TAG)
 	}
-
+	
 	@RequiresApi(Build.VERSION_CODES.M)
 	private fun saverBattery() {
 		updateBrightness()

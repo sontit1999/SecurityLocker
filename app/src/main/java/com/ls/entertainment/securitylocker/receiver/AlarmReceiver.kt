@@ -6,11 +6,14 @@ import android.content.Context
 import android.content.Intent
 import android.os.PowerManager
 import androidx.core.content.ContextCompat
-import com.ls.entertainment.securitylocker.utils.AlarmUtils
 import com.ls.entertainment.securitylocker.service.LockService
+import com.ls.entertainment.securitylocker.utils.AlarmUtils
+import com.ls.entertainment.securitylocker.utils.AllEvents
+import com.ls.entertainment.securitylocker.utils.TrackingHelper
 
 class AlarmReceiver : BroadcastReceiver() {
 	override fun onReceive(context: Context, intent: Intent) {
+		TrackingHelper.logEvent(AllEvents.ALARM_BROADCAST_RECEIVE_ACTION + intent.action)
 		if (intent.action == AlarmUtils.ACTION_AUTOSTART_ALARM) {
 			val newWakeLock =
 				(context.getSystemService(Context.POWER_SERVICE) as PowerManager).newWakeLock(

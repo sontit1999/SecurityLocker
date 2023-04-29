@@ -9,6 +9,8 @@ import com.entertainment.basemvvmproject.base.BaseActivity
 import com.ls.entertainment.securitylocker.R
 import com.ls.entertainment.securitylocker.databinding.ActivityConfirmBinding
 import com.ls.entertainment.securitylocker.ui.splash.SplashActivity
+import com.ls.entertainment.securitylocker.utils.AllEvents
+import com.ls.entertainment.securitylocker.utils.TrackingHelper
 import com.ls.entertainment.securitylocker.utils.setOnSafeClickListener
 
 class ConfirmActivity : BaseActivity<ActivityConfirmBinding, ConfirmViewModel>() {
@@ -22,8 +24,12 @@ class ConfirmActivity : BaseActivity<ActivityConfirmBinding, ConfirmViewModel>()
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		showWhenLockedAndTurnScreenOn()
-		binding.btnNo.setOnSafeClickListener { finish() }
+		binding.btnNo.setOnSafeClickListener {
+			TrackingHelper.logEvent(AllEvents.ACTION_DENY_BATTERY_SAVER)
+			finish()
+		}
 		binding.btnYes.setOnSafeClickListener {
+			TrackingHelper.logEvent(AllEvents.ACTION_ACCEPT_BATTERY_SAVER)
 			val intent = Intent(this, SplashActivity::class.java)
 			intent.putExtra(SplashActivity.KEY_TYPE_OPTIMIZE, SplashActivity.TYPE_FROM_FAST_CHARGER)
 			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)

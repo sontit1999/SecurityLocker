@@ -25,32 +25,42 @@ class SettingFragment : BaseFragment<FragSettingBinding, SettingViewModel>(R.lay
 		binding.btnUpdate.setOnClickListener {
 			if (isDoubleClick) return@setOnClickListener
 			TrackingHelper.logEvent(AllEvents.E1_CLICK_UPDATE_APP)
+			TrackingHelper.logEvent(AllEvents.ACTION_UPDATE)
 			goToMarket(requireActivity().packageName, requireContext())
 		}
 		binding.btnShare.setOnClickListener {
 			if (isDoubleClick) return@setOnClickListener
+			TrackingHelper.logEvent(AllEvents.ACTION_SHARE)
 			shareApp(requireActivity().packageName, requireContext())
 		}
 		binding.btnFeedback.setOnClickListener {
 			if (isDoubleClick) return@setOnClickListener
+			TrackingHelper.logEvent(AllEvents.ACTION_FEEDBACK)
 			sendFeedBack(requireContext())
 		}
 		binding.btnRate.setOnClickListener {
 			if (isDoubleClick) return@setOnClickListener
+			TrackingHelper.logEvent(AllEvents.ACTION_RATE)
 			goToMarket(requireActivity().packageName, requireContext())
 		}
 		binding.btnPolicy.setOnClickListener {
 			if (isDoubleClick) return@setOnClickListener
+			TrackingHelper.logEvent(AllEvents.ACTION_POLICY)
 			(requireActivity() as? MainActivity?)?.addFragment(PolicyFragment())
 		}
-
+		
 		binding.btnChangePass.setOnClickListener {
 			if (isDoubleClick) return@setOnClickListener
-			TrackingHelper.logEvent(AllEvents.E1_CHANGE_PASS)
+			TrackingHelper.logEvent(AllEvents.ACTION_CHANGE_PASS)
 			val intent = Intent(requireContext(), UnlockActivity::class.java)
 			intent.putExtra(UnlockActivity.KEY_TYPE_PASS, UnlockActivity.TYPE_CHANGE_PASS)
 			startActivity(intent)
 		}
 	}
-
+	
+	override fun onResume() {
+		super.onResume()
+		TrackingHelper.logEvent(AllEvents.VIEW_SETTING)
+	}
+	
 }

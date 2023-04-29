@@ -43,10 +43,12 @@ object WallpaperUtils {
 					}
 				}
 			}
-
+			TrackingHelper.logEvent(AllEvents.SET_WALLPAPER_SUCCESS)
 			return true
 		} catch (e: IOException) {
+			LogUtils.logCustomMessage(e.message.toString())
 			error = e
+			TrackingHelper.logEvent(AllEvents.SET_WALLPAPER_FAIL)
 		}
 		return false
 	}

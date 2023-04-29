@@ -7,12 +7,18 @@ import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.os.Build
-import androidx.work.*
+import androidx.work.ExistingWorkPolicy
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkManager
+import androidx.work.Worker
+import androidx.work.WorkerParameters
 import com.ls.entertainment.securitylocker.App
 import com.ls.entertainment.securitylocker.model.BoostedEvent
 import com.ls.entertainment.securitylocker.model.TaskInfo
+import com.ls.entertainment.securitylocker.utils.AllEvents
 import com.ls.entertainment.securitylocker.utils.AppUtils
 import com.ls.entertainment.securitylocker.utils.LogUtils
+import com.ls.entertainment.securitylocker.utils.TrackingHelper
 import org.greenrobot.eventbus.EventBus
 
 class BoostedRamService(
@@ -111,10 +117,12 @@ class BoostedRamService(
 					)
 				})
 			}
+			TrackingHelper.logEvent(AllEvents.BOOT_RAM_SERVICE_SUCCESS)
 			return Result.success()
 		} catch (e: Exception) {
 			EventBus.getDefault().post(BoostedEvent(false))
 			LogUtils.logCustomMessage(TAGS, e.message.toString())
+			TrackingHelper.logEvent(AllEvents.BOOT_RAM_SERVICE_FAIL)
 			return Result.failure()
 		}
 	}

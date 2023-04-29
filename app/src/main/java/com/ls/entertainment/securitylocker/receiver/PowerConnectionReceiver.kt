@@ -7,12 +7,15 @@ import android.content.Intent
 import android.provider.Settings
 import com.ls.entertainment.securitylocker.App
 import com.ls.entertainment.securitylocker.ui.confirm.ConfirmActivity
+import com.ls.entertainment.securitylocker.utils.AllEvents
 import com.ls.entertainment.securitylocker.utils.LogUtils
+import com.ls.entertainment.securitylocker.utils.TrackingHelper
 import com.ls.entertainment.securitylocker.worker.NotificationOneHourAfterUnplug
 import com.ls.entertainment.securitylocker.worker.PowerRestartWorker
 
 class PowerConnectionReceiver : BroadcastReceiver() {
 	override fun onReceive(p0: Context?, p1: Intent?) {
+		TrackingHelper.logEvent(AllEvents.POWER_BROADCAST_RECEIVE_ACTION + p1?.action)
 		if (p1?.action == Intent.ACTION_POWER_CONNECTED) {
 			LogUtils.logCustomMessage("ACTION_POWER_CONNECTED")
 			saveBrightness(p0)

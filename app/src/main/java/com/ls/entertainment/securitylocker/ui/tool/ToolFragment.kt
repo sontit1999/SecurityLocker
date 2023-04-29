@@ -32,10 +32,12 @@ import com.ls.entertainment.securitylocker.databinding.FragToolBinding
 import com.ls.entertainment.securitylocker.service.LockService
 import com.ls.entertainment.securitylocker.ui.batterysaver.BatterySaverFragment
 import com.ls.entertainment.securitylocker.ui.trackingtime.TrackingTimeFragment
+import com.ls.entertainment.securitylocker.utils.AllEvents
 import com.ls.entertainment.securitylocker.utils.AppUtils
 import com.ls.entertainment.securitylocker.utils.LogUtils
 import com.ls.entertainment.securitylocker.utils.PermissionUtil
 import com.ls.entertainment.securitylocker.utils.RemoteConfig
+import com.ls.entertainment.securitylocker.utils.TrackingHelper
 import com.ls.entertainment.securitylocker.utils.setOnSafeClickListener
 
 class ToolFragment : BaseFragment<FragToolBinding, ToolViewModel>(R.layout.frag_tool) {
@@ -183,21 +185,26 @@ class ToolFragment : BaseFragment<FragToolBinding, ToolViewModel>(R.layout.frag_
 		} else binding.btnOptimizeRam.gone()
 		loadFragment()
 	}
-
+	
 	private fun loadFragment() {
 		val fragment = TrackingTimeFragment()
 		childFragmentManager.beginTransaction().add(R.id.container, fragment).commit()
 	}
-
+	
 	private fun registerBroadCast() {
 		val intentFilter = IntentFilter(Intent.ACTION_BATTERY_CHANGED)
 		requireActivity().registerReceiver(receiver, intentFilter)
 	}
-
+	
+	override fun onResume() {
+		super.onResume()
+		TrackingHelper.logEvent(AllEvents.VIEW_TOOL)
+	}
+	
 	private fun unRegisterBroadCast() {
 		requireActivity().unregisterReceiver(receiver)
 	}
-
+	
 	override fun onDestroy() {
 		super.onDestroy()
 		unRegisterBroadCast()

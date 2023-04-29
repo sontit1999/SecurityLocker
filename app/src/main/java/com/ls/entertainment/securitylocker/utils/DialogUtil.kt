@@ -106,12 +106,14 @@ object DialogUtil {
 
 			btnOk.setOnSafeClickListener {
 				if (dialog.isShowing) {
+					TrackingHelper.logEvent(AllEvents.ACTION_CLICK_OPEN_WIFI)
 					dialog.dismiss()
 					context.startActivity(Intent(Settings.ACTION_WIRELESS_SETTINGS))
 				}
 			}
 
 			if (!dialog.isShowing) {
+				TrackingHelper.logEvent(AllEvents.VIEW_NO_NETWORK)
 				dialog.show()
 			}
 		}
@@ -177,6 +179,7 @@ object DialogUtil {
 			val btnCancel = dialog.findViewById<TextView>(R.id.btn_cancel)
 
 			btnOk.setOnSafeClickListener {
+				TrackingHelper.logEvent(AllEvents.ACTION_ACCEPT_DOWNLOAD)
 				if (dialog.isShowing) {
 					okListener?.invoke()
 					dialog.dismiss()
@@ -184,6 +187,7 @@ object DialogUtil {
 			}
 
 			btnCancel.setOnSafeClickListener {
+				TrackingHelper.logEvent(AllEvents.ACTION_DENY_DOWNLOAD)
 				if (dialog.isShowing) {
 					cancelListener?.invoke()
 					dialog.dismiss()

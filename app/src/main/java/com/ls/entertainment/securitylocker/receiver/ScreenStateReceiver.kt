@@ -6,9 +6,12 @@ import android.content.Intent
 import android.os.Build
 import android.widget.Toast
 import com.ls.entertainment.securitylocker.service.LockService
+import com.ls.entertainment.securitylocker.utils.AllEvents
+import com.ls.entertainment.securitylocker.utils.TrackingHelper
 
 class ScreenStateReceiver : BroadcastReceiver() {
 	override fun onReceive(p0: Context?, p1: Intent?) {
+		TrackingHelper.logEvent(AllEvents.SCREEN_BROADCAST_RECEIVE_ACTION + p1?.action)
 		if (p1?.action == Intent.ACTION_SCREEN_OFF || p1?.action == Intent.ACTION_USER_PRESENT || p1?.action == Intent.ACTION_SCREEN_ON) {
 			Toast.makeText(p0, "onReceive ScreenStateReceiver", Toast.LENGTH_LONG).show()
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

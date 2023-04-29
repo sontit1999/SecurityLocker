@@ -9,7 +9,9 @@ import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.ls.entertainment.securitylocker.App
 import com.ls.entertainment.securitylocker.service.LockService
+import com.ls.entertainment.securitylocker.utils.AllEvents
 import com.ls.entertainment.securitylocker.utils.LogUtils
+import com.ls.entertainment.securitylocker.utils.TrackingHelper
 import java.util.concurrent.TimeUnit
 
 class PowerRestartWorker(private val appContext: Context, workerParams: WorkerParameters) :
@@ -17,6 +19,7 @@ class PowerRestartWorker(private val appContext: Context, workerParams: WorkerPa
 
 
 	override fun doWork(): Result {
+		TrackingHelper.logEvent(AllEvents.WORKER_POWER_RESTART_SERVICE)
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 			appContext.startForegroundService(Intent(appContext, LockService::class.java))
 		} else {

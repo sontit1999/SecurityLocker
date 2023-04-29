@@ -21,10 +21,12 @@ import com.ls.entertainment.securitylocker.R
 import com.ls.entertainment.securitylocker.ads.AdManager
 import com.ls.entertainment.securitylocker.databinding.ActivityLockBinding
 import com.ls.entertainment.securitylocker.ui.splash.SplashActivity
+import com.ls.entertainment.securitylocker.utils.AllEvents
 import com.ls.entertainment.securitylocker.utils.GlideHelper
 import com.ls.entertainment.securitylocker.utils.LogUtils
 import com.ls.entertainment.securitylocker.utils.RemoteConfig
 import com.ls.entertainment.securitylocker.utils.SharePreferenceUtils
+import com.ls.entertainment.securitylocker.utils.TrackingHelper
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -38,22 +40,31 @@ class UnlockActivity : BaseActivity<ActivityLockBinding, UnLockViewModel>() {
 	override val layoutId = R.layout.activity_lock
 
 	var typePass = TYPE_UNLOCK_PASS
-
+	
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		typePass = intent.getIntExtra(KEY_TYPE_PASS, TYPE_UNLOCK_PASS)
+		trackingViewLock()
 		loadNativeAds()
 		initBackGround()
 		initLockView()
 		bindingAction()
 	}
-
+	
+	private fun trackingViewLock() {
+		when (typePass) {
+			TYPE_SETUP_PASS -> TrackingHelper.logEvent(AllEvents.VIEW_LOCK_SETUP)
+			TYPE_CHANGE_PASS -> TrackingHelper.logEvent(AllEvents.VIEW_CHANGE_PASSWORD)
+			TYPE_UNLOCK_PASS -> TrackingHelper.logEvent(AllEvents.VIEW_UNLOCK_SCREEN)
+		}
+	}
+	
 	private fun loadNativeAds() {
 		if (RemoteConfig.commonConfig.supportNativeInLock) {
 			AdManager.loadNativeAdInLock(binding.nativeAdView)
 		}
 	}
-
+	
 	private fun initBackGround() {
 		val path = SharePreferenceUtils.getInstance().pathImageLock
 		if (!path.isNullOrEmpty()) GlideHelper.load(binding.ivBackground, path)
@@ -119,8 +130,9 @@ class UnlockActivity : BaseActivity<ActivityLockBinding, UnLockViewModel>() {
 							binding.patternLockView, pattern
 						) == SharePreferenceUtils.getInstance().passWord
 					) {
+						TrackingHelper.logEvent(AllEvents.ACTION_UNLOCK_SUCCESS)
 						finish()
-					}
+					} else TrackingHelper.logEvent(AllEvents.ACTION_UNLOCK_FAIL)
 				}
 				binding.patternLockView.clearPattern()
 			}
@@ -136,6 +148,7 @@ class UnlockActivity : BaseActivity<ActivityLockBinding, UnLockViewModel>() {
 			popupMenu.setOnMenuItemClickListener { menuItem ->
 				when (menuItem.itemId) {
 					R.id.menu_lock_app     -> {
+						TrackingHelper.logEvent(AllEvents.ACTION_UNLOCK_MANAGE_APP)
 						val intent = Intent(this, SplashActivity::class.java)
 						intent.putExtra(
 							SplashActivity.KEY_TYPE_OPTIMIZE, SplashActivity.TYPE_FROM_UNLOCK
@@ -150,6 +163,7 @@ class UnlockActivity : BaseActivity<ActivityLockBinding, UnLockViewModel>() {
 					}
 
 					R.id.menu_change_theme -> {
+						TrackingHelper.logEvent(AllEvents.ACTION_UNLOCK_CHANGE_THEME)
 						val intent = Intent(this, SplashActivity::class.java)
 						intent.putExtra(
 							SplashActivity.KEY_TYPE_OPTIMIZE, SplashActivity.TYPE_FROM_UNLOCK
@@ -165,6 +179,7 @@ class UnlockActivity : BaseActivity<ActivityLockBinding, UnLockViewModel>() {
 					}
 
 					R.id.menu_setting_app  -> {
+						TrackingHelper.logEvent(AllEvents.ACTION_UNLOCK_SETTING)
 						val intent = Intent(this, SplashActivity::class.java)
 						intent.putExtra(
 							SplashActivity.KEY_TYPE_OPTIMIZE, SplashActivity.TYPE_FROM_UNLOCK

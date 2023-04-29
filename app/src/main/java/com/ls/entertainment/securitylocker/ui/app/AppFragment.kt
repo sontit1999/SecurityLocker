@@ -14,7 +14,9 @@ import com.ls.entertainment.securitylocker.adapter.AppAdapter
 import com.ls.entertainment.securitylocker.databinding.FragAppBinding
 import com.ls.entertainment.securitylocker.extension.isAllowAllPermission
 import com.ls.entertainment.securitylocker.model.CheckPermissionEvent
+import com.ls.entertainment.securitylocker.utils.AllEvents
 import com.ls.entertainment.securitylocker.utils.AppUtils.goDetailInformationApp
+import com.ls.entertainment.securitylocker.utils.TrackingHelper
 import org.greenrobot.eventbus.EventBus
 
 class AppFragment : BaseFragment<FragAppBinding, AppViewModel>(R.layout.frag_app) {
@@ -65,23 +67,30 @@ class AppFragment : BaseFragment<FragAppBinding, AppViewModel>(R.layout.frag_app
 			}
 		})
 	}
-
+	
 	override fun viewCreated(savedInstanceState: Bundle?) {
 		super.viewCreated(savedInstanceState)
 		initRvApp()
 	}
-
+	
 	override fun onDestroy() {
 		super.onDestroy()
 		handleSearch.removeCallbacks(runnableSearch)
 	}
-
+	
+	override fun onResume() {
+		super.onResume()
+		TrackingHelper.logEvent(AllEvents.VIEW_ALL_APP)
+	}
+	
 	private fun initRvApp() {
 		adapterApp = AppAdapter()
 		adapterApp.onClickLock = {
+			TrackingHelper.logEvent(AllEvents.ACTION_LOCK)
 			viewModel.updateListPackageLock(it.packageName, it.isLock)
 		}
 		adapterApp.onClickItem = {
+			TrackingHelper.logEvent(AllEvents.ACTION_INFORMATION)
 			goDetailInformationApp(requireContext(), it.packageName)
 		}
 		binding.rvApp.itemAnimator = null

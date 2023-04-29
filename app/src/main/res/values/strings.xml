@@ -64,7 +64,7 @@
     <string name="guide_update_app">When opening the store, select the update button to update the app</string>
     <string name="title_update_app">Update app</string>
     <string name="desc_permission_draw_overlay">
-        The app will show the app lock screen when someone opens the phone.
+        So that the app can show the lock screen on other apps.
         \n\nThis helps protect your privacy.
     </string>
     <string name="msg_no">No</string>

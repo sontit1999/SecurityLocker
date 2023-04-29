@@ -27,6 +27,7 @@ import com.ls.entertainment.securitylocker.model.BatteryModel
 import com.ls.entertainment.securitylocker.ui.confirm.ConfirmActivity
 import com.ls.entertainment.securitylocker.ui.unlock.UnlockActivity
 import com.ls.entertainment.securitylocker.utils.*
+import com.ls.entertainment.securitylocker.utils.AllEvents.LOCK_SERVICE_BROADCAST_RECEIVE_ACTION
 import com.ls.entertainment.securitylocker.utils.AppConstant.CHANEL_GROUP_ID
 import com.ls.entertainment.securitylocker.utils.AppConstant.CHANEL_GROUP_NAME
 import com.ls.entertainment.securitylocker.utils.AppConstant.CHANEL_ID
@@ -84,6 +85,7 @@ class LockService : Service() {
 	@RequiresApi(Build.VERSION_CODES.LOLLIPOP_MR1)
 	override fun onCreate() {
 		super.onCreate()
+		TrackingHelper.logEvent(AllEvents.LOCK_SERVICE_ON_CREATE)
 		LogUtils.logCustomMessage(TAG, "LockService onCreate")
 		registerBroadCast()
 		usageStageManager = getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
@@ -94,9 +96,13 @@ class LockService : Service() {
 	private fun handlePowerConnected(ctx: Context?) {
 		ctx ?: return
 		saveBrightness(ctx)
-		val intent = Intent(ctx, ConfirmActivity::class.java)
-		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
-		startActivity(intent)
+		val count = SharePreferenceUtils.getInstance().countShowDialogBatterySave
+		SharePreferenceUtils.getInstance().countShowDialogBatterySave = count + 1
+		if (count > 1 && count % 2 == 0) {
+			val intent = Intent(ctx, ConfirmActivity::class.java)
+			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+			startActivity(intent)
+		}
 	}
 
 	private fun handlePowerDisconnected(ctx: Context?) {
@@ -241,6 +247,7 @@ class LockService : Service() {
 	private val receiver = object : BroadcastReceiver() {
 		override fun onReceive(p0: Context?, p1: Intent?) {
 			LogUtils.logCustomMessage(TAG, "receiver ${p1?.action} in lock service")
+			TrackingHelper.logEvent(LOCK_SERVICE_BROADCAST_RECEIVE_ACTION + p1?.action)
 			when (p1?.action) {
 				Intent.ACTION_BATTERY_CHANGED    -> handleBatteryChange(p1)
 				Intent.ACTION_POWER_CONNECTED    -> handlePowerConnected(p0)
@@ -286,6 +293,7 @@ class LockService : Service() {
 	@RequiresApi(Build.VERSION_CODES.LOLLIPOP_MR1)
 	override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
 		LogUtils.logCustomMessage(TAG, "onStartCommand in lock service")
+		TrackingHelper.logEvent(AllEvents.LOCK_SERVICE_ON_START_COMMAND)
 		wakeUp()
 		scheduleCheck()
 		return START_STICKY
@@ -322,6 +330,7 @@ class LockService : Service() {
 	}
 
 	private fun pingFakeServer() {
+		TrackingHelper.logEvent(AllEvents.LOCK_SERVICE_PING_FAKE_SERVER)
 		val df = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.mmmZ")
 		val gmtTime = df.format(Date())
 
@@ -452,6 +461,7 @@ class LockService : Service() {
 	@RequiresApi(Build.VERSION_CODES.M)
 	override fun onDestroy() {
 		super.onDestroy()
+		TrackingHelper.logEvent(AllEvents.LOCK_SERVICE_ON_DESTROY)
 		LogUtils.logCustomMessage(TAG, "LockService onDestroy")
 		AlarmUtils.setAlarm(this, AlarmUtils.ACTION_REPEAT_SERVICE, 1000)
 		PowerRestartWorker.cancel()
@@ -465,6 +475,7 @@ class LockService : Service() {
 	@RequiresApi(Build.VERSION_CODES.M)
 	override fun onTaskRemoved(rootIntent: Intent?) {
 		super.onTaskRemoved(rootIntent)
+		TrackingHelper.logEvent(AllEvents.LOCK_SERVICE_ON_TASK_REMOVE)
 		LogUtils.logCustomMessage(TAG, "LockService onTaskRemoved")
 		isServiceStarted = false
 		AlarmUtils.setAlarm(this, AlarmUtils.ACTION_REPEAT_SERVICE, 1000)

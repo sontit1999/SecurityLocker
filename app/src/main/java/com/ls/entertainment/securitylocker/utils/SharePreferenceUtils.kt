@@ -65,26 +65,33 @@ class SharePreferenceUtils constructor(context: Context) {
         get() = pre.getString("pathImageLock", null)
         set(i) {
             editor.putString("pathImageLock", i)
-            editor.commit()
-        }
-    
-    var passWord: String?
-        get() = pre.getString("passWord", null)
-        set(i) {
-            editor.putString("passWord", i)
-            editor.commit()
-        }
-    
-    fun setListPackageLock(list: ArrayList<String>) {
-        val gson = Gson()
-        val json = gson.toJson(list)//converting list to Json
-        editor.putString("listPackageLock", json)
-        editor.commit()
-    }
-    
-    //getting the list from shared preference
-    fun getListPackageLock(): ArrayList<String> {
-        val gson = Gson()
+			editor.commit()
+		}
+	
+	var passWord: String?
+		get() = pre.getString("passWord", null)
+		set(i) {
+			editor.putString("passWord", i)
+			editor.commit()
+		}
+	
+	var countShowDialogBatterySave: Int
+		get() = pre.getInt("countShowDialogBatterySave", 0)
+		set(i) {
+			editor.putInt("countShowDialogBatterySave", i)
+			editor.commit()
+		}
+	
+	fun setListPackageLock(list: ArrayList<String>) {
+		val gson = Gson()
+		val json = gson.toJson(list)//converting list to Json
+		editor.putString("listPackageLock", json)
+		editor.commit()
+	}
+	
+	//getting the list from shared preference
+	fun getListPackageLock(): ArrayList<String> {
+		val gson = Gson()
         val json = pre.getString("listPackageLock", null)
         val type = object : TypeToken<ArrayList<String>>() {}.type//converting the json to list
         return if (json != null) {

@@ -13,8 +13,10 @@ import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.ls.entertainment.securitylocker.App
 import com.ls.entertainment.securitylocker.service.LockService
+import com.ls.entertainment.securitylocker.utils.AllEvents
 import com.ls.entertainment.securitylocker.utils.LogUtils
 import com.ls.entertainment.securitylocker.utils.RemoteConfig
+import com.ls.entertainment.securitylocker.utils.TrackingHelper
 import java.util.concurrent.TimeUnit
 
 class ScheduleRestartServiceEveryDayWorker(
@@ -23,6 +25,7 @@ class ScheduleRestartServiceEveryDayWorker(
 
 
 	override fun doWork(): Result {
+		TrackingHelper.logEvent(AllEvents.WORKER_RESTART_SERVICE_EVERY_DAY)
 		// check service restart if need
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 			appContext.startForegroundService(Intent(appContext, LockService::class.java))

@@ -4,9 +4,11 @@ import androidx.lifecycle.viewModelScope
 import com.entertainment.basemvvmproject.base.BaseViewModel
 import com.entertainment.basemvvmproject.base.SingleLiveEvent
 import com.ls.entertainment.securitylocker.di.ApiInterface
+import com.ls.entertainment.securitylocker.utils.AllEvents
 import com.ls.entertainment.securitylocker.utils.Constant
 import com.ls.entertainment.securitylocker.utils.FileUtils
 import com.ls.entertainment.securitylocker.utils.SharePreferenceUtils
+import com.ls.entertainment.securitylocker.utils.TrackingHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -52,9 +54,12 @@ class DetailViewModel : BaseViewModel() {
 				//FileUtils.updateFileToGallery(status.second ?: "")
 				stateDownloadImage.postValue(true)
 				isLoading.postValue(false)
+				TrackingHelper.logEvent(AllEvents.DOWNLOAD_WALLPAPER_SUCCESS)
 			} catch (e: Exception) {
+				TrackingHelper.logEvent(AllEvents.DOWNLOAD_WALLPAPER_FAIL)
 				stateDownloadImage.postValue(false)
 				isLoading.postValue(false)
+				
 			}
 		}
 	}

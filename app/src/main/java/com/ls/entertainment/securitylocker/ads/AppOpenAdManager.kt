@@ -125,7 +125,7 @@ object AppOpenAdManager : Application.ActivityLifecycleCallbacks, LifecycleObser
 				loadAd(activity)
 				TrackingHelper.logEvent(AllEvents.E1_ADS_OPEN_ADS_SHOW_FAIL)
 			}
-
+			
 			override fun onAdShowedFullScreenContent() {
 				RxBus.push(OpenAdEvent(true))
 				appOpenAd = null
@@ -133,6 +133,11 @@ object AppOpenAdManager : Application.ActivityLifecycleCallbacks, LifecycleObser
 				// Called when fullscreen content is shown.
 				LogUtils.logCustomMessage("Open Ads: onAdShowedFullScreenContent")
 				TrackingHelper.logEvent(AllEvents.E1_ADS_OPEN_ADS_SHOW_SUCCESS)
+			}
+			
+			override fun onAdClicked() {
+				super.onAdClicked()
+				TrackingHelper.logEvent(AllEvents.E1_ADS_OPEN_ADS_CLICKED)
 			}
 		}
 		appOpenAd?.show(activity)

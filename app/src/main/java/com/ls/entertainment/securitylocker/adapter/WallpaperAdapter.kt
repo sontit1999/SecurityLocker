@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.ls.entertainment.securitylocker.databinding.ItemWallpaperDetailBinding
+import com.ls.entertainment.securitylocker.utils.AllEvents
+import com.ls.entertainment.securitylocker.utils.TrackingHelper
 
 class WallpaperAdapter : RecyclerView.Adapter<WallpaperHolder>() {
 	
@@ -40,6 +42,7 @@ class WallpaperAdapter : RecyclerView.Adapter<WallpaperHolder>() {
 		holder.binding.ivWallpaper.setOnClickListener {
 			onClickItem?.invoke(listWallpaper[position])
 			holder.changePreview()
+			TrackingHelper.logEvent(AllEvents.ACTION_CHANGE_PREVIEW)
 		}
 		holder.binding.pinLockView.attachIndicatorDots(holder.binding.indicatorDots)
 	}

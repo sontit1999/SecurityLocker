@@ -9,9 +9,10 @@ import com.ls.entertainment.securitylocker.R
 import com.ls.entertainment.securitylocker.ads.AdManager
 import com.ls.entertainment.securitylocker.databinding.FragPolicyBinding
 import com.ls.entertainment.securitylocker.model.OpenAdEvent
-import com.ls.entertainment.securitylocker.ui.detail.DetailFragment
+import com.ls.entertainment.securitylocker.utils.AllEvents
 import com.ls.entertainment.securitylocker.utils.AppUtils
 import com.ls.entertainment.securitylocker.utils.RxBus
+import com.ls.entertainment.securitylocker.utils.TrackingHelper
 import com.ls.entertainment.securitylocker.utils.setOnSafeClickListener
 
 class PolicyFragment : BaseFragmentNotRequireViewModel<FragPolicyBinding>(R.layout.frag_policy) {
@@ -25,7 +26,7 @@ class PolicyFragment : BaseFragmentNotRequireViewModel<FragPolicyBinding>(R.layo
 		}
 		binding.container.setOnSafeClickListener {  }
 	}
-
+	
 	override fun bindingStateView() {
 		super.bindingStateView()
 		RxBus.subscribe(TAG, OpenAdEvent::class) {
@@ -34,13 +35,18 @@ class PolicyFragment : BaseFragmentNotRequireViewModel<FragPolicyBinding>(R.layo
 			} else binding.containerAds.visible()
 		}
 	}
-
+	
+	override fun onResume() {
+		super.onResume()
+		TrackingHelper.logEvent(AllEvents.VIEW_POLICY)
+	}
+	
 	override fun onDestroy() {
 		super.onDestroy()
 		RxBus.unregister(TAG)
 	}
-
-	companion object{
+	
+	companion object {
 		const val TAG = "Policy"
 	}
 }

@@ -17,6 +17,7 @@ import com.ls.entertainment.securitylocker.ads.AdManager
 import com.ls.entertainment.securitylocker.databinding.FragDetailBinding
 import com.ls.entertainment.securitylocker.di.ApiInterface
 import com.ls.entertainment.securitylocker.model.OpenAdEvent
+import com.ls.entertainment.securitylocker.utils.AllEvents
 import com.ls.entertainment.securitylocker.utils.AppConfig
 import com.ls.entertainment.securitylocker.utils.AppSessionManager
 import com.ls.entertainment.securitylocker.utils.AppUtils
@@ -24,6 +25,7 @@ import com.ls.entertainment.securitylocker.utils.DialogUtil
 import com.ls.entertainment.securitylocker.utils.LogUtils
 import com.ls.entertainment.securitylocker.utils.NetworkListener
 import com.ls.entertainment.securitylocker.utils.RxBus
+import com.ls.entertainment.securitylocker.utils.TrackingHelper
 import com.ls.entertainment.securitylocker.utils.WallpaperUtils
 import com.ls.entertainment.securitylocker.utils.setOnSafeClickListener
 import com.yalantis.ucrop.UCrop
@@ -47,16 +49,18 @@ class DetailFragment : BaseFragment<FragDetailBinding, DetailViewModel>(R.layout
 	override fun bindingAction() {
 		super.bindingAction()
 		binding.container.setOnClickListener { }
-
+		
 		binding.ivBack.setOnSafeClickListener {
+			TrackingHelper.logEvent(AllEvents.ACTION_BACK_DETAIL)
 			if (!AdManager.showInter(false, TAG, onHidden = {
 					requireActivity().onBackPressed()
 				})) {
 				requireActivity().onBackPressed()
 			}
 		}
-
+		
 		binding.ivSetting.setOnSafeClickListener {
+			TrackingHelper.logEvent(AllEvents.ACTION_DOWNLOAD_WALLPAPER)
 			if (NetworkListener.isNetWorkConnected()) {
 				DialogUtil.showConfirmationWatchAdDialog(requireContext(), okListener = {
 					if (!AdManager.showRewarded(onHidden = {
@@ -79,9 +83,12 @@ class DetailFragment : BaseFragment<FragDetailBinding, DetailViewModel>(R.layout
 	private fun showDialogSettingBackground() {
 		DialogUtil.showSetWallpaperDialog(requireContext(), lockAppListener = {
 			goCropActivityAndSet(WallpaperUtils.WallpaperType.LOCK_APP)
+			TrackingHelper.logEvent(AllEvents.ACTION_SET_LOCK_APP)
 		}, lockHomeListener = {
+			TrackingHelper.logEvent(AllEvents.ACTION_SET_HOME_SCREEN)
 			goCropActivityAndSet(WallpaperUtils.WallpaperType.HOME)
 		}, lockListener = {
+			TrackingHelper.logEvent(AllEvents.ACTION_SET_LOCK_SCREEN)
 			goCropActivityAndSet(WallpaperUtils.WallpaperType.LOCK)
 		})
 	}
@@ -140,17 +147,28 @@ class DetailFragment : BaseFragment<FragDetailBinding, DetailViewModel>(R.layout
 		adapter = WallpaperAdapter()
 		adapter?.setData(AppSessionManager.listWallpaperDetail as ArrayList<WallpaperModel>)
 		binding.viewPager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
+		binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+			override fun onPageSelected(position: Int) {
+				super.onPageSelected(position)
+				TrackingHelper.logEvent(AllEvents.ACTION_SWIPE_DETAIL)
+			}
+		})
 		binding.viewPager.adapter = adapter
 		binding.viewPager.setCurrentItem(requireArguments().getInt(KEY_CURRENT_POS, 0), false)
 	}
-
+	
+	override fun onResume() {
+		super.onResume()
+		TrackingHelper.logEvent(AllEvents.VIEW_DETAIL)
+	}
+	
 	override fun onDestroy() {
 		super.onDestroy()
 		LogUtils.logCustomMessage("================ onDestroy Detail")
 		RxBus.unregister(TAG)
 		onClear()
 	}
-
+	
 	companion object {
 		private const val KEY_CURRENT_POS = "current_pos"
 		const val TAG = "DetailFragment"

@@ -9,12 +9,14 @@ import com.entertainment.basemvvmproject.base.BaseViewModel
 import com.entertainment.basemvvmproject.base.SingleLiveEvent
 import com.ls.entertainment.securitylocker.App
 import com.ls.entertainment.securitylocker.model.AppModel
+import com.ls.entertainment.securitylocker.utils.AllEvents
 import com.ls.entertainment.securitylocker.utils.AppUtils
 import com.ls.entertainment.securitylocker.utils.LogUtils
 import com.ls.entertainment.securitylocker.utils.SharePreferenceUtils
+import com.ls.entertainment.securitylocker.utils.TrackingHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.util.*
+import java.util.Locale
 
 class AppViewModel : BaseViewModel() {
 
@@ -32,6 +34,7 @@ class AppViewModel : BaseViewModel() {
 
 	fun searchApp(keyword: String) {
 		viewModelScope.launch(Dispatchers.IO) {
+			TrackingHelper.logEvent(AllEvents.ACTION_SEARCH)
 			val resultSearch = mutableListOf<AppModel>()
 			val listApp = listAppLiveData.value
 			listApp?.forEach {

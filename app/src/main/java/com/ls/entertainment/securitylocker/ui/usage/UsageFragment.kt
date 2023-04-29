@@ -12,6 +12,8 @@ import com.ls.entertainment.securitylocker.R
 import com.ls.entertainment.securitylocker.adapter.UsageAppAdapter
 import com.ls.entertainment.securitylocker.databinding.FragUsageBinding
 import com.ls.entertainment.securitylocker.model.RefreshUsage
+import com.ls.entertainment.securitylocker.utils.AllEvents
+import com.ls.entertainment.securitylocker.utils.TrackingHelper
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 
@@ -56,6 +58,7 @@ class UsageFragment : BaseFragment<FragUsageBinding, UsageViewModel>(R.layout.fr
 			LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
 		usageAppAdapter = UsageAppAdapter()
 		usageAppAdapter.onClickItem = {
+			TrackingHelper.logEvent(AllEvents.ACTION_UNINSTALL)
 			viewModel.unInstallApp(it.packageName)
 		}
 		binding.rvApp.adapter = usageAppAdapter

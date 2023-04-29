@@ -17,7 +17,14 @@ import com.ls.entertainment.securitylocker.model.ConfigModel
 import com.ls.entertainment.securitylocker.service.LockService
 import com.ls.entertainment.securitylocker.ui.unlock.UnlockActivity
 import com.ls.entertainment.securitylocker.ui.unlock.UnlockActivity.Companion.KEY_TYPE_PASS
-import com.ls.entertainment.securitylocker.utils.*
+import com.ls.entertainment.securitylocker.utils.AllEvents
+import com.ls.entertainment.securitylocker.utils.AppUtils
+import com.ls.entertainment.securitylocker.utils.DialogUtil
+import com.ls.entertainment.securitylocker.utils.LogUtils
+import com.ls.entertainment.securitylocker.utils.NotificationCenter
+import com.ls.entertainment.securitylocker.utils.RemoteConfig
+import com.ls.entertainment.securitylocker.utils.SharePreferenceUtils
+import com.ls.entertainment.securitylocker.utils.TrackingHelper
 
 class SplashActivity : BaseActivity<ActivitySplashBinding, SplashViewModel>() {
 
@@ -28,10 +35,10 @@ class SplashActivity : BaseActivity<ActivitySplashBinding, SplashViewModel>() {
 	private var isShowDialogUpdate = false
 
 	private var didGoToMain = false
-
+	
 	private var type = -1
 	private var typeActionMenu = -1
-
+	
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		LockService.startLockService(this)
@@ -39,10 +46,23 @@ class SplashActivity : BaseActivity<ActivitySplashBinding, SplashViewModel>() {
 		if (type == TYPE_FROM_UNLOCK) {
 			typeActionMenu = intent.getIntExtra(KEY_ACTION_MENU_LOCK, -1)
 		}
+		trackingNotifyReceive()
 	}
-
+	
+	private fun trackingNotifyReceive() {
+		val typeNotify = intent.getStringExtra(
+			NotificationCenter.KEY_TAG_NOTIFY
+		)
+		when (typeNotify) {
+			NotificationCenter.TAG_NOTIFY_OFFLINE -> TrackingHelper.logEvent(AllEvents.E1_NOTIFICATION_OFFLINE_CLICK)
+			NotificationCenter.TAG_NOTIFY_FCM -> TrackingHelper.logEvent(AllEvents.E1_NOTIFICATION_FCM_CLICK)
+			else -> {}
+		}
+	}
+	
 	override fun onResume() {
 		super.onResume()
+		TrackingHelper.logEvent(AllEvents.VIEW_SPLASH)
 		if (!didGoToMain) {
 			loadRemoteConfig()
 		} else {
@@ -97,6 +117,7 @@ class SplashActivity : BaseActivity<ActivitySplashBinding, SplashViewModel>() {
 	}
 
 	private fun showDialogRequireUpdate() {
+		TrackingHelper.logEvent(AllEvents.VIEW_UPDATE_APP)
 		isShowDialogUpdate = true
 		DialogUtil.showConfirmationDialog(this,
 			getString(R.string.title_update_app),
@@ -106,6 +127,7 @@ class SplashActivity : BaseActivity<ActivitySplashBinding, SplashViewModel>() {
 			okListener = {
 				AppUtils.goToMarket(RemoteConfig.commonConfig.packageName, this)
 				TrackingHelper.logEvent(AllEvents.E1_CLICK_UPDATE_APP)
+				TrackingHelper.logEvent(AllEvents.ACTION_UPDATE)
 			})
 	}
 
@@ -114,19 +136,24 @@ class SplashActivity : BaseActivity<ActivitySplashBinding, SplashViewModel>() {
 		didGoToMain = true
 		val openCount = SharePreferenceUtils.getInstance().openCount
 		SharePreferenceUtils.getInstance().openCount = openCount + 1
-		if (!SharePreferenceUtils.getInstance().isSetupPass) {
-			val intent = Intent(this@SplashActivity, UnlockActivity::class.java)
-			intent.putExtra(KEY_TYPE_PASS, UnlockActivity.TYPE_SETUP_PASS)
-			startActivity(intent)
-		} else if ((openCount + 1) == 1) {
+		
+		if (openCount == 0) {
 			TrackingHelper.logEvent(AllEvents.E1_OPEN_USER_FIRST_OPEN)
-			goToMainActivity()
+			if (!SharePreferenceUtils.getInstance().isSetupPass) {
+				val intent = Intent(this@SplashActivity, UnlockActivity::class.java)
+				intent.putExtra(KEY_TYPE_PASS, UnlockActivity.TYPE_SETUP_PASS)
+				startActivity(intent)
+				finish()
+			} else goToMainActivity()
 		} else {
 			TrackingHelper.logEvent(AllEvents.E1_OPEN_USER_REOPEN)
-			goToMainActivity()
+			if (!SharePreferenceUtils.getInstance().isSetupPass) {
+				val intent = Intent(this@SplashActivity, UnlockActivity::class.java)
+				intent.putExtra(KEY_TYPE_PASS, UnlockActivity.TYPE_SETUP_PASS)
+				startActivity(intent)
+				finish()
+			} else goToMainActivity()
 		}
-		
-		
 	}
 
 	private fun goToMainActivity() {

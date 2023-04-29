@@ -5,12 +5,27 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.BatteryManager
-import android.os.BatteryManager.*
+import android.os.BatteryManager.BATTERY_HEALTH_COLD
+import android.os.BatteryManager.BATTERY_HEALTH_DEAD
+import android.os.BatteryManager.BATTERY_HEALTH_GOOD
+import android.os.BatteryManager.BATTERY_HEALTH_OVERHEAT
+import android.os.BatteryManager.BATTERY_HEALTH_UNSPECIFIED_FAILURE
+import android.os.BatteryManager.BATTERY_PROPERTY_CAPACITY
+import android.os.BatteryManager.BATTERY_PROPERTY_CHARGE_COUNTER
+import android.os.BatteryManager.EXTRA_HEALTH
+import android.os.BatteryManager.EXTRA_LEVEL
+import android.os.BatteryManager.EXTRA_PLUGGED
+import android.os.BatteryManager.EXTRA_SCALE
+import android.os.BatteryManager.EXTRA_STATUS
+import android.os.BatteryManager.EXTRA_TECHNOLOGY
+import android.os.BatteryManager.EXTRA_TEMPERATURE
 import android.os.Bundle
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import com.entertainment.basemvvmproject.base.BaseFragment
+import com.entertainment.basemvvmproject.utils.gone
+import com.entertainment.basemvvmproject.utils.visible
 import com.ls.entertainment.securitylocker.MainActivity
 import com.ls.entertainment.securitylocker.R
 import com.ls.entertainment.securitylocker.databinding.FragToolBinding
@@ -20,6 +35,7 @@ import com.ls.entertainment.securitylocker.ui.trackingtime.TrackingTimeFragment
 import com.ls.entertainment.securitylocker.utils.AppUtils
 import com.ls.entertainment.securitylocker.utils.LogUtils
 import com.ls.entertainment.securitylocker.utils.PermissionUtil
+import com.ls.entertainment.securitylocker.utils.RemoteConfig
 import com.ls.entertainment.securitylocker.utils.setOnSafeClickListener
 
 class ToolFragment : BaseFragment<FragToolBinding, ToolViewModel>(R.layout.frag_tool) {
@@ -45,28 +61,28 @@ class ToolFragment : BaseFragment<FragToolBinding, ToolViewModel>(R.layout.frag_
 	}
 
 	private fun handleBatteryChange(intent: Intent) {
-		val level: Int = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
-		val scale: Int = intent.getIntExtra(BatteryManager.EXTRA_SCALE, -1)
+		val level: Int = intent.getIntExtra(EXTRA_LEVEL, -1)
+		val scale: Int = intent.getIntExtra(EXTRA_SCALE, -1)
 		val batteryPct: Float = if (scale != 0) {
 			level * 100 / scale.toFloat()
 		} else {
 			0f
 		}
-
+		
 		// Battery status - charging/not charging
-		val status = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1)
-
+		val status = intent.getIntExtra(EXTRA_STATUS, -1)
+		
 		// Battery temperature
-		val temperature = intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, -1).toFloat().div(10)
+		val temperature = intent.getIntExtra(EXTRA_TEMPERATURE, -1).toFloat().div(10)
 
 		// Battery charger
-		val chargePlugged = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1)
+		val chargePlugged = intent.getIntExtra(EXTRA_PLUGGED, -1)
 
 		// Battery health
-		val health = intent.getIntExtra(BatteryManager.EXTRA_HEALTH, -1)
+		val health = intent.getIntExtra(EXTRA_HEALTH, -1)
 
 		// Battery technology
-		val technology = intent.getStringExtra(BatteryManager.EXTRA_TECHNOLOGY)
+		val technology = intent.getStringExtra(EXTRA_TECHNOLOGY)
 
 		// Battery capacity
 		val batteryManager = if (PermissionUtil.isApi21orHigher()) {
@@ -75,12 +91,12 @@ class ToolFragment : BaseFragment<FragToolBinding, ToolViewModel>(R.layout.frag_
 			null
 		}
 		val chargeCounter = if (PermissionUtil.isApi21orHigher()) {
-			batteryManager?.getIntProperty(BatteryManager.BATTERY_PROPERTY_CHARGE_COUNTER)
+			batteryManager?.getIntProperty(BATTERY_PROPERTY_CHARGE_COUNTER)
 		} else {
 			null
 		}
 		val capacity = if (PermissionUtil.isApi21orHigher()) {
-			batteryManager?.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)?.let {
+			batteryManager?.getIntProperty(BATTERY_PROPERTY_CAPACITY)?.let {
 				if (it != 0) {
 					(chargeCounter?.div(it) ?: 0) / 10
 				} else {
@@ -162,6 +178,9 @@ class ToolFragment : BaseFragment<FragToolBinding, ToolViewModel>(R.layout.frag_
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
+		if (RemoteConfig.commonConfig.supportBoostedRam) {
+			binding.btnOptimizeRam.visible()
+		} else binding.btnOptimizeRam.gone()
 		loadFragment()
 	}
 

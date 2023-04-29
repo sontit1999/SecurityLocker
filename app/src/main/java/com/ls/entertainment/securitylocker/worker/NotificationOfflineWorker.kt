@@ -1,20 +1,22 @@
 package com.ls.entertainment.securitylocker.worker
 
+
 import android.content.Context
 import android.os.Bundle
-import androidx.work.*
-
-
+import androidx.work.Constraints
+import androidx.work.ExistingWorkPolicy
+import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkManager
+import androidx.work.Worker
+import androidx.work.WorkerParameters
 import com.ls.entertainment.securitylocker.App
 import com.ls.entertainment.securitylocker.R
 import com.ls.entertainment.securitylocker.utils.LogUtils
 import com.ls.entertainment.securitylocker.utils.NotificationCenter
 import com.ls.entertainment.securitylocker.utils.RemoteConfig
 import com.ls.entertainment.securitylocker.utils.SharePreferenceUtils
-
-
-import java.util.*
-
+import java.util.Calendar
 import java.util.concurrent.TimeUnit
 
 class NotificationOfflineWorker(
@@ -24,9 +26,9 @@ class NotificationOfflineWorker(
 
 	private val listNotification = arrayOf(
 		Pair(R.string.msg_dayOneNotificationTitle01, R.string.dayOneNotificationMessage01),
-		Pair(R.string.msg_dayOneNotificationTitle01, R.string.dayTwoNotificationMessage01),
-		Pair(R.string.msg_dayOneNotificationTitle01, R.string.dayFourNotificationMessage03),
-		Pair(R.string.msg_dayOneNotificationTitle01, R.string.daySevenNotificationMessage02),
+		Pair(R.string.dayFourNotificationTitle03, R.string.dayFourNotificationMessage03),
+		Pair(R.string.daySevenNotificationTitle02, R.string.daySevenNotificationMessage02),
+		Pair(R.string.dayTwoNotificationTitle01, R.string.dayTwoNotificationMessage01),
 		Pair(R.string.weeklyNotificationTitle04, R.string.weeklyNotificationMessage04),
 	)
 
@@ -40,6 +42,7 @@ class NotificationOfflineWorker(
 		try {
 			schedule()
 		} catch (e: Exception) {
+			LogUtils.logCustomMessage(e.message.toString())
 		}
 	}
 

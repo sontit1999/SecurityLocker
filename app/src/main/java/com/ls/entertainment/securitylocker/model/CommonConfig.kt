@@ -30,25 +30,25 @@ class CommonConfig {
 
 	@SerializedName(value = "waitingShowOpenAds")
 	var waitingShowOpenAds: Int = 1
-
+	
 	@SerializedName(value = "latestVersion")
 	var latestVersion: String = ""
-
+	
 	@SerializedName(value = "packageName")
 	var packageName: String = "com.ls.entertainment.securitylocker"
 	
 	@SerializedName(value = "scenarioChangedWallpaper")
 	var scenarioChangedWallpaper: String = "24,24,48,72,168" // days
-
-	@SerializedName(value = "timeNotify10m")
-	var timeNotify10m: Int = 10
-
+	
+	@SerializedName(value = "timeNotify10mPresent")
+	var timeNotify10mPresent: Int = 10
+	
 	@SerializedName(value = "versionCodeForReview")
 	var versionCodeForReview: Int = 0
-
+	
 	@SerializedName(value = "openAdKey")
 	var openAdKey: String = "ca-app-pub-4945756407745123/4489203833"
-
+	
 	@SerializedName(value = "bannerAdKey")
 	var bannerAdKey: String = "ca-app-pub-4945756407745123/8428448848"
 
@@ -84,6 +84,15 @@ class CommonConfig {
 	
 	@SerializedName(value = "supportNativeInLock")
 	var supportNativeInLock: Boolean = false
+	
+	@SerializedName(value = "supportBoostedRam")
+	var supportBoostedRam: Boolean = false
+	
+	@SerializedName(value = "timeNotifyAfterUnplugInSecond")
+	var timeNotifyAfterUnplugInSecond: Int = 3600
+	
+	@SerializedName(value = "timeScheduleRestartServiceInSecond")
+	var timeScheduleRestartServiceInSecond: Int = 86400
 	
 	@SerializedName(value = "listImage")
 	var listImage: String =

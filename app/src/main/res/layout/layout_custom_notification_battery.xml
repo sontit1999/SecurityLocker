@@ -19,19 +19,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:layout_weight="1"
-            android:text="@string/battery_saver_suggest_notify"
+            android:text="@string/boost_suggest_notify"
             android:textSize="11sp" />
-
-        <Button
-            android:id="@+id/btnOptimizeFromNotify"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/green"
-            android:text="@string/optimized"
-            android:textAllCaps="false"
-            android:textColor="@color/white"
-            android:textSize="11sp" />
-
     </LinearLayout>
 
 </FrameLayout>

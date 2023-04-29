@@ -102,9 +102,9 @@ class LockService : Service() {
 	private fun handlePowerDisconnected(ctx: Context?) {
 		ctx ?: return
 		try {
-			handleRestoreBrightness(ctx)
 			NotificationOneHourAfterUnplug.cancel()
 			NotificationOneHourAfterUnplug.schedule()
+			handleRestoreBrightness(ctx)
 		} catch (e: Exception) {
 			LogUtils.logCustomMessage(e.message.toString())
 		}
@@ -135,15 +135,17 @@ class LockService : Service() {
 	}
 
 	private fun handleRestoreBrightness(context: Context) {
-		Settings.System.putInt(
-			context.contentResolver,
-			Settings.System.SCREEN_BRIGHTNESS_MODE,
-			Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL
-		)
-		val brightness = if (App.brightnessValue != 0) App.brightnessValue else 100
-		Settings.System.putInt(
-			context.contentResolver, Settings.System.SCREEN_BRIGHTNESS, brightness
-		)
+		if (this.canWriteSettings()) {
+			Settings.System.putInt(
+				context.contentResolver,
+				Settings.System.SCREEN_BRIGHTNESS_MODE,
+				Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL
+			)
+			val brightness = if (App.brightnessValue != 0) App.brightnessValue else 100
+			Settings.System.putInt(
+				context.contentResolver, Settings.System.SCREEN_BRIGHTNESS, brightness
+			)
+		}
 	}
 
 	private fun handleBatteryChange(intent: Intent) {

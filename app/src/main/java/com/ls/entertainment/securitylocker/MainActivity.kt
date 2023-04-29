@@ -12,6 +12,10 @@ import androidx.lifecycle.viewModelScope
 import com.entertainment.basemvvmproject.base.BaseActivity
 import com.entertainment.basemvvmproject.utils.gone
 import com.entertainment.basemvvmproject.utils.visible
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
+import com.google.firebase.remoteconfig.ktx.remoteConfig
+import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
 import com.ls.entertainment.securitylocker.App.Companion.typeSetWallpaper
 import com.ls.entertainment.securitylocker.adapter.MainViewPagerAdapter
 import com.ls.entertainment.securitylocker.ads.AdManager
@@ -19,17 +23,22 @@ import com.ls.entertainment.securitylocker.databinding.ActivityMainBinding
 import com.ls.entertainment.securitylocker.extension.canDrawOverlay
 import com.ls.entertainment.securitylocker.extension.requestDrawOverlayPermission
 import com.ls.entertainment.securitylocker.model.CheckPermissionEvent
+import com.ls.entertainment.securitylocker.model.ConfigModel
 import com.ls.entertainment.securitylocker.model.OpenAdEvent
 import com.ls.entertainment.securitylocker.model.RefreshUsage
 import com.ls.entertainment.securitylocker.service.LockService.Companion.startLockService
 import com.ls.entertainment.securitylocker.ui.MainViewModel
 import com.ls.entertainment.securitylocker.ui.batterysaver.BatterySaverFragment
 import com.ls.entertainment.securitylocker.ui.splash.SplashActivity
+import com.ls.entertainment.securitylocker.utils.AllEvents
+import com.ls.entertainment.securitylocker.utils.AppUtils
 import com.ls.entertainment.securitylocker.utils.DialogUtil
 import com.ls.entertainment.securitylocker.utils.LogUtils
 import com.ls.entertainment.securitylocker.utils.NetworkListener
+import com.ls.entertainment.securitylocker.utils.RemoteConfig
 import com.ls.entertainment.securitylocker.utils.RxBus
 import com.ls.entertainment.securitylocker.utils.SharePreferenceUtils
+import com.ls.entertainment.securitylocker.utils.TrackingHelper
 import com.ls.entertainment.securitylocker.utils.WallpaperUtils
 import com.ls.entertainment.securitylocker.utils.checkUsageStatsPermission
 import com.ls.entertainment.securitylocker.utils.showAccessDataUsagePermissionDialog
@@ -247,11 +256,70 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
 					showToast(getString(R.string.fail_setwallpaper_message))
 				}
 			}
-
+			
 		}
-
+		
 	}
-
+	
+	override fun onResume() {
+		super.onResume()
+		loadRemoteConfig()
+	}
+	
+	private fun loadRemoteConfig() {
+		if (App.didLoadConfigSuccess) return
+		val remoteConfig: FirebaseRemoteConfig = Firebase.remoteConfig
+		val configSettings = remoteConfigSettings {
+			minimumFetchIntervalInSeconds = 10
+		}
+		remoteConfig.setConfigSettingsAsync(configSettings)
+		
+		remoteConfig.fetchAndActivate().addOnCompleteListener(this) { task ->
+			if (task.isSuccessful) {
+				App.didLoadConfigSuccess = true
+				val configJson = remoteConfig.getString("config")
+				RemoteConfig.configModel = ConfigModel.newInstance(configJson)
+				checkUpdateInSplashScreen()
+				LogUtils.logCustomMessage("Load config success: $configJson")
+				TrackingHelper.logEvent(AllEvents.E1_CONFIG_LOAD_SUCCESS)
+			} else {
+				TrackingHelper.logEvent(AllEvents.E1_CONFIG_LOAD_FAIL)
+			}
+		}
+	}
+	
+	private fun checkUpdateInSplashScreen() {
+		try {
+			val list: List<String> = RemoteConfig.commonConfig.latestVersion.split("_")
+			var isRequired = false
+			var latestAppVersion = 0
+			if (list.isNotEmpty()) {
+				latestAppVersion = list[0].toInt()
+				isRequired = list[1].contains("required")
+			}
+			if (latestAppVersion > BuildConfig.VERSION_CODE && isRequired) {
+				showDialogRequireUpdate()
+			}
+			if (RemoteConfig.commonConfig.versionCodeForReview == BuildConfig.VERSION_CODE) {
+				RemoteConfig.configModel = ConfigModel()
+			}
+		} catch (e: java.lang.Exception) {
+			LogUtils.logCustomMessage(e.message.toString())
+		}
+	}
+	
+	private fun showDialogRequireUpdate() {
+		DialogUtil.showConfirmationDialog(this,
+			getString(R.string.title_update_app),
+			getString(R.string.desc_require_update_app),
+			getString(R.string.msg_ok),
+			"",
+			okListener = {
+				AppUtils.goToMarket(RemoteConfig.commonConfig.packageName, this)
+				TrackingHelper.logEvent(AllEvents.E1_CLICK_UPDATE_APP)
+			})
+	}
+	
 	override fun onDestroy() {
 		super.onDestroy()
 		EventBus.getDefault().unregister(this)
@@ -259,7 +327,7 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
 		AdManager.destroyAll()
 		SharePreferenceUtils.getInstance().canShowOpenAd = false
 	}
-
+	
 	companion object {
 		const val TAG = "MainActivity"
 	}

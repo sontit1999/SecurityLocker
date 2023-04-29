@@ -2,7 +2,13 @@ package com.ls.entertainment.securitylocker.worker
 
 import android.content.Context
 import android.os.Bundle
-import androidx.work.*
+import androidx.work.Constraints
+import androidx.work.ExistingWorkPolicy
+import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkManager
+import androidx.work.Worker
+import androidx.work.WorkerParameters
 import com.ls.entertainment.securitylocker.App
 import com.ls.entertainment.securitylocker.R
 import com.ls.entertainment.securitylocker.utils.LogUtils
@@ -42,7 +48,7 @@ class NotificationAfter10mPresentWorker(
 			LogUtils.logCustomMessage("Schedule NotificationAfter10mPresentWorker")
 			val constraints =
 				Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
-			val delta = RemoteConfig.commonConfig.timeNotify10m * 60 * 1000L
+			val delta = RemoteConfig.commonConfig.timeNotify10mPresent * 60 * 1000L
 			val work: OneTimeWorkRequest =
 				OneTimeWorkRequest.Builder(NotificationAfter10mPresentWorker::class.java)
 					.setInitialDelay(delta, TimeUnit.MILLISECONDS).setConstraints(constraints)

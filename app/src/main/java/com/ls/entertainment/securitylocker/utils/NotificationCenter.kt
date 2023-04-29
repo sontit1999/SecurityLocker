@@ -28,7 +28,6 @@ import android.graphics.BitmapFactory
 import android.media.RingtoneManager
 import android.os.Build
 import android.os.Bundle
-import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
 import com.bumptech.glide.request.RequestOptions
 import com.ls.entertainment.securitylocker.App
@@ -38,7 +37,7 @@ import com.ls.entertainment.securitylocker.ui.splash.SplashActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.util.*
+import java.util.Calendar
 
 
 object NotificationCenter {
@@ -152,8 +151,8 @@ object NotificationCenter {
 		}
 		return true
 	}
-
-	fun pushNotification(title: String, content: String, action: String, ntfId: Int = -1) {
+	
+	private fun pushNotification(title: String, content: String, action: String, ntfId: Int = -1) {
 		val bundle = Bundle()
 		bundle.putString(TITLE, title)
 		bundle.putString(MESSAGE, content)
@@ -217,36 +216,8 @@ object NotificationCenter {
 			manager.createNotificationChannel(notificationChannel)
 		}
 	}
-
-	fun showCustomNotify(action: String, layoutNotify: Int, requestCode: Int) {
-		val intent = Intent()
-		intent.setClass(App.instance, SplashActivity::class.java)
-		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
-		val pendingIntent = PendingIntent.getActivity(
-			App.instance,
-			System.currentTimeMillis().toInt(),
-			intent,
-			PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-		)
-
-		val notificationLayout = RemoteViews(App.instance.packageName, layoutNotify)
-
-		notificationLayout.setOnClickPendingIntent(
-			R.id.btnOptimizeFromNotify, onNotificationButtonCLicked(requestCode)
-		)
-
-		val sound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-		val customNotification = NotificationCompat.Builder(App.instance, CHANNEL_ID_REMIND_OPEN)
-			.setSmallIcon(R.mipmap.ic_app)
-			.setStyle(NotificationCompat.DecoratedCustomViewStyle())
-			.setCustomContentView(notificationLayout).setSound(sound).setAutoCancel(true)
-			.setPriority(NotificationCompat.PRIORITY_DEFAULT)
-			.setCustomBigContentView(notificationLayout).setContentIntent(pendingIntent).build()
-		val manager = App.instance.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-		manager.notify(System.currentTimeMillis().toInt(), customNotification)
-
-	}
-
+	
+	
 	private fun onNotificationButtonCLicked(requestCode: Int): PendingIntent {
 		val intent = Intent(App.instance, SplashActivity::class.java).apply {
 

@@ -68,7 +68,7 @@
         \n\nThis helps protect your privacy.
     </string>
     <string name="msg_no">No</string>
-    <string name="fast_charge">Turn off some tasks to optimize fast and efficient battery charging</string>
+    <string name="msg_suggest_power_connect">Turn off some background tasks to save battery</string>
     <string name="lock_app">Manage app lock</string>
     <string name="change_theme">Change background</string>
     <string name="scan_app_battery">Scan for battery-draining apps</string>

@@ -98,7 +98,7 @@ class LockService : Service() {
 		saveBrightness(ctx)
 		val count = SharePreferenceUtils.getInstance().countShowDialogBatterySave
 		SharePreferenceUtils.getInstance().countShowDialogBatterySave = count + 1
-		if (count > 1 && count % 2 == 0) {
+		if (count > 1 && count % RemoteConfig.commonConfig.countShowOptimizeBattery == 0) {
 			val intent = Intent(ctx, ConfirmActivity::class.java)
 			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
 			startActivity(intent)

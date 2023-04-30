@@ -324,7 +324,7 @@ class LockService : Service() {
 				launch(Dispatchers.IO) {
 					pingFakeServer()
 				}
-				delay(30000)
+				delay(120000)
 			}
 		}
 	}
@@ -446,7 +446,7 @@ class LockService : Service() {
 				)
 			)
 			val builder = NotificationCompat.Builder(this, CHANEL_ID)
-			builder.setSmallIcon(R.drawable.icon_lock).setCustomContentView(notificationLayout)
+			builder.setSmallIcon(R.mipmap.ic_app).setCustomContentView(notificationLayout)
 				.setPriority(NotificationCompat.PRIORITY_HIGH).setWhen(0).setOnlyAlertOnce(true)
 				.setContentIntent(pendingIntent).setOngoing(true)
 			if (iconNotification != null) {

@@ -105,4 +105,5 @@
     <string name="set_up_pass">Set up parttern lock\n</string>
     <string name="change_pass">Change Password</string>
     <string name="change_pass_success">Password has been successfully set</string>
+    <string name="must_allow_storage_permission">Please allow access to photos on your device to be able to select photos</string>
 </resources>

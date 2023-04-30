@@ -185,7 +185,7 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
 			showDrawOverlayPermissionDescDialog(onOkListener = {
 				TrackingHelper.logEvent(AllEvents.ACTION_ALLOW_OVERLAY_DIALOG)
 				requestDrawOverlayPermission(
-					this, 999
+					this, REQUEST_CODE_OVERLAY_PERMISSION
 				)
 			}, onCancelListener = {
 
@@ -210,7 +210,7 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
 
 	private fun requestPermissionUsage() {
 		Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS).apply {
-			startActivity(this)
+			startActivityForResult(this, REQUEST_CODE_USAGE_PERMISSION)
 		}
 	}
 
@@ -218,13 +218,6 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
 	@Subscribe
 	fun checkPermissionEvent(checkPermissionEvent: CheckPermissionEvent) {
 		checkPermissionApp()
-	}
-
-	override fun onRequestPermissionsResult(
-		requestCode: Int, permissions: Array<out String>, grantResults: IntArray
-	) {
-		super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-		LogUtils.logCustomMessage("onRequestPermissionsResult")
 	}
 
 	fun addFragment(fragment: Fragment) {
@@ -241,6 +234,24 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
 			setWallPaperFromBitMap(bitmap, path)
 		} else if (resultCode == UCrop.RESULT_ERROR) {
 			showToast(getString(R.string.fail_crop_image))
+		}
+		
+		if (requestCode == REQUEST_CODE_USAGE_PERMISSION) {
+			if (checkUsageStatsPermission()) {
+				LogUtils.logCustomMessage("Allow usage permission")
+				TrackingHelper.logEvent(AllEvents.PERMISSION_USAGE_ACCEPT)
+			} else {
+				LogUtils.logCustomMessage("Deny usage permission")
+				TrackingHelper.logEvent(AllEvents.PERMISSION_USAGE_DENY)
+			}
+		} else if (requestCode == REQUEST_CODE_OVERLAY_PERMISSION) {
+			if (canDrawOverlay()) {
+				LogUtils.logCustomMessage("Allow overlay permission")
+				TrackingHelper.logEvent(AllEvents.PERMISSION_OVERLAY_ACCEPT)
+			} else {
+				LogUtils.logCustomMessage("Deny overlay permission")
+				TrackingHelper.logEvent(AllEvents.PERMISSION_OVERLAY_DENY)
+			}
 		}
 	}
 
@@ -334,6 +345,8 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
 	
 	companion object {
 		const val TAG = "MainActivity"
+		const val REQUEST_CODE_USAGE_PERMISSION = 1999
+		const val REQUEST_CODE_OVERLAY_PERMISSION = 2001
 	}
 
 }

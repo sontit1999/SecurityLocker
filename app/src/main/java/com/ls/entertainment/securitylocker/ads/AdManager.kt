@@ -53,8 +53,10 @@ object AdManager {
 	}
 
 	fun loadBanner(view: FrameLayout): AdView? {
+		view.gone()
 		if (!RemoteConfig.commonConfig.isActiveAds || !RemoteConfig.commonConfig.supportBanner) return null
 		try {
+			view.visible()
 			val adView = AdView(view.context)
 			adView.adListener = object : AdListener() {
 

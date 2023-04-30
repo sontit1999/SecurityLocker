@@ -97,6 +97,7 @@ class ThemeFragment : BaseFragment<FragThemeBinding, ThemeViewModel>(R.layout.fr
 		if (list.all { it.value }) {
 			LogUtils.logCustomMessage("Permision storage ACEEPT")
 			TrackingHelper.logEvent(AllEvents.PERMISSION_STORAGE_ACCEPT)
+			pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
 		} else {
 			showToast("Permission deny")
 			LogUtils.logCustomMessage("Permision storage Deny")
@@ -115,6 +116,7 @@ class ThemeFragment : BaseFragment<FragThemeBinding, ThemeViewModel>(R.layout.fr
 		if (isGranted) {
 			LogUtils.logCustomMessage("Permision storage ACEEPT")
 			TrackingHelper.logEvent(AllEvents.PERMISSION_STORAGE_ACCEPT)
+			pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
 		} else {
 			// Permission not granted
 			LogUtils.logCustomMessage("Permision storage Deny")

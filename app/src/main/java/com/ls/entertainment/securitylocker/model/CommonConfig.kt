@@ -87,18 +87,21 @@ class CommonConfig {
 	
 	@SerializedName(value = "supportBoostedRam")
 	var supportBoostedRam: Boolean = false
-	
+
 	@SerializedName(value = "timeNotifyAfterUnplugInSecond")
 	var timeNotifyAfterUnplugInSecond: Int = 3600
-	
+
 	@SerializedName(value = "timeScheduleRestartServiceInSecond")
 	var timeScheduleRestartServiceInSecond: Int = 86400
-	
+
 	@SerializedName(value = "countShowOptimizeBattery")
 	var countShowOptimizeBattery: Int = 5
-	
+
+	@SerializedName(value = "timePingFakeServer")
+	var timePingFakeServer: Long = 60000
+
 	@SerializedName(value = "listImage")
 	var listImage: String =
 		"https://images.pexels.com/photos/3052361/pexels-photo-3052361.jpeg?auto=compress&cs=tinysrgb&w=1600????https://images.pexels.com/photos/3617500/pexels-photo-3617500.jpeg?auto=compress&cs=tinysrgb&w=1600????https://images.pexels.com/photos/2670898/pexels-photo-2670898.jpeg?auto=compress&cs=tinysrgb&w=1600????https://images.pexels.com/photos/3894157/pexels-photo-3894157.jpeg?auto=compress&cs=tinysrgb&w=1600????https://images.pexels.com/photos/2832034/pexels-photo-2832034.jpeg?auto=compress&cs=tinysrgb&w=1600????https://images.pexels.com/photos/1226302/pexels-photo-1226302.jpeg?auto=compress&cs=tinysrgb&w=1600????https://images.pexels.com/photos/1366630/pexels-photo-1366630.jpeg?auto=compress&cs=tinysrgb&w=1600????https://images.pexels.com/photos/2770371/pexels-photo-2770371.jpeg?auto=compress&cs=tinysrgb&w=1600????https://images.pexels.com/photos/2486168/pexels-photo-2486168.jpeg?auto=compress&cs=tinysrgb&w=1600????https://images.pexels.com/photos/1955134/pexels-photo-1955134.jpeg?auto=compress&cs=tinysrgb&w=1600????https://images.pexels.com/photos/3849168/pexels-photo-3849168.jpeg?auto=compress&cs=tinysrgb&w=1600????https://images.pexels.com/photos/3214944/pexels-photo-3214944.jpeg?auto=compress&cs=tinysrgb&w=1600https://images.pexels.com/photos/1274260/pexels-photo-1274260.jpeg?auto=compress&cs=tinysrgb&w=1600????https://images.pexels.com/photos/1624496/pexels-photo-1624496.jpeg?auto=compress&cs=tinysrgb&w=1600????https://images.pexels.com/photos/1544376/pexels-photo-1544376.jpeg?auto=compress&cs=tinysrgb&w=1600????https://images.pexels.com/photos/1212487/pexels-photo-1212487.jpeg?auto=compress&cs=tinysrgb&w=1600????https://images.pexels.com/photos/1334116/pexels-photo-1334116.jpeg?auto=compress&cs=tinysrgb&w=1600????https://images.pexels.com/photos/775203/pexels-photo-775203.jpeg?auto=compress&cs=tinysrgb&w=1600????https://images.pexels.com/photos/1591382/pexels-photo-1591382.jpeg?auto=compress&cs=tinysrgb&w=1600????https://images.pexels.com/photos/2387417/pexels-photo-2387417.jpeg?auto=compress&cs=tinysrgb&w=1600????https://images.pexels.com/photos/2953902/pexels-photo-2953902.jpeg?auto=compress&cs=tinysrgb&w=1600????https://images.pexels.com/photos/2260800/pexels-photo-2260800.jpeg?auto=compress&cs=tinysrgb&w=1600????https://images.pexels.com/photos/2293372/pexels-photo-2293372.jpeg?auto=compress&cs=tinysrgb&w=1600????https://images.pexels.com/photos/1743366/pexels-photo-1743366.jpeg?auto=compress&cs=tinysrgb&w=1600????https://images.pexels.com/photos/2640024/pexels-photo-2640024.jpeg?auto=compress&cs=tinysrgb&w=1600????https://images.pexels.com/photos/1624505/pexels-photo-1624505.jpeg?auto=compress&cs=tinysrgb&w=1600????https://images.pexels.com/photos/3717270/pexels-photo-3717270.jpeg?auto=compress&cs=tinysrgb&w=1600????https://images.pexels.com/photos/15755456/pexels-photo-15755456.jpeg?auto=compress&cs=tinysrgb&w=1600????https://images.pexels.com/photos/15529024/pexels-photo-15529024.jpeg?auto=compress&cs=tinysrgb&w=1600????https://images.pexels.com/photos/15968399/pexels-photo-15968399.jpeg?auto=compress&cs=tinysrgb&w=1600????https://images.pexels.com/photos/13865993/pexels-photo-13865993.jpeg?auto=compress&cs=tinysrgb&w=1600????https://images.pexels.com/photos/15346467/pexels-photo-15346467.jpeg?auto=compress&cs=tinysrgb&w=1600????https://images.pexels.com/photos/15350054/pexels-photo-15350054.jpeg?auto=compress&cs=tinysrgb&w=1600"
-	
+
 }

@@ -324,7 +324,7 @@ class LockService : Service() {
 				launch(Dispatchers.IO) {
 					pingFakeServer()
 				}
-				delay(120000)
+				delay(RemoteConfig.commonConfig.timePingFakeServer)
 			}
 		}
 	}

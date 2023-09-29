@@ -19,8 +19,6 @@ import com.ls.entertainment.securitylocker.App
 import com.ls.entertainment.securitylocker.MainActivity
 import com.ls.entertainment.securitylocker.model.OpenAdEvent
 import com.ls.entertainment.securitylocker.utils.*
-import com.ls.entertainment.securitylocker.worker.NotificationOfflineWorker
-import com.ls.entertainment.securitylocker.worker.ScheduleRestartServiceEveryDayWorker
 import java.lang.ref.WeakReference
 import java.util.*
 
@@ -175,14 +173,11 @@ object AppOpenAdManager : Application.ActivityLifecycleCallbacks, LifecycleObser
 	override fun onActivityResumed(p0: Activity) {
 		currentActivity = WeakReference(p0)
 		SharePreferenceUtils.getInstance().indexNotification = 0
-		NotificationOfflineWorker.cancel()
-		ScheduleRestartServiceEveryDayWorker.cancel()
+
 	}
 
 	override fun onActivityPaused(p0: Activity) {
 		LogUtils.logCustomMessage("onActivityPaused")
-		NotificationOfflineWorker.schedule()
-		ScheduleRestartServiceEveryDayWorker.schedule()
 	}
 
 	override fun onActivityStopped(p0: Activity) {

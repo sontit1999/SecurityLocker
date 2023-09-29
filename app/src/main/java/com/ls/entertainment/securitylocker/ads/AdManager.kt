@@ -8,15 +8,7 @@ import android.widget.FrameLayout
 import com.entertainment.basemvvmproject.utils.gone
 import com.entertainment.basemvvmproject.utils.visible
 import com.google.ads.mediation.admob.AdMobAdapter
-import com.google.android.gms.ads.AdError
-import com.google.android.gms.ads.AdListener
-import com.google.android.gms.ads.AdLoader
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.AdSize
-import com.google.android.gms.ads.AdView
-import com.google.android.gms.ads.FullScreenContentCallback
-import com.google.android.gms.ads.LoadAdError
-import com.google.android.gms.ads.VideoOptions
+import com.google.android.gms.ads.*
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.google.android.gms.ads.nativead.NativeAd
@@ -26,11 +18,7 @@ import com.ls.entertainment.securitylocker.App
 import com.ls.entertainment.securitylocker.custom.CustomNativeAdView
 import com.ls.entertainment.securitylocker.model.InterAdEvent
 import com.ls.entertainment.securitylocker.model.RewardAdEvent
-import com.ls.entertainment.securitylocker.utils.AllEvents
-import com.ls.entertainment.securitylocker.utils.AppConfig
-import com.ls.entertainment.securitylocker.utils.LogUtils
-import com.ls.entertainment.securitylocker.utils.RemoteConfig
-import com.ls.entertainment.securitylocker.utils.TrackingHelper
+import com.ls.entertainment.securitylocker.utils.*
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import org.greenrobot.eventbus.EventBus
@@ -52,7 +40,7 @@ object AdManager {
 		AppOpenAdManager.start()
 	}
 
-	fun loadBanner(view: FrameLayout): AdView? {
+	fun loadBanner(view: FrameLayout, showCollapsible: Boolean = false): AdView? {
 		view.gone()
 		if (!RemoteConfig.commonConfig.isActiveAds || !RemoteConfig.commonConfig.supportBanner) return null
 		try {
@@ -90,7 +78,7 @@ object AdManager {
 					App.instance, (AppConfig.widthScreen / AppConfig.displayMetrics.density).toInt()
 				)
 			)
-			adView.loadAd(buildAdRequest())
+			adView.loadAd(buildAdRequest(showCollapsible))
 			return adView
 		} catch (e: IOException) {
 			LogUtils.logCustomMessage("Banner load fail: ${e.message}")
@@ -380,9 +368,12 @@ object AdManager {
 		}).build()
 		adLoader.loadAd(buildAdRequest())
 	}
-	
-	private fun buildAdRequest(): AdRequest {
+
+	private fun buildAdRequest(isShowCollapsible: Boolean = false): AdRequest {
 		val extras = Bundle()
+		if (isShowCollapsible) {
+			extras.putString("collapsible", "bottom")
+		}
 		return AdRequest.Builder().addNetworkExtrasBundle(
 			AdMobAdapter::class.java, extras
 		).build()

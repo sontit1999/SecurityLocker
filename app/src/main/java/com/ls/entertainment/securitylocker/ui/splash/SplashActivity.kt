@@ -17,14 +17,7 @@ import com.ls.entertainment.securitylocker.model.ConfigModel
 import com.ls.entertainment.securitylocker.service.LockService
 import com.ls.entertainment.securitylocker.ui.unlock.UnlockActivity
 import com.ls.entertainment.securitylocker.ui.unlock.UnlockActivity.Companion.KEY_TYPE_PASS
-import com.ls.entertainment.securitylocker.utils.AllEvents
-import com.ls.entertainment.securitylocker.utils.AppUtils
-import com.ls.entertainment.securitylocker.utils.DialogUtil
-import com.ls.entertainment.securitylocker.utils.LogUtils
-import com.ls.entertainment.securitylocker.utils.NotificationCenter
-import com.ls.entertainment.securitylocker.utils.RemoteConfig
-import com.ls.entertainment.securitylocker.utils.SharePreferenceUtils
-import com.ls.entertainment.securitylocker.utils.TrackingHelper
+import com.ls.entertainment.securitylocker.utils.*
 
 class SplashActivity : BaseActivity<ActivitySplashBinding, SplashViewModel>() {
 
@@ -82,7 +75,10 @@ class SplashActivity : BaseActivity<ActivitySplashBinding, SplashViewModel>() {
 		remoteConfig.fetchAndActivate().addOnCompleteListener(this) { task ->
 			if (task.isSuccessful) {
 				App.didLoadConfigSuccess = true
-				val configJson = remoteConfig.getString("config")
+				val configJson =
+					if (BuildConfig.DEBUG) remoteConfig.getString("config_debug") else remoteConfig.getString(
+						"config"
+					)
 				RemoteConfig.configModel = ConfigModel.newInstance(configJson)
 				checkUpdateInSplashScreen()
 				LogUtils.logCustomMessage("Load config success: $configJson")

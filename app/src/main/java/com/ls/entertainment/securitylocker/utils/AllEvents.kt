@@ -131,6 +131,7 @@ object AllEvents {
 	const val VIEW_BATTERY_SAVER = "view_battery_saver"
 	const val VIEW_UPDATE_APP = "view_update_app"
 	const val VIEW_NO_NETWORK = "view_no_network"
+	const val VIEW_SUGGEST_OPTIMIZE_BATTERY = "view_suggest_battery"
 	
 	// service and broadcast
 	const val LOCK_SERVICE_ON_CREATE = "service_lock_on_create"

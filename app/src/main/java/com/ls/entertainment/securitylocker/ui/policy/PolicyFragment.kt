@@ -9,17 +9,13 @@ import com.ls.entertainment.securitylocker.R
 import com.ls.entertainment.securitylocker.ads.AdManager
 import com.ls.entertainment.securitylocker.databinding.FragPolicyBinding
 import com.ls.entertainment.securitylocker.model.OpenAdEvent
-import com.ls.entertainment.securitylocker.utils.AllEvents
-import com.ls.entertainment.securitylocker.utils.AppUtils
-import com.ls.entertainment.securitylocker.utils.RxBus
-import com.ls.entertainment.securitylocker.utils.TrackingHelper
-import com.ls.entertainment.securitylocker.utils.setOnSafeClickListener
+import com.ls.entertainment.securitylocker.utils.*
 
 class PolicyFragment : BaseFragmentNotRequireViewModel<FragPolicyBinding>(R.layout.frag_policy) {
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		AdManager.loadBanner(binding.containerAds)
+		AdManager.loadBanner(binding.containerAds, true)
 		binding.tvPolicy.text = AppUtils.readPolicyFromAsset("policy.txt")
 		binding.ivBack.setOnSafeClickListener {
 			requireActivity().onBackPressed()

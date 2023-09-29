@@ -5,34 +5,36 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white">
+        android:background="@color/bgMainBottomLight">
 
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/ivImage"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintDimensionRatio="1:1"
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/lvView"
+            android:layout_width="130dp"
+            android:layout_height="130dp"
+            app:layout_constraintBottom_toTopOf="@+id/tvAd"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.3"
-            app:layout_constraintWidth_percent="0.3"
-            app:shapeAppearanceOverlay="@style/radius_image_add_memory"
-            app:srcCompat="@mipmap/ic_app" />
+            app:lottie_autoPlay="true"
+            app:layout_constraintVertical_bias="0.4"
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/lock">
+
+        </com.airbnb.lottie.LottieAnimationView>
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tvAppName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
             android:gravity="center"
             android:text="@string/app_name"
-            android:textColor="@color/color_main"
+            app:fontFamily="@font/opensan"
+            android:textColor="@color/white"
+            android:layout_marginTop="20dp"
             android:textSize="25sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ivImage" />
+            app:layout_constraintTop_toBottomOf="@+id/lvView" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tvAd"
@@ -42,7 +44,7 @@
             android:layout_marginBottom="5dp"
             android:gravity="center"
             android:text="@string/msg_action_ads"
-            android:textColor="@color/color_gray"
+            android:textColor="@color/white"
             android:textSize="14sp"
             app:layout_constraintBottom_toTopOf="@+id/loadingView"
             app:layout_constraintEnd_toEndOf="parent"
@@ -54,7 +56,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="15dp"
             android:indeterminate="true"
-            app:indicatorColor="@color/color_main"
+            app:indicatorColor="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />

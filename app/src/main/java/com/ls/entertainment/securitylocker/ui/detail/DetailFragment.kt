@@ -16,17 +16,7 @@ import com.ls.entertainment.securitylocker.ads.AdManager
 import com.ls.entertainment.securitylocker.databinding.FragDetailBinding
 import com.ls.entertainment.securitylocker.di.ApiInterface
 import com.ls.entertainment.securitylocker.model.OpenAdEvent
-import com.ls.entertainment.securitylocker.utils.AllEvents
-import com.ls.entertainment.securitylocker.utils.AppConfig
-import com.ls.entertainment.securitylocker.utils.AppSessionManager
-import com.ls.entertainment.securitylocker.utils.AppUtils
-import com.ls.entertainment.securitylocker.utils.DialogUtil
-import com.ls.entertainment.securitylocker.utils.LogUtils
-import com.ls.entertainment.securitylocker.utils.NetworkListener
-import com.ls.entertainment.securitylocker.utils.RxBus
-import com.ls.entertainment.securitylocker.utils.TrackingHelper
-import com.ls.entertainment.securitylocker.utils.WallpaperUtils
-import com.ls.entertainment.securitylocker.utils.setOnSafeClickListener
+import com.ls.entertainment.securitylocker.utils.*
 import com.yalantis.ucrop.UCrop
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
@@ -134,7 +124,7 @@ class DetailFragment : BaseFragment<FragDetailBinding, DetailViewModel>(R.layout
 		super.viewCreated(savedInstanceState)
 		viewModel.init(apiInterface)
 		initViewPager()
-		AdManager.loadBanner(binding.containerAds)
+		AdManager.loadBanner(binding.containerAds, true)
 	}
 	
 	private fun initViewPager() {

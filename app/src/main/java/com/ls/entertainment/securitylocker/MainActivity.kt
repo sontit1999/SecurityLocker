@@ -30,19 +30,9 @@ import com.ls.entertainment.securitylocker.service.LockService.Companion.startLo
 import com.ls.entertainment.securitylocker.ui.MainViewModel
 import com.ls.entertainment.securitylocker.ui.batterysaver.BatterySaverFragment
 import com.ls.entertainment.securitylocker.ui.splash.SplashActivity
-import com.ls.entertainment.securitylocker.utils.AllEvents
-import com.ls.entertainment.securitylocker.utils.AppUtils
-import com.ls.entertainment.securitylocker.utils.DialogUtil
-import com.ls.entertainment.securitylocker.utils.LogUtils
-import com.ls.entertainment.securitylocker.utils.NetworkListener
-import com.ls.entertainment.securitylocker.utils.RemoteConfig
-import com.ls.entertainment.securitylocker.utils.RxBus
-import com.ls.entertainment.securitylocker.utils.SharePreferenceUtils
-import com.ls.entertainment.securitylocker.utils.TrackingHelper
-import com.ls.entertainment.securitylocker.utils.WallpaperUtils
-import com.ls.entertainment.securitylocker.utils.checkUsageStatsPermission
-import com.ls.entertainment.securitylocker.utils.showAccessDataUsagePermissionDialog
-import com.ls.entertainment.securitylocker.utils.showDrawOverlayPermissionDescDialog
+import com.ls.entertainment.securitylocker.utils.*
+import com.ls.entertainment.securitylocker.worker.NotificationOfflineWorker
+import com.ls.entertainment.securitylocker.worker.ScheduleRestartServiceEveryDayWorker
 import com.yalantis.ucrop.UCrop
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
@@ -63,7 +53,7 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
 		super.onCreate(savedInstanceState)
 		EventBus.getDefault().register(this)
 		AdManager.initialize()
-		AdManager.loadBanner(binding.containerAds)
+		AdManager.loadBanner(binding.containerAds, true)
 		startLockService(this)
 		getDataFromIntent()
 		checkPermissionApp()
@@ -269,16 +259,24 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
 					showToast(getString(R.string.fail_setwallpaper_message))
 				}
 			}
-			
+
 		}
-		
+
 	}
-	
+
 	override fun onResume() {
 		super.onResume()
+		NotificationOfflineWorker.cancel()
+		ScheduleRestartServiceEveryDayWorker.cancel()
 		loadRemoteConfig()
 	}
-	
+
+	override fun onPause() {
+		super.onPause()
+		NotificationOfflineWorker.schedule()
+		ScheduleRestartServiceEveryDayWorker.schedule()
+	}
+
 	private fun loadRemoteConfig() {
 		if (App.didLoadConfigSuccess) return
 		val remoteConfig: FirebaseRemoteConfig = Firebase.remoteConfig
@@ -286,11 +284,14 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
 			minimumFetchIntervalInSeconds = 10
 		}
 		remoteConfig.setConfigSettingsAsync(configSettings)
-		
+
 		remoteConfig.fetchAndActivate().addOnCompleteListener(this) { task ->
 			if (task.isSuccessful) {
 				App.didLoadConfigSuccess = true
-				val configJson = remoteConfig.getString("config")
+				val configJson =
+					if (BuildConfig.DEBUG) remoteConfig.getString("config_debug") else remoteConfig.getString(
+						"config"
+					)
 				RemoteConfig.configModel = ConfigModel.newInstance(configJson)
 				checkUpdateInSplashScreen()
 				LogUtils.logCustomMessage("Load config success: $configJson")

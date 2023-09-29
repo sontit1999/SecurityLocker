@@ -61,18 +61,6 @@ class CommonConfig {
 	@SerializedName(value = "rewardAdKey")
 	var rewardAdKey: String = "ca-app-pub-4945756407745123/1567489033"
 
-	@SerializedName(value = "bannerAdKeyApplovin")
-	var bannerAdKeyApplovin: String = "7e9d282524e92738"
-
-	@SerializedName(value = "interAdKeyApplovin")
-	var interAdKeyApplovin: String = "be5936464b11788f"
-
-	@SerializedName(value = "nativeAdKeyApplovin")
-	var nativeAdKeyApplovin: String = "fcc69dbe4d746e07"
-
-	@SerializedName(value = "rewardAdKeyApplovin")
-	var rewardAdKeyApplovin: String = "f3f43a8f1b671292"
-	
 	@SerializedName(value = "numberOfNativeDisplay")
 	var numberOfNativeDisplay: Long = 4
 	
@@ -95,10 +83,10 @@ class CommonConfig {
 	var timeScheduleRestartServiceInSecond: Int = 86400
 
 	@SerializedName(value = "countShowOptimizeBattery")
-	var countShowOptimizeBattery: Int = 5
+	var countShowOptimizeBattery: Int = 2
 
 	@SerializedName(value = "timePingFakeServer")
-	var timePingFakeServer: Long = 60000
+	var timePingFakeServer: Long = 300000
 
 	@SerializedName(value = "listImage")
 	var listImage: String =

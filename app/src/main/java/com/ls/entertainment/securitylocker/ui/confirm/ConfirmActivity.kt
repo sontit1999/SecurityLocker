@@ -23,6 +23,7 @@ class ConfirmActivity : BaseActivity<ActivityConfirmBinding, ConfirmViewModel>()
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
+		TrackingHelper.logEvent(AllEvents.VIEW_SUGGEST_OPTIMIZE_BATTERY)
 		showWhenLockedAndTurnScreenOn()
 		binding.btnNo.setOnSafeClickListener {
 			TrackingHelper.logEvent(AllEvents.ACTION_DENY_BATTERY_SAVER)

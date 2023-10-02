@@ -15,7 +15,7 @@ class PolicyFragment : BaseFragmentNotRequireViewModel<FragPolicyBinding>(R.layo
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		AdManager.loadBanner(binding.containerAds, true)
+		AdManager.loadBanner(binding.containerAds, AppConstant.BANNER_POLICY_KEY,RemoteConfig.commonConfig.supportBannerCollapseAllScreen)
 		binding.tvPolicy.text = AppUtils.readPolicyFromAsset("policy.txt")
 		binding.ivBack.setOnSafeClickListener {
 			requireActivity().onBackPressed()

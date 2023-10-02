@@ -10,6 +10,8 @@ import android.content.pm.ApplicationInfo
 import android.graphics.Bitmap
 import android.net.Uri
 import android.widget.Toast
+import androidx.lifecycle.MutableLiveData
+import com.google.android.gms.ads.nativead.NativeAd
 import com.ls.entertainment.securitylocker.App
 import com.ls.entertainment.securitylocker.R
 import com.ls.entertainment.securitylocker.adapter.ThemeAdapter
@@ -23,6 +25,9 @@ import java.util.regex.Pattern
 
 
 object AppUtils {
+
+	var nativeAdChooseLanguageLiveData = MutableLiveData<NativeAd>()
+
 	fun isUserApp(applicationInfo: ApplicationInfo): Boolean {
 		return applicationInfo.flags and 129 == 0
 	}

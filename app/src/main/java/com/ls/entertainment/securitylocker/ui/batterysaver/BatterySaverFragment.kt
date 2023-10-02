@@ -72,7 +72,7 @@ class BatterySaverFragment :
 	override fun viewCreated(savedInstanceState: Bundle?) {
 		super.viewCreated(savedInstanceState)
 		checkWriteSettingPermission()
-		AdManager.loadBanner(binding.containerAds)
+		AdManager.loadBanner(binding.containerAds,AppConstant.BANNER_BOOSTER_KEY,RemoteConfig.commonConfig.supportBannerCollapseAllScreen)
 	}
 
 	private fun checkWriteSettingPermission() {

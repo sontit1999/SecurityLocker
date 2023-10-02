@@ -8,6 +8,7 @@ import android.provider.Settings
 import android.view.View
 import android.view.Window
 import android.widget.TextView
+import androidx.appcompat.widget.AppCompatButton
 import com.entertainment.basemvvmproject.utils.visible
 import com.ls.entertainment.securitylocker.R
 
@@ -157,6 +158,30 @@ object DialogUtil {
 				}
 			}
 
+			if (!dialog.isShowing) {
+				dialog.show()
+			}
+		}
+	}
+
+	fun showCongratulationDialog(
+		context: Context?,
+		OkeListener: (() -> Unit)? = null
+	) {
+		context?.run {
+			val dialog = Dialog(context)
+			dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+			dialog.window?.setBackgroundDrawableResource(R.color.transparent)
+			dialog.setContentView(R.layout.dialog_congratulation)
+			dialog.setCancelable(false)
+			val btnOke = dialog.findViewById<AppCompatButton>(R.id.btnOke)
+
+			btnOke.setOnSafeClickListener {
+				if (dialog.isShowing) {
+					dialog.dismiss()
+					OkeListener?.invoke()
+				}
+			}
 			if (!dialog.isShowing) {
 				dialog.show()
 			}

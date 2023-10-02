@@ -21,10 +21,10 @@ import androidx.core.content.ContextCompat
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.core.extensions.jsonBody
 import com.ls.entertainment.securitylocker.App
-import com.ls.entertainment.securitylocker.MainActivity
 import com.ls.entertainment.securitylocker.R
 import com.ls.entertainment.securitylocker.model.BatteryModel
 import com.ls.entertainment.securitylocker.ui.confirm.ConfirmActivity
+import com.ls.entertainment.securitylocker.ui.splash.SplashActivity
 import com.ls.entertainment.securitylocker.ui.unlock.UnlockActivity
 import com.ls.entertainment.securitylocker.utils.*
 import com.ls.entertainment.securitylocker.utils.AllEvents.LOCK_SERVICE_BROADCAST_RECEIVE_ACTION
@@ -414,7 +414,7 @@ class LockService : Service() {
 
 	private fun generateForegroundNotification() {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-			val intentMainLanding = Intent(this, MainActivity::class.java)
+			val intentMainLanding = Intent(this, SplashActivity::class.java)
 			val pendingIntent = PendingIntent.getActivity(
 				this,
 				0,

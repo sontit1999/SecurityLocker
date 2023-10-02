@@ -21,12 +21,7 @@ import com.ls.entertainment.securitylocker.R
 import com.ls.entertainment.securitylocker.ads.AdManager
 import com.ls.entertainment.securitylocker.databinding.ActivityLockBinding
 import com.ls.entertainment.securitylocker.ui.splash.SplashActivity
-import com.ls.entertainment.securitylocker.utils.AllEvents
-import com.ls.entertainment.securitylocker.utils.GlideHelper
-import com.ls.entertainment.securitylocker.utils.LogUtils
-import com.ls.entertainment.securitylocker.utils.RemoteConfig
-import com.ls.entertainment.securitylocker.utils.SharePreferenceUtils
-import com.ls.entertainment.securitylocker.utils.TrackingHelper
+import com.ls.entertainment.securitylocker.utils.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -40,7 +35,9 @@ class UnlockActivity : BaseActivity<ActivityLockBinding, UnLockViewModel>() {
 	override val layoutId = R.layout.activity_lock
 
 	var typePass = TYPE_UNLOCK_PASS
-	
+
+	var firstPass = ""
+
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		typePass = intent.getIntExtra(KEY_TYPE_PASS, TYPE_UNLOCK_PASS)
@@ -50,21 +47,21 @@ class UnlockActivity : BaseActivity<ActivityLockBinding, UnLockViewModel>() {
 		initLockView()
 		bindingAction()
 	}
-	
+
 	private fun trackingViewLock() {
 		when (typePass) {
-			TYPE_SETUP_PASS -> TrackingHelper.logEvent(AllEvents.VIEW_LOCK_SETUP)
+			TYPE_SETUP_PASS  -> TrackingHelper.logEvent(AllEvents.VIEW_LOCK_SETUP)
 			TYPE_CHANGE_PASS -> TrackingHelper.logEvent(AllEvents.VIEW_CHANGE_PASSWORD)
 			TYPE_UNLOCK_PASS -> TrackingHelper.logEvent(AllEvents.VIEW_UNLOCK_SCREEN)
 		}
 	}
-	
+
 	private fun loadNativeAds() {
 		if (RemoteConfig.commonConfig.supportNativeInLock) {
 			AdManager.loadNativeAdInLock(binding.nativeAdView)
 		}
 	}
-	
+
 	private fun initBackGround() {
 		val path = SharePreferenceUtils.getInstance().pathImageLock
 		if (!path.isNullOrEmpty()) GlideHelper.load(binding.ivBackground, path)
@@ -112,17 +109,52 @@ class UnlockActivity : BaseActivity<ActivityLockBinding, UnLockViewModel>() {
 
 			override fun onComplete(pattern: MutableList<PatternLockView.Dot>?) {
 				if (typePass == TYPE_SETUP_PASS) {
-					SharePreferenceUtils.getInstance().passWord = PatternLockUtils.patternToString(
-						binding.patternLockView, pattern
+					if (firstPass.isEmpty()) {
+						binding.tvHelp.text = getString(R.string.confirm_pass)
+						firstPass = PatternLockUtils.patternToString(
+							binding.patternLockView, pattern
+						)
+						binding.patternLockView.clearPattern()
+						return
+					}
+					if (firstPass != PatternLockUtils.patternToString(
+							binding.patternLockView, pattern
+						)
+					) {
+						showToast(getString(R.string.pass_not_match))
+						binding.tvHelp.text = getString(R.string.set_up_pass)
+						binding.patternLockView.clearPattern()
+						firstPass = ""
+						return
+					}
+					savePassAndGotoMain(
+						PatternLockUtils.patternToString(
+							binding.patternLockView, pattern
+						)
 					)
-					SharePreferenceUtils.getInstance().isSetupPass = true
-					startActivity(Intent(this@UnlockActivity, MainActivity::class.java))
-					finish()
+
 				} else if (typePass == TYPE_CHANGE_PASS) {
+					if (firstPass.isEmpty()) {
+						binding.tvHelp.text = getString(R.string.confirm_pass)
+						firstPass = PatternLockUtils.patternToString(
+							binding.patternLockView, pattern
+						)
+						binding.patternLockView.clearPattern()
+						return
+					}
+					if (firstPass != PatternLockUtils.patternToString(
+							binding.patternLockView, pattern
+						)
+					) {
+						binding.tvHelp.text = getString(R.string.set_up_pass)
+						showToast(getString(R.string.pass_not_match))
+						binding.patternLockView.clearPattern()
+						firstPass = ""
+						return
+					}
 					SharePreferenceUtils.getInstance().passWord = PatternLockUtils.patternToString(
 						binding.patternLockView, pattern
 					)
-					SharePreferenceUtils.getInstance().isSetupPass = true
 					showToast(getString(R.string.change_pass_success))
 					finish()
 				} else {
@@ -215,6 +247,14 @@ class UnlockActivity : BaseActivity<ActivityLockBinding, UnLockViewModel>() {
 			}
 		}
 
+	}
+
+	private fun savePassAndGotoMain(password: String) {
+		showToast(getString(R.string.change_pass_success))
+		SharePreferenceUtils.getInstance().passWord = password
+		SharePreferenceUtils.getInstance().isSetupPass = true
+		startActivity(Intent(this@UnlockActivity, MainActivity::class.java))
+		finish()
 	}
 
 	override fun onBackPressed() {

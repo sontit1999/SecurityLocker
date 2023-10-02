@@ -16,9 +16,12 @@ import com.ls.entertainment.securitylocker.ads.AdManager
 import com.ls.entertainment.securitylocker.databinding.FragDetailBinding
 import com.ls.entertainment.securitylocker.di.ApiInterface
 import com.ls.entertainment.securitylocker.model.OpenAdEvent
+import com.ls.entertainment.securitylocker.model.ShowInterAfterSetSuccessEvent
 import com.ls.entertainment.securitylocker.utils.*
 import com.yalantis.ucrop.UCrop
 import dagger.hilt.android.AndroidEntryPoint
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 import java.io.File
 import javax.inject.Inject
 
@@ -33,6 +36,11 @@ class DetailFragment : BaseFragment<FragDetailBinding, DetailViewModel>(R.layout
 	lateinit var apiInterface: ApiInterface
 	
 	override fun getVM() = viewModel
+
+	override fun onCreate(savedInstanceState: Bundle?) {
+		super.onCreate(savedInstanceState)
+		EventBus.getDefault().register(this)
+	}
 	
 	
 	override fun bindingAction() {
@@ -124,7 +132,7 @@ class DetailFragment : BaseFragment<FragDetailBinding, DetailViewModel>(R.layout
 		super.viewCreated(savedInstanceState)
 		viewModel.init(apiInterface)
 		initViewPager()
-		AdManager.loadBanner(binding.containerAds, true)
+		AdManager.loadBanner(binding.containerAds, AppConstant.BANNER_DETAIL_KEY,RemoteConfig.commonConfig.supportBannerCollapseAllScreen)
 	}
 	
 	private fun initViewPager() {
@@ -149,11 +157,23 @@ class DetailFragment : BaseFragment<FragDetailBinding, DetailViewModel>(R.layout
 		super.onResume()
 		TrackingHelper.logEvent(AllEvents.VIEW_DETAIL)
 	}
+
+	@Subscribe
+	fun showInterAfterSetSuccessEvent(showInterAfterSetSuccessEvent: ShowInterAfterSetSuccessEvent){
+		DialogUtil.showCongratulationDialog(requireContext(), OkeListener = {
+			if (!AdManager.showInter(false, TAG, onHidden = {
+					requireActivity().onBackPressed()
+				})) {
+				requireActivity().onBackPressed()
+			}
+		})
+	}
 	
 	override fun onDestroy() {
 		super.onDestroy()
 		LogUtils.logCustomMessage("================ onDestroy Detail")
 		RxBus.unregister(TAG)
+		EventBus.getDefault().unregister(this)
 		onClear()
 	}
 	

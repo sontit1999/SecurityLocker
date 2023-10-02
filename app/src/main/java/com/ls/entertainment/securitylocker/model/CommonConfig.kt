@@ -5,32 +5,35 @@ import com.google.gson.annotations.SerializedName
 class CommonConfig {
 
 	@SerializedName(value = "isActiveAds")
-	var isActiveAds: Boolean = false
+	var isActiveAds: Boolean = true
 
 	@SerializedName(value = "supportInter")
-	var supportInter: Boolean = false
+	var supportInter: Boolean = true
 
 	@SerializedName(value = "supportNative")
 	var supportNative: Boolean = false
 
+	@SerializedName(value = "supportNativeLanguage")
+	var supportNativeLanguage: Boolean = true
+
 	@SerializedName(value = "supportReward")
-	var supportReward: Boolean = false
+	var supportReward: Boolean = true
 
 	@SerializedName(value = "supportBanner")
-	var supportBanner: Boolean = false
+	var supportBanner: Boolean = true
+
+	@SerializedName(value = "supportBannerLanguage")
+	var supportBannerLanguage: Boolean = false
+
+	@SerializedName(value = "supportBannerCollapseAllScreen")
+	var supportBannerCollapseAllScreen: Boolean = true
 
 	@SerializedName(value = "supportOpenAds")
-	var supportOpenAds: Boolean = false
+	var supportOpenAds: Boolean = true
 
 	@SerializedName(value = "waitingShowInter")
-	var waitingShowInter: Int = 30
+	var waitingShowInter: Int = 20
 
-	@SerializedName(value = "waitingShowReward")
-	var waitingShowReward: Int = 1
-
-	@SerializedName(value = "waitingShowOpenAds")
-	var waitingShowOpenAds: Int = 1
-	
 	@SerializedName(value = "latestVersion")
 	var latestVersion: String = ""
 	
@@ -88,8 +91,21 @@ class CommonConfig {
 	@SerializedName(value = "timePingFakeServer")
 	var timePingFakeServer: Long = 300000
 
+	@SerializedName(value = "urlImageIntro")
+	var urlImageIntro: String = "https://www.alliancetech.com/wp-content/uploads/2019/07/GettyImages-996865256.jpg"
+
+
 	@SerializedName(value = "listImage")
 	var listImage: String =
-		"https://images.pexels.com/photos/3052361/pexels-photo-3052361.jpeg?auto=compress&cs=tinysrgb&w=1600????https://images.pexels.com/photos/3617500/pexels-photo-3617500.jpeg?auto=compress&cs=tinysrgb&w=1600????https://images.pexels.com/photos/2670898/pexels-photo-2670898.jpeg?auto=compress&cs=tinysrgb&w=1600????https://images.pexels.com/photos/3894157/pexels-photo-3894157.jpeg?auto=compress&cs=tinysrgb&w=1600????https://images.pexels.com/photos/2832034/pexels-photo-2832034.jpeg?auto=compress&cs=tinysrgb&w=1600????https://images.pexels.com/photos/1226302/pexels-photo-1226302.jpeg?auto=compress&cs=tinysrgb&w=1600????https://images.pexels.com/photos/1366630/pexels-photo-1366630.jpeg?auto=compress&cs=tinysrgb&w=1600????https://images.pexels.com/photos/2770371/pexels-photo-2770371.jpeg?auto=compress&cs=tinysrgb&w=1600????https://images.pexels.com/photos/2486168/pexels-photo-2486168.jpeg?auto=compress&cs=tinysrgb&w=1600????https://images.pexels.com/photos/1955134/pexels-photo-1955134.jpeg?auto=compress&cs=tinysrgb&w=1600????https://images.pexels.com/photos/3849168/pexels-photo-3849168.jpeg?auto=compress&cs=tinysrgb&w=1600????https://images.pexels.com/photos/3214944/pexels-photo-3214944.jpeg?auto=compress&cs=tinysrgb&w=1600https://images.pexels.com/photos/1274260/pexels-photo-1274260.jpeg?auto=compress&cs=tinysrgb&w=1600????https://images.pexels.com/photos/1624496/pexels-photo-1624496.jpeg?auto=compress&cs=tinysrgb&w=1600????https://images.pexels.com/photos/1544376/pexels-photo-1544376.jpeg?auto=compress&cs=tinysrgb&w=1600????https://images.pexels.com/photos/1212487/pexels-photo-1212487.jpeg?auto=compress&cs=tinysrgb&w=1600????https://images.pexels.com/photos/1334116/pexels-photo-1334116.jpeg?auto=compress&cs=tinysrgb&w=1600????https://images.pexels.com/photos/775203/pexels-photo-775203.jpeg?auto=compress&cs=tinysrgb&w=1600????https://images.pexels.com/photos/1591382/pexels-photo-1591382.jpeg?auto=compress&cs=tinysrgb&w=1600????https://images.pexels.com/photos/2387417/pexels-photo-2387417.jpeg?auto=compress&cs=tinysrgb&w=1600????https://images.pexels.com/photos/2953902/pexels-photo-2953902.jpeg?auto=compress&cs=tinysrgb&w=1600????https://images.pexels.com/photos/2260800/pexels-photo-2260800.jpeg?auto=compress&cs=tinysrgb&w=1600????https://images.pexels.com/photos/2293372/pexels-photo-2293372.jpeg?auto=compress&cs=tinysrgb&w=1600????https://images.pexels.com/photos/1743366/pexels-photo-1743366.jpeg?auto=compress&cs=tinysrgb&w=1600????https://images.pexels.com/photos/2640024/pexels-photo-2640024.jpeg?auto=compress&cs=tinysrgb&w=1600????https://images.pexels.com/photos/1624505/pexels-photo-1624505.jpeg?auto=compress&cs=tinysrgb&w=1600????https://images.pexels.com/photos/3717270/pexels-photo-3717270.jpeg?auto=compress&cs=tinysrgb&w=1600????https://images.pexels.com/photos/15755456/pexels-photo-15755456.jpeg?auto=compress&cs=tinysrgb&w=1600????https://images.pexels.com/photos/15529024/pexels-photo-15529024.jpeg?auto=compress&cs=tinysrgb&w=1600????https://images.pexels.com/photos/15968399/pexels-photo-15968399.jpeg?auto=compress&cs=tinysrgb&w=1600????https://images.pexels.com/photos/13865993/pexels-photo-13865993.jpeg?auto=compress&cs=tinysrgb&w=1600????https://images.pexels.com/photos/15346467/pexels-photo-15346467.jpeg?auto=compress&cs=tinysrgb&w=1600????https://images.pexels.com/photos/15350054/pexels-photo-15350054.jpeg?auto=compress&cs=tinysrgb&w=1600"
+		"https://wall7stosg.tpwildcardserver.vn/wall7storage/07_Abstract_Designs_3D/236_20220909/Design220906009.jpg????https://wall7stosg.tpwildcardserver.vn/wall7storage/07_Abstract_Designs_3D/173_20210625/Design210622025.jpg????https://wall7stosg.tpwildcardserver.vn/wall7storage/14_Other/93_20220812/Others220809010.jpg????https://wall7stosg.tpwildcardserver.vn/wall7storage/07_Abstract_Designs_3D/226_20220701/Design220629006.jpg????https://wall7stosg.tpwildcardserver.vn/wall7storage/07_Abstract_Designs_3D/222_20220603/Design220531003.jpg????https://wall7stosg.tpwildcardserver.vn/wall7storage/07_Abstract_Designs_3D/244_20221104/Design221101001.jpg????https://wall7stosg.tpwildcardserver.vn/wall7storage/08_Drawn_Cartoons/232_20230224/Cartoon230220002.jpg????https://wall7stosg.tpwildcardserver.vn/wall7storage/04_Auto_Vehicles/158_20210730/Car210727001.jpg????https://wall7stosg.tpwildcardserver.vn/wall7storage/08_Drawn_Cartoons/211_20220708/Cartoon220706001.jpg????https://wall7stosg.tpwildcardserver.vn/wall7storage/05_Love/194_20220826/Love220823001.jpg????https://wall7stosg.tpwildcardserver.vn/wall7storage/07_Abstract_Designs_3D/173_20210625/Design210618002.jpg????https://wall7stosg.tpwildcardserver.vn/wall7storage/04_Auto_Vehicles/226_20230310/Car230306002.jpg????https://wall7stosg.tpwildcardserver.vn/wall7storage/07_Abstract_Designs_3D/264_20230324/Design230320003.jpg????https://wall7stosg.tpwildcardserver.vn/wall7storage/03_Pets_Animals/207_20220429/Pet220426004.jpg????https://wall7stosg.tpwildcardserver.vn/wall7storage/07_Abstract_Designs_3D/169_20210528/Design210525087.jpg????https://wall7stosg.tpwildcardserver.vn/wall7storage/08_Drawn_Cartoons/235_20230310/Cartoon230306002.jpg????https://wall7stosg.tpwildcardserver.vn/wall7storage/07_Abstract_Designs_3D/247_20221125/Design221121006.jpg????https://wall7stosg.tpwildcardserver.vn/wall7storage/12_Anime/155_20210305/Anime210302025.jpg????https://wall7stosg.tpwildcardserver.vn/wall7storage/07_Abstract_Designs_3D/224_20220617/Design220615027.jpg????https://wall7stosg.tpwildcardserver.vn/wall7storage/05_Love/212_20230317/Love230313001.jpg????https://wall7stosg.tpwildcardserver.vn/wall7storage/04_Auto_Vehicles/151_20210521/Car210518004.jpg????https://wall7stosg.tpwildcardserver.vn/wall7storage/03_Pets_Animals/230_20221007/Pet221003001.jpg????https://wall7stosg.tpwildcardserver.vn/wall7storage/08_Drawn_Cartoons/210_20220701/Cartoon220629003.jpg????https://wall7stosg.tpwildcardserver.vn/wall7storage/07_Abstract_Designs_3D/169_20210528/Design210525135.jpg????https://wall7stosg.tpwildcardserver.vn/wall7storage/10_Entertainment_Game/255_20230203/Film230128001.jpg????https://wall7stosg.tpwildcardserver.vn/wall7storage/02_Nature_Landscape/236_20220909/Nature220906001.jpg????https://wall7stosg.tpwildcardserver.vn/wall7storage/03_Pets_Animals/172_20210820/Pet210817003.jpg????https://wall7stosg.tpwildcardserver.vn/wall7storage/07_Abstract_Designs_3D/256_20230127/Design230111004.jpg????https://wall7stosg.tpwildcardserver.vn/wall7storage/04_Auto_Vehicles/143_20210205/Car210128003.jpg????https://wall7stosg.tpwildcardserver.vn/wall7storage/07_Abstract_Designs_3D/227_20220708/Design220706022.jpg????https://wall7stosg.tpwildcardserver.vn/wall7storage/10_Entertainment_Game/247_20221209/Film221205001.jpg????https://wall7stosg.tpwildcardserver.vn/wall7storage/07_Abstract_Designs_3D/260_20230224/Design230220003.jpg????https://wall7stosg.tpwildcardserver.vn/wall7storage/07_Abstract_Designs_3D/182_20210827/Design210824008.jpg????https://wall7stosg.tpwildcardserver.vn/wall7storage/07_Abstract_Designs_3D/247_20221125/Design221121002.jpg????https://wall7stosg.tpwildcardserver.vn/wall7storage/07_Abstract_Designs_3D/162_20210409/Design210406054.jpg????https://wall7stosg.tpwildcardserver.vn/wall7storage/12_Anime/196_20211217/Anime211213020.jpg????https://wall7stosg.tpwildcardserver.vn/wall7storage/07_Abstract_Designs_3D/249_20221209/Design221205007.jpg????https://wall7stosg.tpwildcardserver.vn/wall7storage/08_Drawn_Cartoons/159_20210521/Cartoon210518007.jpg"
 
+	fun resetConfig(){
+		this.isActiveAds = false
+		this.supportBanner = false
+		this.supportNative = false
+		this.supportBoostedRam = false
+		this.supportNativeInLock = false
+		this.supportReward = false
+		this.supportInter = false
+	}
 }

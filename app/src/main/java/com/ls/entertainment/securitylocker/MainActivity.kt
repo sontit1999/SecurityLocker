@@ -22,10 +22,7 @@ import com.ls.entertainment.securitylocker.ads.AdManager
 import com.ls.entertainment.securitylocker.databinding.ActivityMainBinding
 import com.ls.entertainment.securitylocker.extension.canDrawOverlay
 import com.ls.entertainment.securitylocker.extension.requestDrawOverlayPermission
-import com.ls.entertainment.securitylocker.model.CheckPermissionEvent
-import com.ls.entertainment.securitylocker.model.ConfigModel
-import com.ls.entertainment.securitylocker.model.OpenAdEvent
-import com.ls.entertainment.securitylocker.model.RefreshUsage
+import com.ls.entertainment.securitylocker.model.*
 import com.ls.entertainment.securitylocker.service.LockService.Companion.startLockService
 import com.ls.entertainment.securitylocker.ui.MainViewModel
 import com.ls.entertainment.securitylocker.ui.batterysaver.BatterySaverFragment
@@ -51,9 +48,10 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
+		loadRemoteConfig()
 		EventBus.getDefault().register(this)
 		AdManager.initialize()
-		AdManager.loadBanner(binding.containerAds, true)
+		AdManager.loadBanner(binding.containerAds, AppConstant.BANNER_MAIN_KEY,true)
 		startLockService(this)
 		getDataFromIntent()
 		checkPermissionApp()
@@ -93,6 +91,7 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
 		}
 		
 		viewModel.stateSaveLockWallpaper.observe(this) {
+			EventBus.getDefault().post(ShowInterAfterSetSuccessEvent())
 			if (it) showToast(getString(R.string.msg_set_background_ok)) else showToast(getString(R.string.msg_set_background_fail))
 		}
 	}
@@ -254,6 +253,7 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
 			} else {
 				val isSuccess = WallpaperUtils.setWallpaper(bitmap, typeSetWallpaper)
 				if (isSuccess) {
+					EventBus.getDefault().post(ShowInterAfterSetSuccessEvent())
 					showToast(getString(R.string.congratulation_set_wallpaper_success))
 				} else {
 					showToast(getString(R.string.fail_setwallpaper_message))
@@ -268,7 +268,6 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
 		super.onResume()
 		NotificationOfflineWorker.cancel()
 		ScheduleRestartServiceEveryDayWorker.cancel()
-		loadRemoteConfig()
 	}
 
 	override fun onPause() {
@@ -278,7 +277,10 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
 	}
 
 	private fun loadRemoteConfig() {
-		if (App.didLoadConfigSuccess) return
+		if (App.didLoadConfigSuccess) {
+			checkUpdateInSplashScreen()
+			return
+		}
 		val remoteConfig: FirebaseRemoteConfig = Firebase.remoteConfig
 		val configSettings = remoteConfigSettings {
 			minimumFetchIntervalInSeconds = 10
@@ -316,6 +318,7 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
 			}
 			if (RemoteConfig.commonConfig.versionCodeForReview == BuildConfig.VERSION_CODE) {
 				RemoteConfig.configModel = ConfigModel()
+				RemoteConfig.commonConfig.resetConfig()
 			}
 		} catch (e: java.lang.Exception) {
 			LogUtils.logCustomMessage(e.message.toString())

@@ -40,7 +40,7 @@ object AdManager {
 		AppOpenAdManager.start()
 	}
 
-	fun loadBanner(view: FrameLayout, showCollapsible: Boolean = false): AdView? {
+	fun loadBanner(view: FrameLayout,bannerKey : String, showCollapsible: Boolean = false): AdView? {
 		view.gone()
 		if (!RemoteConfig.commonConfig.isActiveAds || !RemoteConfig.commonConfig.supportBanner) return null
 		try {
@@ -72,7 +72,7 @@ object AdManager {
 					super.onAdFailedToLoad(p0)
 				}
 			}
-			adView.adUnitId = RemoteConfig.commonConfig.bannerAdKey
+			adView.adUnitId = bannerKey
 			adView.setAdSize(
 				AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(
 					App.instance, (AppConfig.widthScreen / AppConfig.displayMetrics.density).toInt()

@@ -29,6 +29,9 @@ object AllEvents {
 	// native
 	const val E1_ADS_NATIVE_LOAD_SUCCESS = "e1_ads_native_load_success"
 	const val E1_ADS_NATIVE_LOAD_FAIL = "e1_ads_native_load_fail"
+	const val E1_ADS_NATIVE_LANGUAGE_CLICKED = "native_language_click"
+	const val E1_ADS_NATIVE_LANGUAGE_SHOWED = "native_language_showed"
+	const val E1_ADS_NATIVE_LANGUAGE_LOAD_FAIL = "native_language_load_fail"
 
 	// native
 	const val E1_ADS_NATIVE_APPLOVIN_LOAD_SUCCESS = "e1_ads_native_applovin_load_success"
@@ -132,6 +135,8 @@ object AllEvents {
 	const val VIEW_UPDATE_APP = "view_update_app"
 	const val VIEW_NO_NETWORK = "view_no_network"
 	const val VIEW_SUGGEST_OPTIMIZE_BATTERY = "view_suggest_battery"
+	const val VIEW_INTRO = "view_intro"
+	const val VIEW_LANGUAGE = "view_language"
 	
 	// service and broadcast
 	const val LOCK_SERVICE_ON_CREATE = "service_lock_on_create"

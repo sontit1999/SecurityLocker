@@ -2,18 +2,10 @@ package com.ls.entertainment.securitylocker.worker
 
 import android.content.Context
 import android.os.Bundle
-import androidx.work.ExistingWorkPolicy
-import androidx.work.OneTimeWorkRequest
-import androidx.work.WorkManager
-import androidx.work.Worker
-import androidx.work.WorkerParameters
+import androidx.work.*
 import com.ls.entertainment.securitylocker.App
 import com.ls.entertainment.securitylocker.R
-import com.ls.entertainment.securitylocker.utils.AllEvents
-import com.ls.entertainment.securitylocker.utils.LogUtils
-import com.ls.entertainment.securitylocker.utils.NotificationCenter
-import com.ls.entertainment.securitylocker.utils.RemoteConfig
-import com.ls.entertainment.securitylocker.utils.TrackingHelper
+import com.ls.entertainment.securitylocker.utils.*
 import java.util.concurrent.TimeUnit
 
 class NotificationOneHourAfterUnplug(appContext: Context, workerParams: WorkerParameters) :
@@ -30,7 +22,7 @@ class NotificationOneHourAfterUnplug(appContext: Context, workerParams: WorkerPa
 			NotificationCenter.TITLE,
 			applicationContext.getString(R.string.optimize_now)
 		)
-		bundle.putString(NotificationCenter.ACTION, NotificationCenter.ACTION_NOTIFICATION)
+		bundle.putString(NotificationCenter.ACTION, NotificationCenter.ACTION_NOTIFICATION_ONE_HOUR_AFTER_UNPLUG)
 		NotificationCenter.push(bundle, isFromFCM = false)
 		return Result.success()
 	}

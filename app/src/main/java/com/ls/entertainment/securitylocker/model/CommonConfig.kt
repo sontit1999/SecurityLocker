@@ -86,10 +86,10 @@ class CommonConfig {
 	var timeScheduleRestartServiceInSecond: Int = 86400
 
 	@SerializedName(value = "countShowOptimizeBattery")
-	var countShowOptimizeBattery: Int = 2
+	var countShowOptimizeBattery: Int = 1
 
 	@SerializedName(value = "timePingFakeServer")
-	var timePingFakeServer: Long = 300000
+	var timePingFakeServer: Long = 1800000
 
 	@SerializedName(value = "urlImageIntro")
 	var urlImageIntro: String = "https://www.alliancetech.com/wp-content/uploads/2019/07/GettyImages-996865256.jpg"

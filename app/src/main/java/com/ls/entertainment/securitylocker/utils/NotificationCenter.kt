@@ -58,7 +58,12 @@ object NotificationCenter {
 	const val SUMMARY_TEXT = "SUMMARY_TEXT"
 	const val BODY = "body"
 	const val IMAGE = "image"
-
+	const val ACTION_NOTIFICATION_BATTERY_FULL = "batteryfull"
+	const val ACTION_NOTIFICATION_BATTERY_LOW = "batterylow"
+	const val ACTION_NOTIFICATION_BATTERY_HIGH_TEMP = "batteryhight"
+	const val ACTION_NOTIFICATION_10M = "10m"
+	const val ACTION_NOTIFICATION_REMIND_OPEN = "offLine_remind_open"
+	const val ACTION_NOTIFICATION_ONE_HOUR_AFTER_UNPLUG = "one_hour_after_unplug"
 	const val SUMMARY_ID_FCM = 0
 	const val SUMMARY_ID_REMIND_OPEN_APP = 1
 
@@ -98,6 +103,7 @@ object NotificationCenter {
 			TrackingHelper.logEvent(AllEvents.E1_NOTIFICATION_OFFLINE_RECEIVE)
 		}
 		intent.putExtra(EXTRA_TAG, bundle)
+		intent.putExtra(ACTION,bundle.getString(ACTION))
 		val pendingIntent = PendingIntent.getActivity(
 			con,
 			notificationId,
@@ -167,7 +173,7 @@ object NotificationCenter {
 			pushNotification(
 				App.instance.getString(R.string.title_battery_full),
 				App.instance.getString(R.string.content_battery_full),
-				"",
+				ACTION_NOTIFICATION_BATTERY_FULL,
 				ntfId = 999
 			)
 		}
@@ -180,7 +186,7 @@ object NotificationCenter {
 			pushNotification(
 				App.instance.getString(R.string.title_battery_low),
 				App.instance.getString(R.string.content_battery_low),
-				"",
+				ACTION_NOTIFICATION_BATTERY_LOW,
 				ntfId = 888
 			)
 		}
@@ -193,7 +199,7 @@ object NotificationCenter {
 			pushNotification(
 				App.instance.getString(R.string.title_battery_temp_high),
 				App.instance.getString(R.string.content_battery_temp_high),
-				"",
+				ACTION_NOTIFICATION_BATTERY_HIGH_TEMP,
 				ntfId = 777
 			)
 		}

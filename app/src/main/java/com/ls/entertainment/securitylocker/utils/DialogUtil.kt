@@ -169,6 +169,7 @@ object DialogUtil {
 		OkeListener: (() -> Unit)? = null
 	) {
 		context?.run {
+			TrackingHelper.logEvent(AllEvents.VIEW_CONGRATULATION)
 			val dialog = Dialog(context)
 			dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
 			dialog.window?.setBackgroundDrawableResource(R.color.transparent)

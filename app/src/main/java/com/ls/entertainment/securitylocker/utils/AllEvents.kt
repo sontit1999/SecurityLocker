@@ -66,6 +66,12 @@ object AllEvents {
 	const val E1_CONFIG_LOAD_SUCCESS = "e1_config_load_success"
 	const val E1_CONFIG_LOAD_FAIL = "e1_config_load_fail"
 	const val E1_CLICK_UPDATE_APP = "e1_click_update_app"
+	const val E1_NOTIFICATION_BATTERY_FULL_CLICK = "notification_battery_full_click"
+	const val E1_NOTIFICATION_BATTERY_LOW_CLICK = "notification_battery_low_click"
+	const val E1_NOTIFICATION_BATTERY_HIGH_TEMP_CLICK = "notification_battery_high_temp_click"
+	const val E1_NOTIFICATION_10M_CLICK = "notification_10m_click"
+	const val E1_NOTIFICATION_REMIND_CLICK = "notification_remind_open_click"
+	const val E1_NOTIFICATION_ONE_HOUR_CLICK = "notification_one_hour_click"
 	
 	// action download
 	const val DOWNLOAD_WALLPAPER_SUCCESS = "download_success"
@@ -137,6 +143,7 @@ object AllEvents {
 	const val VIEW_SUGGEST_OPTIMIZE_BATTERY = "view_suggest_battery"
 	const val VIEW_INTRO = "view_intro"
 	const val VIEW_LANGUAGE = "view_language"
+	const val VIEW_CONGRATULATION = "view_congratulation"
 	
 	// service and broadcast
 	const val LOCK_SERVICE_ON_CREATE = "service_lock_on_create"

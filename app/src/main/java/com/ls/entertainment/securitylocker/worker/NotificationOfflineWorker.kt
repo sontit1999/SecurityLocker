@@ -3,22 +3,11 @@ package com.ls.entertainment.securitylocker.worker
 
 import android.content.Context
 import android.os.Bundle
-import androidx.work.Constraints
-import androidx.work.ExistingWorkPolicy
-import androidx.work.NetworkType
-import androidx.work.OneTimeWorkRequest
-import androidx.work.WorkManager
-import androidx.work.Worker
-import androidx.work.WorkerParameters
+import androidx.work.*
 import com.ls.entertainment.securitylocker.App
 import com.ls.entertainment.securitylocker.R
-import com.ls.entertainment.securitylocker.utils.AllEvents
-import com.ls.entertainment.securitylocker.utils.LogUtils
-import com.ls.entertainment.securitylocker.utils.NotificationCenter
-import com.ls.entertainment.securitylocker.utils.RemoteConfig
-import com.ls.entertainment.securitylocker.utils.SharePreferenceUtils
-import com.ls.entertainment.securitylocker.utils.TrackingHelper
-import java.util.Calendar
+import com.ls.entertainment.securitylocker.utils.*
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 class NotificationOfflineWorker(
@@ -58,7 +47,7 @@ class NotificationOfflineWorker(
 			val bundle = Bundle()
 			bundle.putString(NotificationCenter.TITLE, applicationContext.getString(data.first))
 			bundle.putString(NotificationCenter.MESSAGE, applicationContext.getString(data.second))
-			bundle.putString(NotificationCenter.ACTION, NotificationCenter.ACTION_NOTIFICATION)
+			bundle.putString(NotificationCenter.ACTION, NotificationCenter.ACTION_NOTIFICATION_REMIND_OPEN)
 			NotificationCenter.push(bundle, isFromFCM = false)
 		} catch (e: Exception) {
 			LogUtils.logCustomMessage("Do work notification worker exception :" + e.message)

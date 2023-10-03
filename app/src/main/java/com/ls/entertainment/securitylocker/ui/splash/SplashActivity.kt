@@ -128,6 +128,30 @@ class SplashActivity : BaseActivity<ActivitySplashBinding, SplashViewModel>() {
 		val typeNotify = intent.getStringExtra(
 			NotificationCenter.KEY_TAG_NOTIFY
 		)
+		val extras = intent.getStringExtra(NotificationCenter.ACTION)
+		extras?.let {
+			if(it.isNullOrEmpty()) return
+			when(it){
+				NotificationCenter.ACTION_NOTIFICATION_BATTERY_HIGH_TEMP -> {
+					TrackingHelper.logEvent(AllEvents.E1_NOTIFICATION_BATTERY_HIGH_TEMP_CLICK)
+				}
+				NotificationCenter.ACTION_NOTIFICATION_BATTERY_LOW -> {
+					TrackingHelper.logEvent(AllEvents.E1_NOTIFICATION_BATTERY_LOW_CLICK)
+				}
+				NotificationCenter.ACTION_NOTIFICATION_BATTERY_FULL -> {
+					TrackingHelper.logEvent(AllEvents.E1_NOTIFICATION_BATTERY_FULL_CLICK)
+				}
+				NotificationCenter.ACTION_NOTIFICATION_10M -> {
+					TrackingHelper.logEvent(AllEvents.E1_NOTIFICATION_10M_CLICK)
+				}
+				NotificationCenter.ACTION_NOTIFICATION_REMIND_OPEN -> {
+					TrackingHelper.logEvent(AllEvents.E1_NOTIFICATION_REMIND_CLICK)
+				}
+				NotificationCenter.ACTION_NOTIFICATION_ONE_HOUR_AFTER_UNPLUG -> {
+					TrackingHelper.logEvent(AllEvents.E1_NOTIFICATION_ONE_HOUR_CLICK)
+				}
+			}
+		}
 		when (typeNotify) {
 			NotificationCenter.TAG_NOTIFY_OFFLINE -> TrackingHelper.logEvent(AllEvents.E1_NOTIFICATION_OFFLINE_CLICK)
 			NotificationCenter.TAG_NOTIFY_FCM -> TrackingHelper.logEvent(AllEvents.E1_NOTIFICATION_FCM_CLICK)

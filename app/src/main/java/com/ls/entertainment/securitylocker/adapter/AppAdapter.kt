@@ -116,7 +116,7 @@ class AppAdapter : RecyclerView.Adapter<AppAdapter.AppHolder>() {
         
         init {
             binding.ivLock.setOnClickListener {
-                EventBus.getDefault().post(CheckPermissionEvent())
+                EventBus.getDefault().post(CheckPermissionEvent(true))
                 listApp[adapterPosition].isLock = !listApp[adapterPosition].isLock
                 if (listApp[adapterPosition].isLock) {
                     binding.ivLock.setImageResource(R.drawable.baseline_lock_24)

@@ -158,9 +158,8 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
 		}
 	}
 
-	private fun checkPermissionApp() {
-		checkCanOverlayPermission()
-		checkUsagePermission()
+	private fun checkPermissionApp(isOverLayPermission : Boolean = false) {
+		if(isOverLayPermission) checkCanOverlayPermission() else checkUsagePermission()
 	}
 
 	private fun initViewPager() {
@@ -206,7 +205,7 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
 
 	@Subscribe
 	fun checkPermissionEvent(checkPermissionEvent: CheckPermissionEvent) {
-		checkPermissionApp()
+		checkPermissionApp(checkPermissionEvent.isOverlay)
 	}
 
 	fun addFragment(fragment: Fragment) {

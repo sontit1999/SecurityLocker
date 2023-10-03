@@ -108,5 +108,5 @@
     <string name="must_allow_storage_permission">Please allow access to photos on your device to be able to select photos</string>
     <string name="msg_language">Language</string>
     <string name="confirm_pass">Confirm Password</string>
-    <string name="pass_not_match">" The 2 passwords do not match. Please try again"</string>
+    <string name="pass_not_match">The 2 passwords do not match. Please try again</string>
 </resources>

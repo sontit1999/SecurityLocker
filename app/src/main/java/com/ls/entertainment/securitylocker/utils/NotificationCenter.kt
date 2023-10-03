@@ -37,7 +37,7 @@ import com.ls.entertainment.securitylocker.ui.splash.SplashActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.util.Calendar
+import java.util.*
 
 
 object NotificationCenter {
@@ -161,30 +161,42 @@ object NotificationCenter {
 	}
 
 	fun pushFullBatteryNotify() {
-		pushNotification(
-			App.instance.getString(R.string.title_battery_full),
-			App.instance.getString(R.string.content_battery_full),
-			"",
-			ntfId = 999
-		)
+		if (SharePreferenceUtils.getInstance().lastTimeShowNotifyWarnNing == 0L || (System.currentTimeMillis() - SharePreferenceUtils.getInstance().lastTimeShowNotifyWarnNing > 2 * 60 * 60 * 1000L)) {
+			SharePreferenceUtils.getInstance().lastTimeShowNotifyWarnNing =
+				System.currentTimeMillis()
+			pushNotification(
+				App.instance.getString(R.string.title_battery_full),
+				App.instance.getString(R.string.content_battery_full),
+				"",
+				ntfId = 999
+			)
+		}
 	}
 
 	fun pushLowBatteryNotify() {
-		pushNotification(
-			App.instance.getString(R.string.title_battery_low),
-			App.instance.getString(R.string.content_battery_low),
-			"",
-			ntfId = 888
-		)
+		if (SharePreferenceUtils.getInstance().lastTimeShowNotifyWarnNing == 0L || (System.currentTimeMillis() - SharePreferenceUtils.getInstance().lastTimeShowNotifyWarnNing > 2 * 60 * 60 * 1000L)) {
+			SharePreferenceUtils.getInstance().lastTimeShowNotifyWarnNing =
+				System.currentTimeMillis()
+			pushNotification(
+				App.instance.getString(R.string.title_battery_low),
+				App.instance.getString(R.string.content_battery_low),
+				"",
+				ntfId = 888
+			)
+		}
 	}
 
 	fun pushBatteryTemperatureHighNotify() {
-		pushNotification(
-			App.instance.getString(R.string.title_battery_temp_high),
-			App.instance.getString(R.string.content_battery_temp_high),
-			"",
-			ntfId = 777
-		)
+		if (SharePreferenceUtils.getInstance().lastTimeShowNotifyWarnNing == 0L || (System.currentTimeMillis() - SharePreferenceUtils.getInstance().lastTimeShowNotifyWarnNing > 2 * 60 * 60 * 1000L)) {
+			SharePreferenceUtils.getInstance().lastTimeShowNotifyWarnNing =
+				System.currentTimeMillis()
+			pushNotification(
+				App.instance.getString(R.string.title_battery_temp_high),
+				App.instance.getString(R.string.content_battery_temp_high),
+				"",
+				ntfId = 777
+			)
+		}
 	}
 
 	private fun getSummaryID(fromFCM: Boolean) =

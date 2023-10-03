@@ -7,7 +7,6 @@ import android.view.KeyEvent
 import androidx.activity.viewModels
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.viewModelScope
 import com.andrognito.patternlockview.PatternLockView
 import com.andrognito.patternlockview.listener.PatternLockViewListener
 import com.andrognito.patternlockview.utils.PatternLockUtils
@@ -22,8 +21,6 @@ import com.ls.entertainment.securitylocker.ads.AdManager
 import com.ls.entertainment.securitylocker.databinding.ActivityLockBinding
 import com.ls.entertainment.securitylocker.ui.splash.SplashActivity
 import com.ls.entertainment.securitylocker.utils.*
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 
 class UnlockActivity : BaseActivity<ActivityLockBinding, UnLockViewModel>() {
@@ -240,10 +237,6 @@ class UnlockActivity : BaseActivity<ActivityLockBinding, UnLockViewModel>() {
 			}
 			else             -> {
 				binding.ivSetting.visible()
-				viewModel.viewModelScope.launch {
-					delay(1500)
-					binding.ivSetting.performClick()
-				}
 			}
 		}
 

@@ -27,7 +27,7 @@ class AppFragment : BaseFragment<FragAppBinding, AppViewModel>(R.layout.frag_app
 	private var keyword = ""
 	private var runnableSearch = Runnable {
 		if (!requireContext().isAllowAllPermission()) {
-			EventBus.getDefault().post(CheckPermissionEvent())
+			EventBus.getDefault().post(CheckPermissionEvent(true))
 		}
 		viewModel.searchApp(keyword)
 	}

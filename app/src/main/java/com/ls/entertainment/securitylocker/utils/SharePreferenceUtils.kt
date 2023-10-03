@@ -81,6 +81,13 @@ class SharePreferenceUtils constructor(context: Context) {
 			editor.putInt("countShowDialogBatterySave", i)
 			editor.commit()
 		}
+
+	var lastTimeShowNotifyWarnNing: Long
+		get() = pre.getLong("lastTimeShowNotify", 0)
+		set(i) {
+			editor.putLong("lastTimeShowNotify", i)
+			editor.commit()
+		}
 	
 	fun setListPackageLock(list: ArrayList<String>) {
 		val gson = Gson()

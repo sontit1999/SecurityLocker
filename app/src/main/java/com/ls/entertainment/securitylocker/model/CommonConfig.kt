@@ -44,7 +44,7 @@ class CommonConfig {
 	var scenarioChangedWallpaper: String = "24,24,48,72,168" // days
 	
 	@SerializedName(value = "timeNotify10mPresent")
-	var timeNotify10mPresent: Int = 10
+	var timeNotify10mPresent: Int = 60
 	
 	@SerializedName(value = "versionCodeForReview")
 	var versionCodeForReview: Int = 0
